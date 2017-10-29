@@ -1,7 +1,10 @@
 package com.miskevich.movieland.dao.jdbc.mapper;
 
 import com.miskevich.movieland.entity.Movie;
+import com.sun.istack.internal.NotNull;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
