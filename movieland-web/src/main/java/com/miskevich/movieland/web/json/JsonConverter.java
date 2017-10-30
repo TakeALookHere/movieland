@@ -9,7 +9,7 @@ public class JsonConverter {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static <T> String toJson(List<T> list) {
+    public static String toJson(List<?> list) {
         try {
             return objectMapper.writeValueAsString(list);
         } catch (JsonProcessingException e) {

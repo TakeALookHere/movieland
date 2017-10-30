@@ -1,5 +1,6 @@
 package com.miskevich.movieland.web.controller.provider
 
+import com.miskevich.movieland.entity.Genre
 import com.miskevich.movieland.entity.Movie
 import org.testng.annotations.DataProvider
 
@@ -9,7 +10,7 @@ import java.time.format.DateTimeFormatter
 class DataProviderController {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
-    private static LocalDate convertStringToDate(String releasedDate){
+    private static LocalDate convertStringToDate(String releasedDate) {
         return LocalDate.parse(releasedDate, DATE_FORMATTER)
     }
 
@@ -28,6 +29,19 @@ class DataProviderController {
 
         def array = new Object[1][]
         array[0] = [expectedMovies]
+        return array
+    }
+
+    @DataProvider(name = "provideGenres")
+    static Object[][] provideGenres() {
+
+        def expectedGenres = [
+                new Genre(id: 1, name: "драма"),
+                new Genre(id: 2, name: "криминал"),
+        ]
+
+        def array = new Object[1][]
+        array[0] = [expectedGenres]
         return array
     }
 }

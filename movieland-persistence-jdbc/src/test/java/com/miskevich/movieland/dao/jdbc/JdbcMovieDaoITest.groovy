@@ -9,7 +9,7 @@ import org.testng.annotations.Test
 import static org.testng.Assert.assertNotNull
 
 @ContextConfiguration(locations = "classpath:spring/jdbc-context.xml")
-class JdbcMovieDaoTest extends AbstractTestNGSpringContextTests {
+class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private JdbcMovieDao jdbcMovieDao

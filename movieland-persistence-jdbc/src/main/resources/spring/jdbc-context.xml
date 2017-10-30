@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:cache="http://www.springframework.org/schema/c" xmlns:ehcache="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
@@ -9,7 +10,19 @@
 
     <import resource="query-context.xml"/>
 
-    <context:component-scan base-package="com.miskevich.movieland"/>
+    <context:component-scan base-package="com.miskevich.movieland.dao"/>
+    <ehcache:config configLocation="classpath:ehcache.xml" />
+
+    <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cache="http://www.springframework.org/schema/cache"
+           xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+        <cache:annotation-driven />
+
+    </beans>
 
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>

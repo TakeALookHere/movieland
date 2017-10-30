@@ -15,7 +15,7 @@ import java.util.List;
 public class JdbcMovieDao implements IMovieDao {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
-
+    private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
@@ -25,7 +25,7 @@ public class JdbcMovieDao implements IMovieDao {
     public List<Movie> getAll() {
         LOG.info("Start query to get all movies from DB");
         long startTime = System.currentTimeMillis();
-        List<Movie> movies = jdbcTemplate.query(getAllMoviesSQL, new MovieRowMapper());
+        List<Movie> movies = jdbcTemplate.query(getAllMoviesSQL, MOVIE_ROW_MAPPER);
         LOG.info("Finish query to get all movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
         return movies;
     }

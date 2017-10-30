@@ -1,7 +1,7 @@
 package com.miskevich.movieland.web.controller;
 
-import com.miskevich.movieland.entity.Movie;
-import com.miskevich.movieland.service.IMovieService;
+import com.miskevich.movieland.entity.Genre;
+import com.miskevich.movieland.service.IGenreService;
 import com.miskevich.movieland.web.json.JsonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,21 +15,21 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/v1")
-public class MovieController {
+public class GenreController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private IMovieService movieService;
+    private IGenreService genreService;
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, value = "/movie", produces = "application/json;charset=UTF-8")
-    public String getAllMovies() {
-        LOG.info("Sending request to get all movies");
+    @RequestMapping(method = RequestMethod.GET, value = "/genre", produces = "application/json;charset=UTF-8")
+    public String getAllGenres() {
+        LOG.info("Sending request to get all genres");
         long startTime = System.currentTimeMillis();
-        List<Movie> movies = movieService.getAll();
-        String moviesJson = JsonConverter.toJson(movies);
-        LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
-        return moviesJson;
+        List<Genre> genres = genreService.getAll();
+        String genresJson = JsonConverter.toJson(genres);
+        LOG.info("Genres were received. JSON genres: {}. It took {} ms", genresJson, System.currentTimeMillis() - startTime);
+        return genresJson;
     }
 }
