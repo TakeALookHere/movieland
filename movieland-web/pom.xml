@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>movieland-web</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${global.version}</version>
     <packaging>war</packaging>
 
     <properties>
@@ -23,25 +23,27 @@
     <dependencies>
         <dependency>
             <groupId>com.miskevich</groupId>
-            <artifactId>movieland-domain</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.miskevich</groupId>
             <artifactId>movieland-service-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${global.version}</version>
         </dependency>
         <dependency>
             <groupId>com.miskevich</groupId>
             <artifactId>movieland-service-impl</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${global.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.miskevich</groupId>
+            <artifactId>movieland-domain</artifactId>
+            <version>${global.version}</version>
+        </dependency>
+
         <!--SPRING-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <!--TEST-->
         <dependency>
             <groupId>javax.servlet</groupId>

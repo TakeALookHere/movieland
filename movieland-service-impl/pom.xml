@@ -12,28 +12,28 @@
     </parent>
 
     <artifactId>movieland-service-impl</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${global.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.miskevich</groupId>
-            <artifactId>movieland-domain</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>movieland-service-api</artifactId>
+            <version>${global.version}</version>
         </dependency>
         <dependency>
             <groupId>com.miskevich</groupId>
             <artifactId>movieland-persistence-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${global.version}</version>
         </dependency>
         <dependency>
             <groupId>com.miskevich</groupId>
             <artifactId>movieland-persistence-jdbc</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${global.version}</version>
         </dependency>
         <dependency>
             <groupId>com.miskevich</groupId>
-            <artifactId>movieland-service-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>movieland-domain</artifactId>
+            <version>${global.version}</version>
         </dependency>
     </dependencies>
 

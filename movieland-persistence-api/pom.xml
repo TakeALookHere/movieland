@@ -7,13 +7,17 @@
 
     <groupId>com.miskevich</groupId>
     <artifactId>movieland-persistence-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${global.version}</version>
+
+    <properties>
+        <global.version>0.0.1-SNAPSHOT</global.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.miskevich</groupId>
             <artifactId>movieland-domain</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${global.version}</version>
         </dependency>
     </dependencies>
 
