@@ -1,14 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="ehcache.xsd"
-         updateCheck="true"
-         monitoring="autodetect"
-         dynamicConfig="true">
-
-    <diskStore path="movieland/cache" />
+         xsi:noNamespaceSchemaLocation="http://www.ehcache.org/ehcache.xsd"
+>
 
     <cache name="genreCache"
-           timeToLiveSeconds="14400">
-        <persistence strategy="localTempSwap" />
+           timeToLiveSeconds="120"
+           maxEntriesLocalHeap="1000">
     </cache>
 
 </ehcache>

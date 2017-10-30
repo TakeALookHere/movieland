@@ -18,6 +18,7 @@
     </modules>
 
     <properties>
+        <global.version>0.0.1-SNAPSHOT</global.version>
         <java.version>1.8</java.version>
         <surefire.version>2.20</surefire.version>
         <gmaven.version>1.5</gmaven.version>
