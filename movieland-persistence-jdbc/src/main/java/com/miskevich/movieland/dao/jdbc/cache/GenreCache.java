@@ -33,21 +33,21 @@ public class GenreCache implements IGenreDao {
 
     @Override
     public List<Genre> getAll() {
-        return copy(genres);
+        return genres;
     }
 
-    private List<Genre> copy(List<Genre> genres){
-        List<Genre> copy = new ArrayList<>();
-        for (Genre genre : genres){
-            try {
-                copy.add((Genre) genre.clone());
-            } catch (CloneNotSupportedException e) {
-                LOG.error("ERROR", e);
-                throw new RuntimeException(e);
-            }
-        }
-        return copy;
-    }
+//    private List<Genre> copy(List<Genre> genres){
+//        List<Genre> copy = new ArrayList<>();
+//        for (Genre genre : genres){
+//            try {
+//                copy.add((Genre) genre.clone());
+//            } catch (CloneNotSupportedException e) {
+//                LOG.error("ERROR", e);
+//                throw new RuntimeException(e);
+//            }
+//        }
+//        return copy;
+//    }
 
     private void initCache(){
         genres = genreDao.getAll();
