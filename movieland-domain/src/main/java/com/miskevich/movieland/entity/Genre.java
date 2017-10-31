@@ -1,6 +1,6 @@
 package com.miskevich.movieland.entity;
 
-public class Genre {
+public class Genre implements Cloneable{
 
     private int id;
     private String name;
@@ -19,6 +19,10 @@ public class Genre {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override

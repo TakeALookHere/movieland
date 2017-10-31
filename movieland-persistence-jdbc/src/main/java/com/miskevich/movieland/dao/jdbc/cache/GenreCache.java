@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -24,33 +25,39 @@ public class GenreCache implements IGenreDao {
     private List<Genre> genres;
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
+    @PostConstruct
+    private void init(){
+        initCache();
+        initCacheRefreshTask();
+    }
+
     @Override
     public List<Genre> getAll() {
+        return copy(genres);
+    }
+
+    private List<Genre> copy(List<Genre> genres){
         List<Genre> copy = new ArrayList<>();
-        if (genres == null) {
-            genres = genreDao.getAll();
-            copy = cloneGenres(genres, copy);
-            initCacheRefreshTask();
-        } else {
-            long startTime = System.currentTimeMillis();
-            copy = cloneGenres(genres, copy);
-            LOG.info("Finish query to get all genres from cache. It took {} ms", System.currentTimeMillis() - startTime);
+        for (Genre genre : genres){
+            try {
+                copy.add((Genre) genre.clone());
+            } catch (CloneNotSupportedException e) {
+                LOG.error("ERROR", e);
+                throw new RuntimeException(e);
+            }
         }
         return copy;
     }
 
-    private List<Genre> cloneGenres(List<Genre> genres, List<Genre> copy) {
-        for (Genre genre : genres) {
-            copy.add(genre);
-        }
-        return copy;
+    private void initCache(){
+        genres = genreDao.getAll();
     }
 
     private void initCacheRefreshTask() {
-        executorService.schedule((Callable) () -> {
+        executorService.scheduleAtFixedRate(() -> {
                     clearCache();
-                    return "Clear cache init was called...";
                 },
+                40,
                 40,
                 TimeUnit.SECONDS);
     }
