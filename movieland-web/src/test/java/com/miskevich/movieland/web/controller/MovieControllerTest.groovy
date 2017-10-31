@@ -3,6 +3,7 @@ package com.miskevich.movieland.web.controller
 import com.miskevich.movieland.entity.Movie
 import com.miskevich.movieland.service.IMovieService
 import com.miskevich.movieland.web.controller.provider.DataProviderController
+import com.miskevich.movieland.web.dto.MovieDTO
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations

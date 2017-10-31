@@ -36,8 +36,8 @@ class DataProviderController {
     static Object[][] provideGenres() {
 
         def expectedGenres = [
-                new Genre(id: 1, name: "драма"),
-                new Genre(id: 2, name: "криминал"),
+                new Genre(1, "драма"),
+                new Genre(2, "криминал"),
         ]
 
         def array = new Object[1][]

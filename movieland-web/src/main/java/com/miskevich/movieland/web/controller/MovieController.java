@@ -2,6 +2,8 @@ package com.miskevich.movieland.web.controller;
 
 import com.miskevich.movieland.entity.Movie;
 import com.miskevich.movieland.service.IMovieService;
+import com.miskevich.movieland.web.dto.MovieDTO;
+import com.miskevich.movieland.web.json.DTOConverter;
 import com.miskevich.movieland.web.json.JsonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +31,10 @@ public class MovieController {
         LOG.info("Sending request to get all movies");
         long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getAll();
-        String moviesJson = JsonConverter.toJson(movies);
+
+        List<MovieDTO> moviesDTO = DTOConverter.mapList(movies);
+        String moviesJson = JsonConverter.toJson(moviesDTO);
+
         LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
     }
@@ -40,7 +45,10 @@ public class MovieController {
         LOG.info("Sending request to get 3 random movies");
         long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getThreeRandomMovies();
-        String moviesJson = JsonConverter.toJson(movies);
+
+        List<MovieDTO> moviesDTO = DTOConverter.mapList(movies);
+        String moviesJson = JsonConverter.toJson(moviesDTO);
+
         LOG.info("Random movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
     }
@@ -51,7 +59,10 @@ public class MovieController {
         LOG.info("Sending request to get movies by genre");
         long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getByGenre(genreId);
-        String moviesJson = JsonConverter.toJson(movies);
+
+        List<MovieDTO> moviesDTO = DTOConverter.mapList(movies);
+        String moviesJson = JsonConverter.toJson(moviesDTO);
+
         LOG.info("Movies by genre were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
     }

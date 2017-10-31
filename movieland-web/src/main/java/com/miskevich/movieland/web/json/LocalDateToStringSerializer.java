@@ -1,4 +1,4 @@
-package com.miskevich.movieland.util;
+package com.miskevich.movieland.web.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
