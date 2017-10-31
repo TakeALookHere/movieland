@@ -28,6 +28,8 @@ public class JdbcMovieDao implements IMovieDao {
     private String getMoviesCount;
     @Autowired
     private String getThreeRandomMovies;
+    @Autowired
+    private String getByGenre;
 
     @Override
     public List<Movie> getAll() {
@@ -49,6 +51,18 @@ public class JdbcMovieDao implements IMovieDao {
         parameters.addValue("ids", movieIds);
         List<Movie> movies = namedParameterJdbcTemplate.query(getThreeRandomMovies, parameters, MOVIE_ROW_MAPPER);
         LOG.info("Finish query to get 3 random movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        return movies;
+    }
+
+    @Override
+    public List<Movie> getByGenre(int id) {
+        LOG.info("Start query to get movies by genre from DB");
+        long startTime = System.currentTimeMillis();
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("genreId", id);
+        List<Movie> movies = namedParameterJdbcTemplate.query(getByGenre, parameters, MOVIE_ROW_MAPPER);
+        LOG.info("Finish query to get movies by genre from DB. It took {} ms", System.currentTimeMillis() - startTime);
         return movies;
     }
 

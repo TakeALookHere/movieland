@@ -23,4 +23,9 @@ public class MovieService implements IMovieService {
     public List<Movie> getThreeRandomMovies() {
         return movieDao.getThreeRandomMovies();
     }
+
+    @Override
+    public List<Movie> getByGenre(int id) {
+        return movieDao.getByGenre(id);
+    }
 }

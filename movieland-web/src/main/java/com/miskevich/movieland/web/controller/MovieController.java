@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,6 +42,17 @@ public class MovieController {
         List<Movie> movies = movieService.getThreeRandomMovies();
         String moviesJson = JsonConverter.toJson(movies);
         LOG.info("Random movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
+        return moviesJson;
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/movie/genre/{genreId}", produces = "application/json;charset=UTF-8")
+    public String getByGenre(@PathVariable int genreId){
+        LOG.info("Sending request to get movies by genre");
+        long startTime = System.currentTimeMillis();
+        List<Movie> movies = movieService.getByGenre(genreId);
+        String moviesJson = JsonConverter.toJson(movies);
+        LOG.info("Movies by genre were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
     }
 }

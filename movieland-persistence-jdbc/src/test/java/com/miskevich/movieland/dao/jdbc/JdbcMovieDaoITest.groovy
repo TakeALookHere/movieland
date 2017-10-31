@@ -44,4 +44,19 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
             assertNotNull(movie.getPicturePath())
         }
     }
+
+    @Test
+    void testGetByGenre(){
+        def movies = jdbcMovieDao.getByGenre(3)
+        for (Movie movie : movies) {
+            assertNotNull(movie.getId())
+            assertNotNull(movie.getNameRussian())
+            assertNotNull(movie.getNameNative())
+            assertNotNull(movie.getReleasedDate())
+            assertNotNull(movie.getPlot())
+            assertNotNull(movie.getRating())
+            assertNotNull(movie.getPrice())
+            assertNotNull(movie.getPicturePath())
+        }
+    }
 }
