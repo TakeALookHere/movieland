@@ -12,4 +12,12 @@
         <constructor-arg value="SELECT id, name FROM genre;"/>
     </bean>
 
+    <bean id="getMoviesCount" class="java.lang.String">
+        <constructor-arg value="SELECT count(*) FROM movie;"/>
+    </bean>
+
+    <bean id="getThreeRandomMovies" class="java.lang.String">
+        <constructor-arg value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id in(:ids);"/>
+    </bean>
+
 </beans>

@@ -1,4 +1,4 @@
-package com.miskevich.movieland.dao.jdbc.mapper.provider
+package com.miskevich.movieland.dao.jdbc.provider
 
 import com.miskevich.movieland.entity.Movie
 import org.testng.annotations.DataProvider

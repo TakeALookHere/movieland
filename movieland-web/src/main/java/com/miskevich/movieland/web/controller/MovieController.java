@@ -32,4 +32,15 @@ public class MovieController {
         LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
     }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/movie/random", produces = "application/json;charset=UTF-8")
+    public String getThreeRandomMovies(){
+        LOG.info("Sending request to get 3 random movies");
+        long startTime = System.currentTimeMillis();
+        List<Movie> movies = movieService.getThreeRandomMovies();
+        String moviesJson = JsonConverter.toJson(movies);
+        LOG.info("Random movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
+        return moviesJson;
+    }
 }
