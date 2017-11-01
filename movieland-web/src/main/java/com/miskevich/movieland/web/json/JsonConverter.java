@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
-public class JsonConverter {
+public abstract class JsonConverter {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

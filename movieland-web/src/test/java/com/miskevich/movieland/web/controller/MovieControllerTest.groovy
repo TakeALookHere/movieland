@@ -3,7 +3,6 @@ package com.miskevich.movieland.web.controller
 import com.miskevich.movieland.entity.Movie
 import com.miskevich.movieland.service.IMovieService
 import com.miskevich.movieland.web.controller.provider.DataProviderController
-import com.miskevich.movieland.web.dto.MovieDTO
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -68,7 +67,7 @@ class MovieControllerTest {
     void testGetThreeRandomMovies(List<Movie> expectedMovies) {
 
         when(mockMovieService.getThreeRandomMovies()).thenReturn(expectedMovies)
-        mockMvc.perform(get("/v1/movie/random").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/v1/movie/RANDOM").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$', hasSize(2)))
 

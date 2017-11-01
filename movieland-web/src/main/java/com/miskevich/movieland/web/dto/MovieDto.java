@@ -9,7 +9,7 @@ import com.miskevich.movieland.web.json.LocalDateToStringSerializer;
 import java.time.LocalDate;
 import java.util.List;
 
-public class MovieDTO {
+public class MovieDto {
 
     private int id;
     private String nameRussian;
@@ -23,9 +23,6 @@ public class MovieDTO {
     private String picturePath;
     private List<Genre> genres;
     private List<Review> reviews;
-
-    public MovieDTO() {
-    }
 
     public int getId() {
         return id;
@@ -117,7 +114,7 @@ public class MovieDTO {
 
     @Override
     public String toString() {
-        return "MovieDTO{" +
+        return "MovieDto{" +
                 "id=" + id +
                 ", nameRussian='" + nameRussian + '\'' +
                 ", nameNative='" + nameNative + '\'' +
