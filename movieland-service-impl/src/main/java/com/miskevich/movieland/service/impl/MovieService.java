@@ -20,6 +20,21 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    public List<Movie> getAllRatingDesc() {
+        return movieDao.getAllRatingDesc();
+    }
+
+    @Override
+    public List<Movie> getAllPriceAsc() {
+        return movieDao.getAllPriceAsc();
+    }
+
+    @Override
+    public List<Movie> getAllPriceDesc() {
+        return movieDao.getAllPriceDesc();
+    }
+
+    @Override
     public List<Movie> getThreeRandomMovies() {
         return movieDao.getThreeRandomMovies();
     }

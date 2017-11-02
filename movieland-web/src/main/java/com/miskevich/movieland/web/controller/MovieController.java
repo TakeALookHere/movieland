@@ -5,16 +5,16 @@ import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.web.dto.MovieDto;
 import com.miskevich.movieland.web.json.DtoConverter;
 import com.miskevich.movieland.web.json.JsonConverter;
-import com.miskevich.movieland.web.validator.MovieValidator;
+import com.miskevich.movieland.web.model.SortingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -25,25 +25,28 @@ public class MovieController {
 
     @Autowired
     private IMovieService movieService;
-    @Autowired MovieValidator movieValidator;
-
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(movieValidator);
-    }
-
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/movie")
-    public String getAllMovies(@Validated(MovieValidator.class) @RequestParam(value = "rating", required = false) String rating,
-                               @Validated(MovieValidator.class) @RequestParam(value = "price", required = false) String price, BindingResult result) {
-        if(result.hasErrors()){
-            return "error";
-        }
+    public String getAllMovies(@RequestParam(value = "rating", required = false) String rating,
+                               @RequestParam(value = "price", required = false) String price) {
 
         LOG.info("Sending request to get all movies");
         long startTime = System.currentTimeMillis();
-        List<Movie> movies = movieService.getAll();
+
+        List<Movie> movies;
+
+        if (rating != null && rating.equalsIgnoreCase(SortingType.DESC.getSortingType())) {
+            movies = movieService.getAllRatingDesc();
+        } else if (price != null && price.equalsIgnoreCase(SortingType.ASC.getSortingType())) {
+            movies = movieService.getAllPriceAsc();
+        } else if (price != null && price.equalsIgnoreCase(SortingType.DESC.getSortingType())) {
+            movies = movieService.getAllPriceDesc();
+        } else if(rating == null && price == null) {
+            movies = movieService.getAll();
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect sorting type in request parameters. Use DESC for ratings or ASC/DESC for price").toString();
+        }
 
         List<MovieDto> movieDtos = DtoConverter.mapList(movies);
         String moviesJson = JsonConverter.toJson(movieDtos);
@@ -54,7 +57,7 @@ public class MovieController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/movie/random")
-    public String getThreeRandomMovies(){
+    public String getThreeRandomMovies() {
         LOG.info("Sending request to get 3 random movies");
         long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getThreeRandomMovies();
@@ -68,7 +71,7 @@ public class MovieController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/movie/genre/{genreId}")
-    public String getByGenre(@PathVariable int genreId){
+    public String getByGenre(@PathVariable int genreId) {
         LOG.info("Sending request to get movies by genre");
         long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getByGenre(genreId);

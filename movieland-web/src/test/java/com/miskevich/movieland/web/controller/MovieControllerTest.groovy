@@ -46,7 +46,7 @@ class MovieControllerTest {
                 .andExpect(jsonPath('$[0].nameNative', is('The Shawshank Redemption')))
                 .andExpect(jsonPath('$[0].releasedDate', is('1994')))
                 .andExpect(jsonPath('$[0].plot', is('Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.')))
-                .andExpect(jsonPath('$[0].rating', is(8.9d)))
+                .andExpect(jsonPath('$[0].rating', is(9.1d)))
                 .andExpect(jsonPath('$[0].price', is(123.45d)))
                 .andExpect(jsonPath('$[0].picturePath', is('shawshank173_173.jpg')))
 
@@ -64,10 +64,12 @@ class MovieControllerTest {
     }
 
     @Test(dataProvider = "provideMovies", dataProviderClass = DataProviderController.class)
-    void testGetThreeRandomMovies(List<Movie> expectedMovies) {
+    void testGetAllMoviesRatingDesc(List<Movie> expectedMovies) {
 
-        when(mockMovieService.getThreeRandomMovies()).thenReturn(expectedMovies)
-        mockMvc.perform(get("/v1/movie/RANDOM").accept(MediaType.APPLICATION_JSON))
+        when(mockMovieService.getAllRatingDesc()).thenReturn(expectedMovies)
+        mockMvc.perform(get("/v1/movie")
+                .param('rating', 'desc')
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$', hasSize(2)))
 
@@ -76,7 +78,133 @@ class MovieControllerTest {
                 .andExpect(jsonPath('$[0].nameNative', is('The Shawshank Redemption')))
                 .andExpect(jsonPath('$[0].releasedDate', is('1994')))
                 .andExpect(jsonPath('$[0].plot', is('Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.')))
+                .andExpect(jsonPath('$[0].rating', is(9.1d)))
+                .andExpect(jsonPath('$[0].price', is(123.45d)))
+                .andExpect(jsonPath('$[0].picturePath', is('shawshank173_173.jpg')))
+
+                .andExpect(jsonPath('$[1].id', is(2)))
+                .andExpect(jsonPath('$[1].nameRussian', is('Зеленая миля')))
+                .andExpect(jsonPath('$[1].nameNative', is('The Green Mile')))
+                .andExpect(jsonPath('$[1].releasedDate', is('1999')))
+                .andExpect(jsonPath('$[1].plot', is('Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.')))
+                .andExpect(jsonPath('$[1].rating', is(8.9d)))
+                .andExpect(jsonPath('$[1].price', is(134.67d)))
+                .andExpect(jsonPath('$[1].picturePath', is('green_mile173_173.jpg')))
+
+        verify(mockMovieService, times(1)).getAllRatingDesc()
+        verifyNoMoreInteractions(mockMovieService)
+    }
+
+    @Test(dataProvider = "provideMovies", dataProviderClass = DataProviderController.class)
+    void testGetAllMoviesRatingDescUpperCase(List<Movie> expectedMovies) {
+
+        when(mockMovieService.getAllRatingDesc()).thenReturn(expectedMovies)
+        mockMvc.perform(get("/v1/movie")
+                .param('rating', 'DESC')
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$', hasSize(2)))
+
+                .andExpect(jsonPath('$[0].id', is(1)))
+                .andExpect(jsonPath('$[0].nameRussian', is('Побег из Шоушенка')))
+                .andExpect(jsonPath('$[0].nameNative', is('The Shawshank Redemption')))
+                .andExpect(jsonPath('$[0].releasedDate', is('1994')))
+                .andExpect(jsonPath('$[0].plot', is('Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.')))
+                .andExpect(jsonPath('$[0].rating', is(9.1d)))
+                .andExpect(jsonPath('$[0].price', is(123.45d)))
+                .andExpect(jsonPath('$[0].picturePath', is('shawshank173_173.jpg')))
+
+                .andExpect(jsonPath('$[1].id', is(2)))
+                .andExpect(jsonPath('$[1].nameRussian', is('Зеленая миля')))
+                .andExpect(jsonPath('$[1].nameNative', is('The Green Mile')))
+                .andExpect(jsonPath('$[1].releasedDate', is('1999')))
+                .andExpect(jsonPath('$[1].plot', is('Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.')))
+                .andExpect(jsonPath('$[1].rating', is(8.9d)))
+                .andExpect(jsonPath('$[1].price', is(134.67d)))
+                .andExpect(jsonPath('$[1].picturePath', is('green_mile173_173.jpg')))
+
+        verify(mockMovieService, times(2)).getAllRatingDesc()
+        verifyNoMoreInteractions(mockMovieService)
+    }
+
+    @Test(dataProvider = "provideMovies", dataProviderClass = DataProviderController.class)
+    void testGetAllMoviesPriceAsc(List<Movie> expectedMovies) {
+
+        when(mockMovieService.getAllPriceAsc()).thenReturn(expectedMovies)
+        mockMvc.perform(get("/v1/movie")
+                .param('price', 'asc')
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$', hasSize(2)))
+
+                .andExpect(jsonPath('$[0].id', is(1)))
+                .andExpect(jsonPath('$[0].nameRussian', is('Побег из Шоушенка')))
+                .andExpect(jsonPath('$[0].nameNative', is('The Shawshank Redemption')))
+                .andExpect(jsonPath('$[0].releasedDate', is('1994')))
+                .andExpect(jsonPath('$[0].plot', is('Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.')))
+                .andExpect(jsonPath('$[0].rating', is(9.1d)))
+                .andExpect(jsonPath('$[0].price', is(123.45d)))
+                .andExpect(jsonPath('$[0].picturePath', is('shawshank173_173.jpg')))
+
+                .andExpect(jsonPath('$[1].id', is(2)))
+                .andExpect(jsonPath('$[1].nameRussian', is('Зеленая миля')))
+                .andExpect(jsonPath('$[1].nameNative', is('The Green Mile')))
+                .andExpect(jsonPath('$[1].releasedDate', is('1999')))
+                .andExpect(jsonPath('$[1].plot', is('Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.')))
+                .andExpect(jsonPath('$[1].rating', is(8.9d)))
+                .andExpect(jsonPath('$[1].price', is(134.67d)))
+                .andExpect(jsonPath('$[1].picturePath', is('green_mile173_173.jpg')))
+
+        verify(mockMovieService, times(1)).getAllPriceAsc()
+        verifyNoMoreInteractions(mockMovieService)
+    }
+
+    @Test(dataProvider = "provideMoviesPriceDesc", dataProviderClass = DataProviderController.class)
+    void testGetAllMoviesPriceDesc(List<Movie> expectedMovies) {
+
+        when(mockMovieService.getAllPriceDesc()).thenReturn(expectedMovies)
+        mockMvc.perform(get("/v1/movie")
+                .param('price', 'desc')
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$', hasSize(2)))
+
+                .andExpect(jsonPath('$[0].id', is(2)))
+                .andExpect(jsonPath('$[0].nameRussian', is('Зеленая миля')))
+                .andExpect(jsonPath('$[0].nameNative', is('The Green Mile')))
+                .andExpect(jsonPath('$[0].releasedDate', is('1999')))
+                .andExpect(jsonPath('$[0].plot', is('Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.')))
                 .andExpect(jsonPath('$[0].rating', is(8.9d)))
+                .andExpect(jsonPath('$[0].price', is(134.67d)))
+                .andExpect(jsonPath('$[0].picturePath', is('green_mile173_173.jpg')))
+
+                .andExpect(jsonPath('$[1].id', is(1)))
+                .andExpect(jsonPath('$[1].nameRussian', is('Побег из Шоушенка')))
+                .andExpect(jsonPath('$[1].nameNative', is('The Shawshank Redemption')))
+                .andExpect(jsonPath('$[1].releasedDate', is('1994')))
+                .andExpect(jsonPath('$[1].plot', is('Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.')))
+                .andExpect(jsonPath('$[1].rating', is(9.1d)))
+                .andExpect(jsonPath('$[1].price', is(123.45d)))
+                .andExpect(jsonPath('$[1].picturePath', is('shawshank173_173.jpg')))
+
+        verify(mockMovieService, times(1)).getAllPriceDesc()
+        verifyNoMoreInteractions(mockMovieService)
+    }
+
+    @Test(dataProvider = "provideMovies", dataProviderClass = DataProviderController.class)
+    void testGetThreeRandomMovies(List<Movie> expectedMovies) {
+
+        when(mockMovieService.getThreeRandomMovies()).thenReturn(expectedMovies)
+        mockMvc.perform(get("/v1/movie/random").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$', hasSize(2)))
+
+                .andExpect(jsonPath('$[0].id', is(1)))
+                .andExpect(jsonPath('$[0].nameRussian', is('Побег из Шоушенка')))
+                .andExpect(jsonPath('$[0].nameNative', is('The Shawshank Redemption')))
+                .andExpect(jsonPath('$[0].releasedDate', is('1994')))
+                .andExpect(jsonPath('$[0].plot', is('Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.')))
+                .andExpect(jsonPath('$[0].rating', is(9.1d)))
                 .andExpect(jsonPath('$[0].price', is(123.45d)))
                 .andExpect(jsonPath('$[0].picturePath', is('shawshank173_173.jpg')))
 
@@ -106,7 +234,7 @@ class MovieControllerTest {
                 .andExpect(jsonPath('$[0].nameNative', is('The Shawshank Redemption')))
                 .andExpect(jsonPath('$[0].releasedDate', is('1994')))
                 .andExpect(jsonPath('$[0].plot', is('Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.')))
-                .andExpect(jsonPath('$[0].rating', is(8.9d)))
+                .andExpect(jsonPath('$[0].rating', is(9.1d)))
                 .andExpect(jsonPath('$[0].price', is(123.45d)))
                 .andExpect(jsonPath('$[0].picturePath', is('shawshank173_173.jpg')))
 

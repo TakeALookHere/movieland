@@ -33,6 +33,12 @@ public class JdbcMovieDao implements IMovieDao {
     private String getThreeRandomMovies;
     @Autowired
     private String getByGenre;
+    @Autowired
+    private String getAllRatingDescSQL;
+    @Autowired
+    private String getAllPriceAscSQL;
+    @Autowired
+    private String getAllPriceDescSQL;
 
     @Override
     public List<Movie> getAll() {
@@ -44,8 +50,35 @@ public class JdbcMovieDao implements IMovieDao {
     }
 
     @Override
+    public List<Movie> getAllRatingDesc() {
+        LOG.info("Start query to get all movies with rating desc from DB");
+        long startTime = System.currentTimeMillis();
+        List<Movie> movies = namedParameterJdbcTemplate.query(getAllRatingDescSQL, MOVIE_ROW_MAPPER);
+        LOG.info("Finish query to get all movies with rating desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        return movies;
+    }
+
+    @Override
+    public List<Movie> getAllPriceAsc() {
+        LOG.info("Start query to get all movies with price asc from DB");
+        long startTime = System.currentTimeMillis();
+        List<Movie> movies = namedParameterJdbcTemplate.query(getAllPriceAscSQL, MOVIE_ROW_MAPPER);
+        LOG.info("Finish query to get all movies with price asc from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        return movies;
+    }
+
+    @Override
+    public List<Movie> getAllPriceDesc() {
+        LOG.info("Start query to get all movies with price desc from DB");
+        long startTime = System.currentTimeMillis();
+        List<Movie> movies = namedParameterJdbcTemplate.query(getAllPriceDescSQL, MOVIE_ROW_MAPPER);
+        LOG.info("Finish query to get all movies with price desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        return movies;
+    }
+
+    @Override
     public List<Movie> getThreeRandomMovies() {
-        LOG.info("Start query to get 3 RANDOM movies from DB");
+        LOG.info("Start query to get 3 random movies from DB");
         long startTime = System.currentTimeMillis();
 
         Set<Integer> movieIds = prepareRandomMovieIds();
@@ -53,7 +86,7 @@ public class JdbcMovieDao implements IMovieDao {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("ids", movieIds);
         List<Movie> movies = namedParameterJdbcTemplate.query(getThreeRandomMovies, parameters, MOVIE_ROW_MAPPER);
-        LOG.info("Finish query to get 3 RANDOM movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        LOG.info("Finish query to get 3 random movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
         return movies;
     }
 
