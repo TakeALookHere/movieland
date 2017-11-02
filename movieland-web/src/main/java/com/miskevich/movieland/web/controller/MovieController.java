@@ -5,14 +5,15 @@ import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.web.dto.MovieDto;
 import com.miskevich.movieland.web.json.DtoConverter;
 import com.miskevich.movieland.web.json.JsonConverter;
+import com.miskevich.movieland.web.validator.MovieValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,10 +25,22 @@ public class MovieController {
 
     @Autowired
     private IMovieService movieService;
+    @Autowired MovieValidator movieValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(movieValidator);
+    }
+
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/movie")
-    public String getAllMovies() {
+    public String getAllMovies(@Validated(MovieValidator.class) @RequestParam(value = "rating", required = false) String rating,
+                               @Validated(MovieValidator.class) @RequestParam(value = "price", required = false) String price, BindingResult result) {
+        if(result.hasErrors()){
+            return "error";
+        }
+
         LOG.info("Sending request to get all movies");
         long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getAll();
@@ -66,4 +79,5 @@ public class MovieController {
         LOG.info("Movies by genre were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
     }
+
 }

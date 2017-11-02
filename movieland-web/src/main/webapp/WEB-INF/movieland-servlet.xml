@@ -13,6 +13,12 @@
 
     <context:component-scan base-package="com.miskevich.movieland.web"/>
 
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven validator="movieValidator"/>
+
+    <!--<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>-->
+    <!--<bean id="validator" class="com.miskevich.movieland.web.validator.MovieValidator"/>-->
+    <!--<bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor">-->
+        <!--<property name="validator" ref="movieValidator"/>-->
+    <!--</bean>-->
 
 </beans>
