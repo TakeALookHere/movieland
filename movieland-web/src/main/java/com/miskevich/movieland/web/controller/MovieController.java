@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -42,9 +41,9 @@ public class MovieController {
             movies = movieService.getAllPriceAsc();
         } else if (price != null && price.equalsIgnoreCase(SortingType.DESC.getSortingType())) {
             movies = movieService.getAllPriceDesc();
-        } else if(rating == null && price == null) {
+        } else if (rating == null && price == null) {
             movies = movieService.getAll();
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect sorting type in request parameters. Use DESC for ratings or ASC/DESC for price").toString();
         }
 
