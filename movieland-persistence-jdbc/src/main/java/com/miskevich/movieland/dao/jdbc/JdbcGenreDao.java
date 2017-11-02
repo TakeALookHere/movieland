@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository("genreDao")
+@Repository
 public class JdbcGenreDao implements IGenreDao {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
