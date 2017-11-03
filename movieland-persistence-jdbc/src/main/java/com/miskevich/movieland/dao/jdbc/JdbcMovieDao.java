@@ -3,6 +3,8 @@ package com.miskevich.movieland.dao.jdbc;
 import com.miskevich.movieland.dao.IMovieDao;
 import com.miskevich.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.miskevich.movieland.entity.Movie;
+import com.miskevich.movieland.model.SortPower;
+import com.miskevich.movieland.model.SortingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,38 +43,31 @@ public class JdbcMovieDao implements IMovieDao {
     private String getAllPriceDescSQL;
 
     @Override
-    public List<Movie> getAll() {
-        LOG.info("Start query to get all movies from DB");
-        long startTime = System.currentTimeMillis();
-        List<Movie> movies = namedParameterJdbcTemplate.query(getAllMoviesSQL, MOVIE_ROW_MAPPER);
-        LOG.info("Finish query to get all movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
-        return movies;
-    }
+    public List<Movie> getAll(SortPower sortPower) {
 
-    @Override
-    public List<Movie> getAllRatingDesc() {
-        LOG.info("Start query to get all movies with rating desc from DB");
         long startTime = System.currentTimeMillis();
-        List<Movie> movies = namedParameterJdbcTemplate.query(getAllRatingDescSQL, MOVIE_ROW_MAPPER);
-        LOG.info("Finish query to get all movies with rating desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
-        return movies;
-    }
+        List<Movie> movies;
+        SortingType ratingSort = sortPower.getRatingSort();
+        SortingType priceSort = sortPower.getPriceSort();
 
-    @Override
-    public List<Movie> getAllPriceAsc() {
-        LOG.info("Start query to get all movies with price asc from DB");
-        long startTime = System.currentTimeMillis();
-        List<Movie> movies = namedParameterJdbcTemplate.query(getAllPriceAscSQL, MOVIE_ROW_MAPPER);
-        LOG.info("Finish query to get all movies with price asc from DB. It took {} ms", System.currentTimeMillis() - startTime);
-        return movies;
-    }
+        if (ratingSort != null && ratingSort.equals(SortingType.DESC)) {
+            LOG.info("Start query to get all movies with rating desc from DB");
+            movies = namedParameterJdbcTemplate.query(getAllRatingDescSQL, MOVIE_ROW_MAPPER);
+            LOG.info("Finish query to get all movies with rating desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        } else if (priceSort != null && priceSort.equals(SortingType.ASC)) {
+            LOG.info("Start query to get all movies with price asc from DB");
+            movies = namedParameterJdbcTemplate.query(getAllPriceAscSQL, MOVIE_ROW_MAPPER);
+            LOG.info("Finish query to get all movies with price asc from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        } else if (priceSort != null && priceSort.equals(SortingType.DESC)) {
+            LOG.info("Start query to get all movies with price desc from DB");
+            movies = namedParameterJdbcTemplate.query(getAllPriceDescSQL, MOVIE_ROW_MAPPER);
+            LOG.info("Finish query to get all movies with price desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        } else {
+            LOG.info("Start query to get all movies from DB");
+            movies = namedParameterJdbcTemplate.query(getAllMoviesSQL, MOVIE_ROW_MAPPER);
+            LOG.info("Finish query to get all movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        }
 
-    @Override
-    public List<Movie> getAllPriceDesc() {
-        LOG.info("Start query to get all movies with price desc from DB");
-        long startTime = System.currentTimeMillis();
-        List<Movie> movies = namedParameterJdbcTemplate.query(getAllPriceDescSQL, MOVIE_ROW_MAPPER);
-        LOG.info("Finish query to get all movies with price desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
         return movies;
     }
 

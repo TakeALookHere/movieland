@@ -1,11 +1,12 @@
 package com.miskevich.movieland.web.controller;
 
 import com.miskevich.movieland.entity.Movie;
+import com.miskevich.movieland.model.SortPower;
 import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.web.dto.MovieDto;
 import com.miskevich.movieland.web.json.DtoConverter;
 import com.miskevich.movieland.web.json.JsonConverter;
-import com.miskevich.movieland.web.model.SortingType;
+import com.miskevich.movieland.model.SortingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +35,19 @@ public class MovieController {
         long startTime = System.currentTimeMillis();
 
         List<Movie> movies;
+        SortPower sortPower = new SortPower();
 
         if (rating != null && rating.equalsIgnoreCase(SortingType.DESC.getSortingType())) {
-            movies = movieService.getAllRatingDesc();
+            sortPower.setRatingSort(SortingType.DESC);
+            movies = movieService.getAll(sortPower);
         } else if (price != null && price.equalsIgnoreCase(SortingType.ASC.getSortingType())) {
-            movies = movieService.getAllPriceAsc();
+            sortPower.setPriceSort(SortingType.ASC);
+            movies = movieService.getAll(sortPower);
         } else if (price != null && price.equalsIgnoreCase(SortingType.DESC.getSortingType())) {
-            movies = movieService.getAllPriceDesc();
+            sortPower.setPriceSort(SortingType.DESC);
+            movies = movieService.getAll(sortPower);
         } else if (rating == null && price == null) {
-            movies = movieService.getAll();
+            movies = movieService.getAll(sortPower);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect sorting type in request parameters. Use DESC for ratings or ASC/DESC for price").toString();
         }
