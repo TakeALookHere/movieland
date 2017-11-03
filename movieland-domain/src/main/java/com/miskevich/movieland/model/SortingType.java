@@ -2,26 +2,26 @@ package com.miskevich.movieland.model;
 
 public enum SortingType {
 
-    DESC("desc"),
-    ASC("asc");
+    DESC("DESC"),
+    ASC("ASC");
 
-    private String sortingType;
+    private String value;
 
-    public String getSortingType() {
-        return sortingType;
+    public String getValue() {
+        return value;
     }
 
-    SortingType(String sortingType) {
-        this.sortingType = sortingType;
+    SortingType(String value) {
+        this.value = value;
     }
 
-    public static SortingType getSortingTypeByName(String type) {
+    public static SortingType getSortingTypeByName(String type) throws IllegalArgumentException{
         for (SortingType sortingType : values()) {
-            if (sortingType.sortingType.equalsIgnoreCase(type)) {
+            if (sortingType.value.equalsIgnoreCase(type)) {
                 return sortingType;
             }
         }
-        String message = "Incorrect sorting type in request parameters. Use DESC for ratings or ASC/DESC for price";
+        String message = "Incorrect sorting type in request parameters! Please use: ASC/DESC";
         throw new IllegalArgumentException(message);
     }
 

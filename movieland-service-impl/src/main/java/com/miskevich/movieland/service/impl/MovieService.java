@@ -2,12 +2,12 @@ package com.miskevich.movieland.service.impl;
 
 import com.miskevich.movieland.dao.IMovieDao;
 import com.miskevich.movieland.entity.Movie;
-import com.miskevich.movieland.model.SortPower;
 import com.miskevich.movieland.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MovieService implements IMovieService {
@@ -16,8 +16,8 @@ public class MovieService implements IMovieService {
     private IMovieDao movieDao;
 
     @Override
-    public List<Movie> getAll(SortPower sortPower) {
-        return movieDao.getAll(sortPower);
+    public List<Movie> getAll(Map<String, String> params) {
+        return movieDao.getAll(params);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    public List<Movie> getByGenre(int id) {
-        return movieDao.getByGenre(id);
+    public List<Movie> getByGenre(int id, Map<String, String> params) {
+        return movieDao.getByGenre(id, params);
     }
 }

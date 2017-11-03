@@ -5,19 +5,8 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="getAllMoviesSQL" class="java.lang.String">
-        <constructor-arg value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie;"/>
-    </bean>
-
-    <bean id="getAllRatingDescSQL" class="java.lang.String">
-        <constructor-arg value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie order by rating desc;"/>
-    </bean>
-
-    <bean id="getAllPriceAscSQL" class="java.lang.String">
-        <constructor-arg value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie order by price asc;"/>
-    </bean>
-
-    <bean id="getAllPriceDescSQL" class="java.lang.String">
-        <constructor-arg value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie order by price desc;"/>
+        <constructor-arg
+                value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie"/>
     </bean>
 
     <bean id="getAllGenresSQL" class="java.lang.String">
@@ -29,11 +18,13 @@
     </bean>
 
     <bean id="getThreeRandomMovies" class="java.lang.String">
-        <constructor-arg value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id in(:ids);"/>
+        <constructor-arg
+                value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id in(:ids);"/>
     </bean>
 
     <bean id="getByGenre" class="java.lang.String">
-        <constructor-arg value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id IN(SELECT DISTINCT movie_id FROM movie_genre WHERE genre_id = :genreId);"/>
+        <constructor-arg
+                value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id IN(SELECT DISTINCT movie_id FROM movie_genre WHERE genre_id = :genreId)"/>
     </bean>
 
 </beans>

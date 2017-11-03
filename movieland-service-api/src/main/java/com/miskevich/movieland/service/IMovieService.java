@@ -1,13 +1,15 @@
 package com.miskevich.movieland.service;
 
 import com.miskevich.movieland.entity.Movie;
-import com.miskevich.movieland.model.SortPower;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IMovieService {
 
-    List<Movie> getAll(SortPower sortPower);
+    List<Movie> getAll(Map<String, String> params);
+
     List<Movie> getThreeRandomMovies();
-    List<Movie> getByGenre(int id);
+
+    List<Movie> getByGenre(int id, Map<String, String> params);
 }

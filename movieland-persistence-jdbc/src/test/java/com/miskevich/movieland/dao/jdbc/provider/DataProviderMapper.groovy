@@ -10,7 +10,7 @@ class DataProviderMapper {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
-    private static LocalDate convertStringToDate(String dateOfBirth){
+    private static LocalDate convertStringToDate(String dateOfBirth) {
         return LocalDate.parse(dateOfBirth, DATE_FORMATTER)
     }
 
