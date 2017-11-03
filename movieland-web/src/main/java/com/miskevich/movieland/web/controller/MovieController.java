@@ -13,9 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/v1", produces = "application/json;charset=UTF-8")
@@ -29,34 +34,46 @@ public class MovieController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/movie")
     public String getAllMovies(@RequestParam(value = "rating", required = false) String rating,
-                               @RequestParam(value = "price", required = false) String price) {
+                               @RequestParam(value = "price", required = false) String price,
+                               @RequestParam(value = "nameRussian", required = false) String nameRussian,
+                               HttpServletRequest request
+    ) {
 
         LOG.info("Sending request to get all movies");
         long startTime = System.currentTimeMillis();
 
         List<Movie> movies;
         SortPower sortPower = new SortPower();
+        Map<String, String> parametersToSort = new LinkedHashMap<>();
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        for(Map.Entry<String, String[]> param : parameterMap.entrySet()){
+            System.out.println(param.getKey());
+            System.out.println(Arrays.toString(param.getValue()));
 
-        if (rating != null && rating.equalsIgnoreCase(SortingType.DESC.getSortingType())) {
-            sortPower.setRatingSort(SortingType.DESC);
-            movies = movieService.getAll(sortPower);
-        } else if (price != null && price.equalsIgnoreCase(SortingType.ASC.getSortingType())) {
-            sortPower.setPriceSort(SortingType.ASC);
-            movies = movieService.getAll(sortPower);
-        } else if (price != null && price.equalsIgnoreCase(SortingType.DESC.getSortingType())) {
-            sortPower.setPriceSort(SortingType.DESC);
-            movies = movieService.getAll(sortPower);
-        } else if (rating == null && price == null) {
-            movies = movieService.getAll(sortPower);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect sorting type in request parameters. Use DESC for ratings or ASC/DESC for price").toString();
+            String paramName = param.getKey();
         }
 
-        List<MovieDto> movieDtos = DtoConverter.mapList(movies);
-        String moviesJson = JsonConverter.toJson(movieDtos);
 
-        LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
-        return moviesJson;
+
+
+//        if (rating != null && rating.equalsIgnoreCase(SortingType.getSortingTypeByName(rating).getSortingType())) {
+//            parametersToSort.put("rating", rating);
+//        } else if (price != null && price.equalsIgnoreCase(SortingType.getSortingTypeByName(price).getSortingType())) {
+//            parametersToSort.put("price", price);
+//        } else if (price != null && nameRussian.equalsIgnoreCase(SortingType.getSortingTypeByName(nameRussian).getSortingType())) {
+//            parametersToSort.put("nameRussian", nameRussian);
+//        } else if (rating == null && price == null) {
+//            movies = movieService.getAll(sortPower);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect sorting type in request parameters. Use DESC for ratings or ASC/DESC for price").toString();
+//        }
+//
+//        List<MovieDto> movieDtos = DtoConverter.mapList(movies);
+//        String moviesJson = JsonConverter.toJson(movieDtos);
+//
+//        LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
+//        return moviesJson;
+        return null;
     }
 
     @ResponseBody

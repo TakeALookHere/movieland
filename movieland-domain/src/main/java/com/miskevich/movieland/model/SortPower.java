@@ -2,22 +2,31 @@ package com.miskevich.movieland.model;
 
 public class SortPower {
 
-    private SortingType ratingSort;
-    private SortingType priceSort;
+    private String ratingSort;
+    private String priceSort;
+    private String nameSort;
 
-    public SortingType getRatingSort() {
+    public String getRatingSort() {
         return ratingSort;
     }
 
-    public void setRatingSort(SortingType ratingSort) {
+    public void setRatingSort(String ratingSort) {
         this.ratingSort = ratingSort;
     }
 
-    public SortingType getPriceSort() {
+    public String getPriceSort() {
         return priceSort;
     }
 
-    public void setPriceSort(SortingType priceSort) {
+    public void setPriceSort(String priceSort) {
         this.priceSort = priceSort;
+    }
+
+    public String getNameSort() {
+        return nameSort;
+    }
+
+    public void setNameSort(String nameSort) {
+        this.nameSort = nameSort;
     }
 }

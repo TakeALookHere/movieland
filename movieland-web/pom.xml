@@ -44,13 +44,13 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!--TEST-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
-            <scope>test</scope>
         </dependency>
+
+        <!--TEST-->
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>

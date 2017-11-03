@@ -46,29 +46,30 @@ public class JdbcMovieDao implements IMovieDao {
     public List<Movie> getAll(SortPower sortPower) {
 
         long startTime = System.currentTimeMillis();
-        List<Movie> movies;
-        SortingType ratingSort = sortPower.getRatingSort();
-        SortingType priceSort = sortPower.getPriceSort();
-
-        if (ratingSort != null && ratingSort.equals(SortingType.DESC)) {
-            LOG.info("Start query to get all movies with rating desc from DB");
-            movies = namedParameterJdbcTemplate.query(getAllRatingDescSQL, MOVIE_ROW_MAPPER);
-            LOG.info("Finish query to get all movies with rating desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
-        } else if (priceSort != null && priceSort.equals(SortingType.ASC)) {
-            LOG.info("Start query to get all movies with price asc from DB");
-            movies = namedParameterJdbcTemplate.query(getAllPriceAscSQL, MOVIE_ROW_MAPPER);
-            LOG.info("Finish query to get all movies with price asc from DB. It took {} ms", System.currentTimeMillis() - startTime);
-        } else if (priceSort != null && priceSort.equals(SortingType.DESC)) {
-            LOG.info("Start query to get all movies with price desc from DB");
-            movies = namedParameterJdbcTemplate.query(getAllPriceDescSQL, MOVIE_ROW_MAPPER);
-            LOG.info("Finish query to get all movies with price desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
-        } else {
-            LOG.info("Start query to get all movies from DB");
-            movies = namedParameterJdbcTemplate.query(getAllMoviesSQL, MOVIE_ROW_MAPPER);
-            LOG.info("Finish query to get all movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
-        }
-
-        return movies;
+//        List<Movie> movies;
+//        SortingType ratingSort = sortPower.getRatingSort();
+//        SortingType priceSort = sortPower.getPriceSort();
+//
+//        if (ratingSort != null && ratingSort.equals(SortingType.DESC)) {
+//            LOG.info("Start query to get all movies with rating desc from DB");
+//            movies = namedParameterJdbcTemplate.query(getAllRatingDescSQL, MOVIE_ROW_MAPPER);
+//            LOG.info("Finish query to get all movies with rating desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
+//        } else if (priceSort != null && priceSort.equals(SortingType.ASC)) {
+//            LOG.info("Start query to get all movies with price asc from DB");
+//            movies = namedParameterJdbcTemplate.query(getAllPriceAscSQL, MOVIE_ROW_MAPPER);
+//            LOG.info("Finish query to get all movies with price asc from DB. It took {} ms", System.currentTimeMillis() - startTime);
+//        } else if (priceSort != null && priceSort.equals(SortingType.DESC)) {
+//            LOG.info("Start query to get all movies with price desc from DB");
+//            movies = namedParameterJdbcTemplate.query(getAllPriceDescSQL, MOVIE_ROW_MAPPER);
+//            LOG.info("Finish query to get all movies with price desc from DB. It took {} ms", System.currentTimeMillis() - startTime);
+//        } else {
+//            LOG.info("Start query to get all movies from DB");
+//            movies = namedParameterJdbcTemplate.query(getAllMoviesSQL, MOVIE_ROW_MAPPER);
+//            LOG.info("Finish query to get all movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
+//        }
+//
+//        return movies;
+        return null;
     }
 
     @Override
