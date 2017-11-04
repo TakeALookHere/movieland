@@ -12,4 +12,6 @@ public interface IMovieService {
     List<Movie> getThreeRandomMovies();
 
     List<Movie> getByGenre(int id, Map<String, String> params);
+
+    Movie getById(int id);
 }

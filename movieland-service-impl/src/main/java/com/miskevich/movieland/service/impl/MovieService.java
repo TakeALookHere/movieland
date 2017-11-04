@@ -5,6 +5,7 @@ import com.miskevich.movieland.entity.Movie;
 import com.miskevich.movieland.service.ICountryService;
 import com.miskevich.movieland.service.IGenreService;
 import com.miskevich.movieland.service.IMovieService;
+import com.miskevich.movieland.service.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ public class MovieService implements IMovieService {
     private IGenreService genreService;
     @Autowired
     private ICountryService countryService;
+    @Autowired
+    private IReviewService reviewService;
 
     @Override
     public List<Movie> getAll(Map<String, String> params) {
@@ -39,5 +42,14 @@ public class MovieService implements IMovieService {
     @Override
     public List<Movie> getByGenre(int id, Map<String, String> params) {
         return movieDao.getByGenre(id, params);
+    }
+
+    @Override
+    public Movie getById(int id) {
+        Movie movie = movieDao.getById(id);
+        genreService.enrichWithGenre(movie);
+        countryService.enrichWithCountry(movie);
+        reviewService.enrichWithReview(movie);
+        return movie;
     }
 }

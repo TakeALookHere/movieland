@@ -40,6 +40,28 @@ public class Review {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Review review = (Review) o;
+
+        if (id != review.id) return false;
+        if (description != null ? !description.equals(review.description) : review.description != null) return false;
+        if (movie != null ? !movie.equals(review.movie) : review.movie != null) return false;
+        return user != null ? user.equals(review.user) : review.user == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (movie != null ? movie.hashCode() : 0);
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Review{" +
                 "id=" + id +

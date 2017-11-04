@@ -205,4 +205,40 @@ class MovieControllerTest {
         verify(mockMovieService, times(1)).getByGenre(3, requestParams)
         verifyNoMoreInteractions(mockMovieService)
     }
+
+    @Test(dataProvider = "provideMovie", dataProviderClass = DataProviderController.class)
+    void testGetById(Movie expectedMovie) {
+
+        when(mockMovieService.getById(1)).thenReturn(expectedMovie)
+        mockMvc.perform(get("/movie/{movieId}", 1).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+
+                .andExpect(jsonPath('$.id', is(expectedMovie.id)))
+                .andExpect(jsonPath('$.nameRussian', is(expectedMovie.nameRussian)))
+                .andExpect(jsonPath('$.nameNative', is(expectedMovie.nameNative)))
+                .andExpect(jsonPath('$.yearOfRelease', is('1994')))
+                .andExpect(jsonPath('$.description', is(expectedMovie.description)))
+                .andExpect(jsonPath('$.rating', is(expectedMovie.rating)))
+                .andExpect(jsonPath('$.price', is(expectedMovie.price)))
+                .andExpect(jsonPath('$.picturePath', is(expectedMovie.picturePath)))
+                .andExpect(jsonPath('$.genres[0].id', is(expectedMovie.genres.get(0).id)))
+                .andExpect(jsonPath('$.genres[0].name', is(expectedMovie.genres.get(0).name)))
+                .andExpect(jsonPath('$.genres[1].id', is(expectedMovie.genres.get(1).id)))
+                .andExpect(jsonPath('$.genres[1].name', is(expectedMovie.genres.get(1).name)))
+                .andExpect(jsonPath('$.countries[0].id', is(expectedMovie.countries.get(0).id)))
+                .andExpect(jsonPath('$.countries[0].name', is(expectedMovie.countries.get(0).name)))
+                .andExpect(jsonPath('$.countries[1].id', is(expectedMovie.countries.get(1).id)))
+                .andExpect(jsonPath('$.countries[1].name', is(expectedMovie.countries.get(1).name)))
+                .andExpect(jsonPath('$.reviews[0].id', is(expectedMovie.reviews.get(0).getId().intValue())))
+                .andExpect(jsonPath('$.reviews[0].description', is(expectedMovie.reviews.get(0).description)))
+                .andExpect(jsonPath('$.reviews[0].movie.id', is(expectedMovie.reviews.get(0).movie.id)))
+                .andExpect(jsonPath('$.reviews[0].user.id', is(expectedMovie.reviews.get(0).user.id)))
+                .andExpect(jsonPath('$.reviews[1].id', is(expectedMovie.reviews.get(1).getId().intValue())))
+                .andExpect(jsonPath('$.reviews[1].description', is(expectedMovie.reviews.get(1).description)))
+                .andExpect(jsonPath('$.reviews[1].movie.id', is(expectedMovie.reviews.get(1).movie.id)))
+                .andExpect(jsonPath('$.reviews[1].user.id', is(expectedMovie.reviews.get(1).user.id)))
+
+        verify(mockMovieService, times(1)).getById(1)
+        verifyNoMoreInteractions(mockMovieService)
+    }
 }

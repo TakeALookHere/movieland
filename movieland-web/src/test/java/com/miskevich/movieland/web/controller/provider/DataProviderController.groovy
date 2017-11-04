@@ -1,8 +1,6 @@
 package com.miskevich.movieland.web.controller.provider
 
-import com.miskevich.movieland.entity.Country
-import com.miskevich.movieland.entity.Genre
-import com.miskevich.movieland.entity.Movie
+import com.miskevich.movieland.entity.*
 import org.testng.annotations.DataProvider
 
 import java.time.LocalDate
@@ -89,6 +87,27 @@ class DataProviderController {
 
         def array = new Object[1][]
         array[0] = [expectedGenres]
+        return array
+    }
+
+    @DataProvider(name = "provideMovie")
+    static Object[][] provideMovie() {
+
+        def expectedMovie =
+                new Movie(id: 1, nameRussian: "Побег из Шоушенка", nameNative: "The Shawshank Redemption", yearOfRelease: convertStringToDate("1994-01-01"),
+                        description: "Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.",
+                        rating: 9.1, price: 123.45, picturePath: "shawshank173_173.jpg",
+                        genres: [new Genre(1, 'драма'), new Genre(2, 'криминал')],
+                        countries: [new Country(id: 1, name: 'США'), new Country(id: 2, name: 'Франция')],
+                        reviews: [new Review(id: 1, description: 'Гениальное кино! Смотришь и думаешь «Так не бывает!», но позже понимаешь, что только так и должно быть. Начинаешь заново осмысливать значение фразы, которую постоянно используешь в своей жизни, «Надежда умирает последней». Ведь если ты не надеешься, то все в твоей жизни гаснет, не остается смысла. Фильм наполнен бесконечным числом правильных афоризмов. Я уверена, что буду пересматривать его сотни раз.',
+                                movie: new Movie(id: 1),
+                                user: new User(id: 1)),
+                                  new Review(id: 2, description: 'Назначается Киношедевром среди развлекательных фильмов.',
+                                          movie: new Movie(id: 1),
+                                          user: new User(id: 5))])
+
+        def array = new Object[1][]
+        array[0] = expectedMovie
         return array
     }
 }

@@ -1,8 +1,6 @@
 package com.miskevich.movieland.dao.jdbc.provider
 
-import com.miskevich.movieland.entity.Country
-import com.miskevich.movieland.entity.Genre
-import com.miskevich.movieland.entity.Movie
+import com.miskevich.movieland.entity.*
 import org.testng.annotations.DataProvider
 
 import java.time.LocalDate
@@ -45,6 +43,17 @@ class DataProviderMapper {
 
         def array = new Object[1][]
         array[0] = expectedGenre
+        return array
+    }
+
+    @DataProvider(name = "provideReview")
+    static Object[][] provideReview() {
+
+        def expectedReview = new Review(id: 1, description: "Гениальное кино! Смотришь и думаешь «Так не бывает!», но позже понимаешь, что только так и должно быть. Начинаешь заново осмысливать значение фразы, которую постоянно используешь в своей жизни, «Надежда умирает последней». Ведь если ты не надеешься, то все в твоей жизни гаснет, не остается смысла. Фильм наполнен бесконечным числом правильных афоризмов. Я уверена, что буду пересматривать его сотни раз.",
+                movie: new Movie(id: 1), user: new User(id: 3))
+
+        def array = new Object[1][]
+        array[0] = expectedReview
         return array
     }
 }

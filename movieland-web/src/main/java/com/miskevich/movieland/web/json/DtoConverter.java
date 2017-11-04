@@ -16,7 +16,7 @@ public abstract class DtoConverter {
         return movieDtos;
     }
 
-    private static MovieDto mapObject(Movie movie) {
+    public static MovieDto mapObject(Movie movie) {
         MovieDto movieDto = new MovieDto();
         movieDto.setId(movie.getId());
         movieDto.setNameRussian(movie.getNameRussian());

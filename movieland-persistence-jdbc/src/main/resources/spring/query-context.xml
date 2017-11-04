@@ -36,4 +36,14 @@
         <constructor-arg
                 value="select id, name from country where id in(select distinct country_id from movie_country where movie_id = :movieId);"/>
     </bean>
+
+    <bean id="getMovieById" class="java.lang.String">
+        <constructor-arg
+                value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id = :movieId;"/>
+    </bean>
+
+    <bean id="getReviewsByMovieId" class="java.lang.String">
+        <constructor-arg
+                value="select id, movie_id, user_id, description from review where movie_id = :movieId;"/>
+    </bean>
 </beans>

@@ -16,4 +16,12 @@ public abstract class JsonConverter {
             throw new RuntimeException(e);
         }
     }
+
+    public static <T> String toJson(T value) {
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

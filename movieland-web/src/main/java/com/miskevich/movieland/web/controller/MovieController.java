@@ -89,4 +89,18 @@ public class MovieController {
         return moviesJson;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/movie/{movieId}")
+    public String getById(@PathVariable int movieId) {
+        LOG.info("Sending request to get movie by id");
+        long startTime = System.currentTimeMillis();
+        Movie movie = movieService.getById(movieId);
+
+        MovieDto movieDto = DtoConverter.mapObject(movie);
+        String movieJson = JsonConverter.toJson(movieDto);
+
+        LOG.info("Movie by id was received. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
+        return movieJson;
+    }
+
 }
