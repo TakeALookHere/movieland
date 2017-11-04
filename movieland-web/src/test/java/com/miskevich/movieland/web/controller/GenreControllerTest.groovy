@@ -14,45 +14,10 @@ import org.testng.annotations.Test
 
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.hamcrest.core.Is.is
-import static org.mockito.Mockito.times
-import static org.mockito.Mockito.verify
-import static org.mockito.Mockito.verifyNoMoreInteractions
-import static org.mockito.Mockito.when
+import static org.mockito.Mockito.*
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 
 class GenreControllerTest {
 
@@ -71,7 +36,7 @@ class GenreControllerTest {
     @Test(dataProvider = "provideGenres", dataProviderClass = DataProviderController.class)
     void testGetAllGenres(List<Genre> expectedGenres) {
         when(mockGenreService.getAll()).thenReturn(expectedGenres)
-        mockMvc.perform(get("/v1/genre").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/genre").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$', hasSize(2)))
 

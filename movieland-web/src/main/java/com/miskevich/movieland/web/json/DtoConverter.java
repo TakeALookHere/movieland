@@ -10,20 +10,20 @@ public abstract class DtoConverter {
 
     public static List<MovieDto> mapList(List<Movie> fromList) {
         List<MovieDto> movieDtos = new ArrayList<>();
-        for (Movie movie : fromList){
+        for (Movie movie : fromList) {
             movieDtos.add(mapObject(movie));
         }
         return movieDtos;
     }
 
-    private static MovieDto mapObject(Movie movie){
+    private static MovieDto mapObject(Movie movie) {
         MovieDto movieDto = new MovieDto();
         movieDto.setId(movie.getId());
         movieDto.setNameRussian(movie.getNameRussian());
         movieDto.setNameNative(movie.getNameNative());
-        movieDto.setReleasedDate(movie.getReleasedDate());
+        movieDto.setYearOfRelease(movie.getYearOfRelease());
         movieDto.setCountries(movie.getCountries());
-        movieDto.setPlot(movie.getPlot());
+        movieDto.setDescription(movie.getDescription());
         movieDto.setRating(movie.getRating());
         movieDto.setPrice(movie.getPrice());
         movieDto.setPicturePath(movie.getPicturePath());

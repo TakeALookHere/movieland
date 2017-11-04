@@ -6,7 +6,8 @@ import com.miskevich.movieland.entity.Genre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,16 +18,30 @@ public class JdbcGenreDao implements IGenreDao {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final static GenreRowMapper GENRE_ROW_MAPPER = new GenreRowMapper();
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     @Autowired
     private String getAllGenresSQL;
+    @Autowired
+    private String getGenresByMovieId;
 
     @Override
     public List<Genre> getAll() {
         LOG.info("Start query to get all genres from DB");
         long startTime = System.currentTimeMillis();
-        List<Genre> genres = jdbcTemplate.query(getAllGenresSQL, GENRE_ROW_MAPPER);
+        List<Genre> genres = namedParameterJdbcTemplate.query(getAllGenresSQL, GENRE_ROW_MAPPER);
         LOG.info("Finish query to get all genres from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        return genres;
+    }
+
+    @Override
+    public List<Genre> getByMovieId(int movieId) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("movieId", movieId);
+
+        LOG.info("Start query to get genres from DB by movieId");
+        long startTime = System.currentTimeMillis();
+        List<Genre> genres = namedParameterJdbcTemplate.query(getGenresByMovieId, parameters, GENRE_ROW_MAPPER);
+        LOG.info("Finish query to get genres from DB by movieId. It took {} ms", System.currentTimeMillis() - startTime);
         return genres;
     }
 }

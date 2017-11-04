@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -34,14 +33,17 @@ public class GenreCache implements IGenreDao {
         Lock lock = READ_WRITE_LOCK.readLock();
         try {
             lock.lock();
-            for (Genre genre : genres) {
-                copy.add(genre);
-            }
+            copy.addAll(genres);
         } finally {
 
             lock.unlock();
         }
         return copy;
+    }
+
+    @Override
+    public List<Genre> getByMovieId(int movieId) {
+        return genreDao.getByMovieId(movieId);
     }
 
     @PostConstruct

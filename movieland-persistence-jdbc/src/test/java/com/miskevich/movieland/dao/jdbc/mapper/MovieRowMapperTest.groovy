@@ -23,7 +23,7 @@ class MovieRowMapperTest {
         when(resultSet.getString("name_russian")).thenReturn("Побег из Шоушенка")
         when(resultSet.getString("name_native")).thenReturn("The Shawshank Redemption")
         when(resultSet.getDate("released_date")).thenReturn(Date.valueOf("2016-01-15"))
-        when(resultSet.getString("plot")).thenReturn("Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.")
+        when(resultSet.getString("description")).thenReturn("Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решетки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, вооруженный живым умом и доброй душой, отказывается мириться с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.")
         when(resultSet.getDouble("rating")).thenReturn(8.9d)
         when(resultSet.getDouble("price")).thenReturn(123.45d)
         when(resultSet.getString("picture_path")).thenReturn("shawshank173_173.jpg")

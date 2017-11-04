@@ -8,9 +8,9 @@ public class Movie {
     private int id;
     private String nameRussian;
     private String nameNative;
-    private LocalDate releasedDate;
+    private LocalDate yearOfRelease;
     private List<Country> countries;
-    private String plot;
+    private String description;
     private double rating;
     private double price;
     private String picturePath;
@@ -41,12 +41,12 @@ public class Movie {
         this.nameNative = nameNative;
     }
 
-    public LocalDate getReleasedDate() {
-        return releasedDate;
+    public LocalDate getYearOfRelease() {
+        return yearOfRelease;
     }
 
-    public void setReleasedDate(LocalDate releasedDate) {
-        this.releasedDate = releasedDate;
+    public void setYearOfRelease(LocalDate yearOfRelease) {
+        this.yearOfRelease = yearOfRelease;
     }
 
     public List<Country> getCountries() {
@@ -57,12 +57,12 @@ public class Movie {
         this.countries = countries;
     }
 
-    public String getPlot() {
-        return plot;
+    public String getDescription() {
+        return description;
     }
 
-    public void setPlot(String plot) {
-        this.plot = plot;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public double getRating() {
@@ -117,9 +117,10 @@ public class Movie {
         if (Double.compare(movie.price, price) != 0) return false;
         if (nameRussian != null ? !nameRussian.equals(movie.nameRussian) : movie.nameRussian != null) return false;
         if (nameNative != null ? !nameNative.equals(movie.nameNative) : movie.nameNative != null) return false;
-        if (releasedDate != null ? !releasedDate.equals(movie.releasedDate) : movie.releasedDate != null) return false;
+        if (yearOfRelease != null ? !yearOfRelease.equals(movie.yearOfRelease) : movie.yearOfRelease != null)
+            return false;
         if (countries != null ? !countries.equals(movie.countries) : movie.countries != null) return false;
-        if (plot != null ? !plot.equals(movie.plot) : movie.plot != null) return false;
+        if (description != null ? !description.equals(movie.description) : movie.description != null) return false;
         if (picturePath != null ? !picturePath.equals(movie.picturePath) : movie.picturePath != null) return false;
         if (genres != null ? !genres.equals(movie.genres) : movie.genres != null) return false;
         return reviews != null ? reviews.equals(movie.reviews) : movie.reviews == null;
@@ -132,9 +133,9 @@ public class Movie {
         result = id;
         result = 31 * result + (nameRussian != null ? nameRussian.hashCode() : 0);
         result = 31 * result + (nameNative != null ? nameNative.hashCode() : 0);
-        result = 31 * result + (releasedDate != null ? releasedDate.hashCode() : 0);
+        result = 31 * result + (yearOfRelease != null ? yearOfRelease.hashCode() : 0);
         result = 31 * result + (countries != null ? countries.hashCode() : 0);
-        result = 31 * result + (plot != null ? plot.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         temp = Double.doubleToLongBits(rating);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(price);
@@ -151,9 +152,9 @@ public class Movie {
                 "id=" + id +
                 ", nameRussian='" + nameRussian + '\'' +
                 ", nameNative='" + nameNative + '\'' +
-                ", releasedDate=" + releasedDate +
+                ", yearOfRelease=" + yearOfRelease +
                 ", countries=" + countries +
-                ", plot='" + plot + '\'' +
+                ", description='" + description + '\'' +
                 ", rating=" + rating +
                 ", price=" + price +
                 ", picturePath='" + picturePath + '\'' +

@@ -9,7 +9,7 @@ import org.testng.annotations.Test
 import static org.testng.Assert.assertNotNull
 
 @ContextConfiguration(locations = "classpath:spring/jdbc-context.xml")
-class JdbcGenreDaoITest extends AbstractTestNGSpringContextTests{
+class JdbcGenreDaoITest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private JdbcGenreDao jdbcGenreDao
@@ -17,7 +17,16 @@ class JdbcGenreDaoITest extends AbstractTestNGSpringContextTests{
     @Test
     void testGetAll() {
         def genres = jdbcGenreDao.getAll()
-        for (Genre genre : genres){
+        for (Genre genre : genres) {
+            assertNotNull(genre.getId())
+            assertNotNull(genre.getName())
+        }
+    }
+
+    @Test
+    void testGetByMovieId() {
+        def genres = jdbcGenreDao.getByMovieId(1)
+        for (Genre genre : genres) {
             assertNotNull(genre.getId())
             assertNotNull(genre.getName())
         }

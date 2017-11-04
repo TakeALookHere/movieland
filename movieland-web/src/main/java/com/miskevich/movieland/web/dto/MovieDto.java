@@ -15,9 +15,9 @@ public class MovieDto {
     private String nameRussian;
     private String nameNative;
     @JsonSerialize(using = LocalDateToStringSerializer.class)
-    private LocalDate releasedDate;
+    private LocalDate yearOfRelease;
     private List<Country> countries;
-    private String plot;
+    private String description;
     private double rating;
     private double price;
     private String picturePath;
@@ -48,12 +48,12 @@ public class MovieDto {
         this.nameNative = nameNative;
     }
 
-    public LocalDate getReleasedDate() {
-        return releasedDate;
+    public LocalDate getYearOfRelease() {
+        return yearOfRelease;
     }
 
-    public void setReleasedDate(LocalDate releasedDate) {
-        this.releasedDate = releasedDate;
+    public void setYearOfRelease(LocalDate yearOfRelease) {
+        this.yearOfRelease = yearOfRelease;
     }
 
     public List<Country> getCountries() {
@@ -64,12 +64,12 @@ public class MovieDto {
         this.countries = countries;
     }
 
-    public String getPlot() {
-        return plot;
+    public String getDescription() {
+        return description;
     }
 
-    public void setPlot(String plot) {
-        this.plot = plot;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public double getRating() {
@@ -118,9 +118,9 @@ public class MovieDto {
                 "id=" + id +
                 ", nameRussian='" + nameRussian + '\'' +
                 ", nameNative='" + nameNative + '\'' +
-                ", releasedDate=" + releasedDate +
+                ", yearOfRelease=" + yearOfRelease +
                 ", countries=" + countries +
-                ", plot='" + plot + '\'' +
+                ", description='" + description + '\'' +
                 ", rating=" + rating +
                 ", price=" + price +
                 ", picturePath='" + picturePath + '\'' +

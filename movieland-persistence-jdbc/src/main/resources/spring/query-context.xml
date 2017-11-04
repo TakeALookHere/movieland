@@ -27,4 +27,13 @@
                 value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id IN(SELECT DISTINCT movie_id FROM movie_genre WHERE genre_id = :genreId)"/>
     </bean>
 
+    <bean id="getGenresByMovieId" class="java.lang.String">
+        <constructor-arg
+                value="select id, name from genre where id in(select distinct genre_id from movie_genre where movie_id = :movieId);"/>
+    </bean>
+
+    <bean id="getCountriesByMovieId" class="java.lang.String">
+        <constructor-arg
+                value="select id, name from country where id in(select distinct country_id from movie_country where movie_id = :movieId);"/>
+    </bean>
 </beans>

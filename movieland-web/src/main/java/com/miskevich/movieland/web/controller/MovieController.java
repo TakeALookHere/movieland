@@ -17,8 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @Controller
-@RequestMapping(value = "/v1", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
+@RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
 public class MovieController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
