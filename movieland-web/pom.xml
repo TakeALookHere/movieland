@@ -18,6 +18,7 @@
         <spring.version>5.0.0.RELEASE</spring.version>
         <servlet.version>3.1.0</servlet.version>
         <jsonpath.version>2.4.0</jsonpath.version>
+        <bouncycastle.version>1.58</bouncycastle.version>
     </properties>
 
     <dependencies>
@@ -43,6 +44,12 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
+
 
         <!--TEST-->
         <dependency>

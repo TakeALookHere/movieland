@@ -15,7 +15,7 @@ public enum SortingType {
         this.value = value;
     }
 
-    public static SortingType getSortingTypeByName(String type) throws IllegalArgumentException{
+    public static SortingType getSortingTypeByName(String type) {
         for (SortingType sortingType : values()) {
             if (sortingType.value.equalsIgnoreCase(type)) {
                 return sortingType;

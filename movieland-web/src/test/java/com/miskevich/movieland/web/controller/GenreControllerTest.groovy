@@ -41,10 +41,10 @@ class GenreControllerTest {
                 .andExpect(jsonPath('$', hasSize(2)))
 
                 .andExpect(jsonPath('$[0].id', is(1)))
-                .andExpect(jsonPath('$[0].name', is('драма')))
+                .andExpect(jsonPath('$[0].cc', is('драма')))
 
                 .andExpect(jsonPath('$[1].id', is(2)))
-                .andExpect(jsonPath('$[1].name', is('криминал')))
+                .andExpect(jsonPath('$[1].cc', is('криминал')))
 
         verify(mockGenreService, times(1)).getAll()
         verifyNoMoreInteractions(mockGenreService)

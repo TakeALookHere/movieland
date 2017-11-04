@@ -16,7 +16,7 @@ public enum SortingField {
         return value;
     }
 
-    public static SortingField getSortingFieldByName(String name) throws IllegalArgumentException {
+    public static SortingField getSortingFieldByName(String name) {
         for (SortingField sortingField : values()) {
             if (sortingField.value.equalsIgnoreCase(name)) {
                 return sortingField;
