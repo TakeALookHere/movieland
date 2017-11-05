@@ -9,6 +9,7 @@ import com.miskevich.movieland.web.dto.MovieDto;
 import com.miskevich.movieland.web.dto.RateDto;
 import com.miskevich.movieland.web.json.DtoConverter;
 import com.miskevich.movieland.web.json.JsonConverter;
+import com.miskevich.movieland.web.util.RateConverter;
 import com.miskevich.movieland.web.util.RateReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +110,7 @@ public class MovieController {
             validateCurrencyCode(currency);
             List<RateDto> rates = rateReader.getCurrentRates();
             Double rateValue = getRateValue(rates, currency);
-            enrichMovieWithPriceForRate(movieDto, rateValue);
+            RateConverter.enrichMovieWithPriceForRate(movieDto, rateValue);
         }
 
         String movieJson = JsonConverter.toJson(movieDto);
@@ -118,18 +119,9 @@ public class MovieController {
         return movieJson;
     }
 
-    MovieDto enrichMovieWithPriceForRate(MovieDto movieDto, Double rateValue) {
-        double priceUAH = movieDto.getPrice();
-        double priceForNewCurrency = priceUAH / rateValue;
-        double roundedPrice = BigDecimal.valueOf(priceForNewCurrency).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        movieDto.setPrice(roundedPrice);
-        LOG.info("New price for movie was set: " + roundedPrice);
-        return movieDto;
-    }
-
     private Double getRateValue(List<RateDto> rates, String currency) {
         for (RateDto rateDto : rates) {
-            if (rateDto.getCc().equalsIgnoreCase(currency)) {
+            if (rateDto.getCurrencyName().equalsIgnoreCase(currency)) {
                 double rate = rateDto.getRate();
                 LOG.info("For currency = " + currency + " today's rate value is: " + rate);
                 return rate;

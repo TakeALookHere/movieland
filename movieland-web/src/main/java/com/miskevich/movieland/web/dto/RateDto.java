@@ -1,19 +1,21 @@
 package com.miskevich.movieland.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RateDto {
 
-    private String cc;
+    @JsonProperty(value = "cc")
+    private String currencyName;
     private double rate;
 
-    public String getCc() {
-        return cc;
+    public String getCurrencyName() {
+        return currencyName;
     }
 
-    public void setCc(String cc) {
-        this.cc = cc;
+    public void setCurrencyName(String currencyName) {
+        this.currencyName = currencyName;
     }
 
     public double getRate() {
@@ -27,7 +29,7 @@ public class RateDto {
     @Override
     public String toString() {
         return "RateDto{" +
-                "cc='" + cc + '\'' +
+                "currencyName='" + currencyName + '\'' +
                 ", rate='" + rate + '\'' +
                 '}';
     }
