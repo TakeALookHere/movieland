@@ -1,11 +1,14 @@
 package com.miskevich.movieland.entity;
 
+import java.util.UUID;
+
 public class User {
 
     private int id;
     private String nickname;
     private String email;
     private String password;
+    private UUID uuid;
 
     public int getId() {
         return id;
@@ -39,6 +42,14 @@ public class User {
         this.password = password;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -46,6 +57,7 @@ public class User {
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", uuid='" + uuid + '\'' +
                 '}';
     }
 }

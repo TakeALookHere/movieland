@@ -7,8 +7,8 @@ import com.miskevich.movieland.model.SortingType;
 import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.web.dto.MovieDto;
 import com.miskevich.movieland.web.dto.RateDto;
-import com.miskevich.movieland.web.json.DtoConverter;
 import com.miskevich.movieland.web.json.JsonConverter;
+import com.miskevich.movieland.web.json.MovieDtoConverter;
 import com.miskevich.movieland.web.util.RateConverter;
 import com.miskevich.movieland.web.util.RateReader;
 import org.slf4j.Logger;
@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +43,7 @@ public class MovieController {
 
         List<Movie> movies = movieService.getAll(params);
 
-        List<MovieDto> movieDtos = DtoConverter.mapList(movies);
+        List<MovieDto> movieDtos = MovieDtoConverter.mapList(movies);
         String moviesJson = JsonConverter.toJson(movieDtos);
 
         LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
@@ -74,7 +72,7 @@ public class MovieController {
         long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getThreeRandomMovies();
 
-        List<MovieDto> movieDtos = DtoConverter.mapList(movies);
+        List<MovieDto> movieDtos = MovieDtoConverter.mapList(movies);
         String moviesJson = JsonConverter.toJson(movieDtos);
 
         LOG.info("Random movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
@@ -90,7 +88,7 @@ public class MovieController {
         long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getByGenre(genreId, params);
 
-        List<MovieDto> movieDtos = DtoConverter.mapList(movies);
+        List<MovieDto> movieDtos = MovieDtoConverter.mapList(movies);
         String moviesJson = JsonConverter.toJson(movieDtos);
 
         LOG.info("Movies by genre were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
@@ -104,7 +102,7 @@ public class MovieController {
         long startTime = System.currentTimeMillis();
         Movie movie = movieService.getById(movieId);
 
-        MovieDto movieDto = DtoConverter.mapObject(movie);
+        MovieDto movieDto = MovieDtoConverter.mapObject(movie);
 
         if (currency != null) {
             validateCurrencyCode(currency);

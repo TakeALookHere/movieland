@@ -145,4 +145,15 @@ class DataProviderController {
         array[0] = [movieBeforeConversion, expectedMovieAfterConversion]
         return array
     }
+
+    @DataProvider(name = "provideUser")
+    static Object[][] provideUser() {
+
+        def expectedUser =
+                new User(id: 1, nickname: 'Рональд Рейнольдс', email: 'ronald.reynolds66@example.com', password: '311020666a5776c57d265ace682dc46d')
+
+        def array = new Object[1][]
+        array[0] = expectedUser
+        return array
+    }
 }

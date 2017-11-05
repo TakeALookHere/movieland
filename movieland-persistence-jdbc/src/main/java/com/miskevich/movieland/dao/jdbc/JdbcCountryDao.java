@@ -26,8 +26,7 @@ public class JdbcCountryDao implements ICountryDao {
 
     @Override
     public List<Country> getByMovieId(int movieId) {
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("movieId", movieId);
+        MapSqlParameterSource parameters = new MapSqlParameterSource("movieId", movieId);
 
         LOG.info("Start query to get countries from DB by movieId");
         long startTime = System.currentTimeMillis();

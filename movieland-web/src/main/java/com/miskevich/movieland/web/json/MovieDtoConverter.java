@@ -6,7 +6,7 @@ import com.miskevich.movieland.web.dto.MovieDto;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DtoConverter {
+public abstract class MovieDtoConverter {
 
     public static List<MovieDto> mapList(List<Movie> fromList) {
         List<MovieDto> movieDtos = new ArrayList<>();

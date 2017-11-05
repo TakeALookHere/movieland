@@ -46,4 +46,9 @@
         <constructor-arg
                 value="select id, movie_id, user_id, description from review where movie_id = :movieId;"/>
     </bean>
+
+    <bean id="getUserByEmailAndPasswordSQL" class="java.lang.String">
+        <constructor-arg
+                value="select id, nickname, email, password from user where email = :email and password = md5(:password);"/>
+    </bean>
 </beans>
