@@ -18,7 +18,6 @@ class JdbcGenreDaoITest extends AbstractTestNGSpringContextTests {
     void testGetAll() {
         def genres = jdbcGenreDao.getAll()
         for (Genre genre : genres) {
-            assertNotNull(genre.getId())
             assertNotNull(genre.getName())
         }
     }
@@ -27,7 +26,6 @@ class JdbcGenreDaoITest extends AbstractTestNGSpringContextTests {
     void testGetByMovieId() {
         def genres = jdbcGenreDao.getByMovieId(1)
         for (Genre genre : genres) {
-            assertNotNull(genre.getId())
             assertNotNull(genre.getName())
         }
     }

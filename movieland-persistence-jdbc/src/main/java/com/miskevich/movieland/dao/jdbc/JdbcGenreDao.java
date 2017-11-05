@@ -22,7 +22,7 @@ public class JdbcGenreDao implements IGenreDao {
     @Autowired
     private String getAllGenresSQL;
     @Autowired
-    private String getGenresByMovieId;
+    private String getGenresByMovieIdSQL;
 
     @Override
     public List<Genre> getAll() {
@@ -40,7 +40,7 @@ public class JdbcGenreDao implements IGenreDao {
 
         LOG.info("Start query to get genres from DB by movieId");
         long startTime = System.currentTimeMillis();
-        List<Genre> genres = namedParameterJdbcTemplate.query(getGenresByMovieId, parameters, GENRE_ROW_MAPPER);
+        List<Genre> genres = namedParameterJdbcTemplate.query(getGenresByMovieIdSQL, parameters, GENRE_ROW_MAPPER);
         LOG.info("Finish query to get genres from DB by movieId. It took {} ms", System.currentTimeMillis() - startTime);
         return genres;
     }

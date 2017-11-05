@@ -10,5 +10,5 @@ public interface IGenreService {
 
     List<Genre> getByMovieId(int movieId);
 
-    Movie enrichWithGenre(Movie movie);
+    void enrichWithGenre(Movie movie);
 }

@@ -21,8 +21,7 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public Movie enrichWithReview(Movie movie) {
+    public void enrichWithReview(Movie movie) {
         movie.setReviews(getByMovieId(movie.getId()));
-        return movie;
     }
 }

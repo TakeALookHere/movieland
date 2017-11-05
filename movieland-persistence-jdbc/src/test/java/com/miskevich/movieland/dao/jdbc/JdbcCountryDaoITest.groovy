@@ -18,7 +18,6 @@ class JdbcCountryDaoITest extends AbstractTestNGSpringContextTests {
     void testGetByMovieId() {
         def countries = jdbcCountryDao.getByMovieId(6)
         for (Country country : countries) {
-            assertNotNull(country.getId())
             assertNotNull(country.getName())
         }
     }

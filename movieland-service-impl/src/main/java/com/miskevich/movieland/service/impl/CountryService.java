@@ -21,8 +21,7 @@ public class CountryService implements ICountryService {
     }
 
     @Override
-    public Movie enrichWithCountry(Movie movie) {
+    public void enrichWithCountry(Movie movie) {
         movie.setCountries(getByMovieId(movie.getId()));
-        return movie;
     }
 }

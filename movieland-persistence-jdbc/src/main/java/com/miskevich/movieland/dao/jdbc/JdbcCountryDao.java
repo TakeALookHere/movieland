@@ -22,7 +22,7 @@ public class JdbcCountryDao implements ICountryDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    private String getCountriesByMovieId;
+    private String getCountriesByMovieIdSQL;
 
     @Override
     public List<Country> getByMovieId(int movieId) {
@@ -31,7 +31,7 @@ public class JdbcCountryDao implements ICountryDao {
 
         LOG.info("Start query to get countries from DB by movieId");
         long startTime = System.currentTimeMillis();
-        List<Country> countries = namedParameterJdbcTemplate.query(getCountriesByMovieId, parameters, COUNTRY_ROW_MAPPER);
+        List<Country> countries = namedParameterJdbcTemplate.query(getCountriesByMovieIdSQL, parameters, COUNTRY_ROW_MAPPER);
         LOG.info("Finish query to get countries from DB by movieId. It took {} ms", System.currentTimeMillis() - startTime);
         return countries;
     }

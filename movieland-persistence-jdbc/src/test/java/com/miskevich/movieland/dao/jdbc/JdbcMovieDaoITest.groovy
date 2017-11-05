@@ -19,13 +19,10 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
     void testGetAll() {
         def movies = jdbcMovieDao.getAll(new LinkedHashMap<>())
         for (Movie movie : movies) {
-            assertNotNull(movie.getId())
             assertNotNull(movie.getNameRussian())
             assertNotNull(movie.getNameNative())
             assertNotNull(movie.getYearOfRelease())
             assertNotNull(movie.getDescription())
-            assertNotNull(movie.getRating())
-            assertNotNull(movie.getPrice())
             assertNotNull(movie.getPicturePath())
         }
     }
@@ -34,13 +31,10 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
     void testGetAllWithSorting(Map<String, String> paramsMap) {
         def movies = jdbcMovieDao.getAll(paramsMap)
         for (Movie movie : movies) {
-            assertNotNull(movie.getId())
             assertNotNull(movie.getNameRussian())
             assertNotNull(movie.getNameNative())
             assertNotNull(movie.getYearOfRelease())
             assertNotNull(movie.getDescription())
-            assertNotNull(movie.getRating())
-            assertNotNull(movie.getPrice())
             assertNotNull(movie.getPicturePath())
         }
     }
@@ -49,13 +43,10 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
     void testGetThreeRandomMovies() {
         def movies = jdbcMovieDao.getThreeRandomMovies()
         for (Movie movie : movies) {
-            assertNotNull(movie.getId())
             assertNotNull(movie.getNameRussian())
             assertNotNull(movie.getNameNative())
             assertNotNull(movie.getYearOfRelease())
             assertNotNull(movie.getDescription())
-            assertNotNull(movie.getRating())
-            assertNotNull(movie.getPrice())
             assertNotNull(movie.getPicturePath())
         }
     }
@@ -64,13 +55,10 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
     void testGetByGenre() {
         def movies = jdbcMovieDao.getByGenre(3, new LinkedHashMap<String, String>())
         for (Movie movie : movies) {
-            assertNotNull(movie.getId())
             assertNotNull(movie.getNameRussian())
             assertNotNull(movie.getNameNative())
             assertNotNull(movie.getYearOfRelease())
             assertNotNull(movie.getDescription())
-            assertNotNull(movie.getRating())
-            assertNotNull(movie.getPrice())
             assertNotNull(movie.getPicturePath())
         }
     }
@@ -79,13 +67,10 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
     void testGetByGenreWithSorting(Map<String, String> paramsMap) {
         def movies = jdbcMovieDao.getByGenre(3, paramsMap)
         for (Movie movie : movies) {
-            assertNotNull(movie.getId())
             assertNotNull(movie.getNameRussian())
             assertNotNull(movie.getNameNative())
             assertNotNull(movie.getYearOfRelease())
             assertNotNull(movie.getDescription())
-            assertNotNull(movie.getRating())
-            assertNotNull(movie.getPrice())
             assertNotNull(movie.getPicturePath())
         }
     }
@@ -93,13 +78,10 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
     @Test
     void testGetById() {
         def movie = jdbcMovieDao.getById(3)
-        assertNotNull(movie.getId())
         assertNotNull(movie.getNameRussian())
         assertNotNull(movie.getNameNative())
         assertNotNull(movie.getYearOfRelease())
         assertNotNull(movie.getDescription())
-        assertNotNull(movie.getRating())
-        assertNotNull(movie.getPrice())
         assertNotNull(movie.getPicturePath())
     }
 }

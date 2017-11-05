@@ -8,5 +8,5 @@ import java.util.List;
 public interface IReviewService {
     List<Review> getByMovieId(int movieId);
 
-    Movie enrichWithReview(Movie movie);
+    void enrichWithReview(Movie movie);
 }

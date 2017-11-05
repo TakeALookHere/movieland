@@ -13,36 +13,36 @@
         <constructor-arg value="SELECT id, name FROM genre;"/>
     </bean>
 
-    <bean id="getMoviesCount" class="java.lang.String">
+    <bean id="getMoviesCountSQL" class="java.lang.String">
         <constructor-arg value="SELECT count(*) FROM movie;"/>
     </bean>
 
-    <bean id="getThreeRandomMovies" class="java.lang.String">
+    <bean id="getThreeRandomMoviesSQL" class="java.lang.String">
         <constructor-arg
                 value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id in(:ids);"/>
     </bean>
 
-    <bean id="getByGenre" class="java.lang.String">
+    <bean id="getByGenreSQL" class="java.lang.String">
         <constructor-arg
                 value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id IN(SELECT DISTINCT movie_id FROM movie_genre WHERE genre_id = :genreId)"/>
     </bean>
 
-    <bean id="getGenresByMovieId" class="java.lang.String">
+    <bean id="getGenresByMovieIdSQL" class="java.lang.String">
         <constructor-arg
                 value="select id, name from genre where id in(select distinct genre_id from movie_genre where movie_id = :movieId);"/>
     </bean>
 
-    <bean id="getCountriesByMovieId" class="java.lang.String">
+    <bean id="getCountriesByMovieIdSQL" class="java.lang.String">
         <constructor-arg
                 value="select id, name from country where id in(select distinct country_id from movie_country where movie_id = :movieId);"/>
     </bean>
 
-    <bean id="getMovieById" class="java.lang.String">
+    <bean id="getMovieByIdSQL" class="java.lang.String">
         <constructor-arg
                 value="SELECT id, name_russian, name_native, released_date, plot, rating, price, picture_path FROM movie WHERE id = :movieId;"/>
     </bean>
 
-    <bean id="getReviewsByMovieId" class="java.lang.String">
+    <bean id="getReviewsByMovieIdSQL" class="java.lang.String">
         <constructor-arg
                 value="select id, movie_id, user_id, description from review where movie_id = :movieId;"/>
     </bean>
