@@ -8,6 +8,7 @@ import com.miskevich.movieland.web.json.UserDtoConverter;
 import com.miskevich.movieland.web.util.UUIDRefresher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -26,7 +27,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(produces = "application/json;charset=UTF-8")
 public class UserController {
 
@@ -69,6 +70,10 @@ public class UserController {
         UserDto userDto = UserDtoConverter.mapObject(user);
         String userJson = JsonConverter.toJson(userDto);
         LOG.info("User was received. JSON movies: {}. It took {} ms", userJson, System.currentTimeMillis() - startTime);
+
+        MDC.put("nickname", user.getNickname());
+        LOG.info("Query get feedback by userId: " + user.getId() + " and UUID: " + uuid);
+
         return userJson;
     }
 

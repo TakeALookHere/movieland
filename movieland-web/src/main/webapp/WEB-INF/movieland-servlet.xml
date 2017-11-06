@@ -25,4 +25,11 @@
         </property>
     </bean>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/login"/>
+            <bean class="com.miskevich.movieland.web.util.UserInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
 </beans>

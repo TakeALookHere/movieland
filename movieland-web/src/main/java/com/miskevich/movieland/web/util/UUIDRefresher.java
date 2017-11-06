@@ -20,7 +20,15 @@ public class UUIDRefresher implements Runnable {
 
     @Override
     public void run() {
-        uuidUserMap.remove(uuid);
-        LOG.info("User's UUID in cache was cleared");
+        User removedUser = uuidUserMap.remove(uuid);
+        if (removedUser != null) {
+            LOG.info("User's UUID in cache was cleared for userId: " + removedUser.getId());
+        }
+
+        System.out.println("!!!!!!CACHE CLEARED");
+        for (Map.Entry entry : uuidUserMap.entrySet()) {
+            System.out.println(entry.getKey());
+            System.out.println(entry.getValue());
+        }
     }
 }

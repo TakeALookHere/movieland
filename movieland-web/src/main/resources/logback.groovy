@@ -10,7 +10,7 @@ def LOG_ARCHIVE = "${LOG_PATH}/archive"
 
 appender("STDOUT", ConsoleAppender) {
     layout(PatternLayout) {
-        pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+        pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %X{nickname} %logger{36} - %msg%n"
     }
     filter(ThresholdFilter) {
         level = INFO
@@ -28,7 +28,7 @@ appender("RollingFile-Appender", RollingFileAppender) {
     }
 
     layout(PatternLayout) {
-        pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+        pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %X{nickname} %logger{36} - %msg%n"
     }
 }
 logger("com.miskevich.movieland", DEBUG)
