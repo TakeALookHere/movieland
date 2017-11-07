@@ -1,6 +1,6 @@
 package com.miskevich.movieland.dao.jdbc
 
-import com.miskevich.movieland.dao.jdbc.provider.DataProviderSQL
+import com.miskevich.movieland.dao.jdbc.provider.SQLDataProvider
 import com.miskevich.movieland.entity.Movie
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -27,7 +27,7 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
         }
     }
 
-    @Test(dataProvider = "provideParamsSQL", dataProviderClass = DataProviderSQL.class)
+    @Test(dataProvider = "provideParamsSQL", dataProviderClass = SQLDataProvider.class)
     void testGetAllWithSorting(Map<String, String> paramsMap) {
         def movies = jdbcMovieDao.getAll(paramsMap)
         for (Movie movie : movies) {
@@ -63,7 +63,7 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
         }
     }
 
-    @Test(dataProvider = "provideParamsSQL", dataProviderClass = DataProviderSQL.class)
+    @Test(dataProvider = "provideParamsSQL", dataProviderClass = SQLDataProvider.class)
     void testGetByGenreWithSorting(Map<String, String> paramsMap) {
         def movies = jdbcMovieDao.getByGenre(3, paramsMap)
         for (Movie movie : movies) {

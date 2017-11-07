@@ -56,11 +56,13 @@ public class UserController {
             LOG.info("Sending request to get user by email and password");
             startTime = System.currentTimeMillis();
 
+            String email = user.getEmail();
+            String password = user.getPassword();
             try {
-                user = userService.getByEmailAndPassword(user.getEmail(), user.getPassword());
+                user = userService.getByEmailAndPassword(email, password);
             } catch (EmptyResultDataAccessException e) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                String message = "No user in DB with such pair of email + password was found!";
+                String message = "No user in DB with such pair of email + password was found: " + email + " + " + password;
                 LOG.error(message);
                 return null;
             }

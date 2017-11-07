@@ -68,10 +68,13 @@
                             <providerSelection>2.0</providerSelection>
                             <testSources>
                                 <testSource>
-                                    <directory>**/src/test/java</directory>
+                                    <directory>${basedir}/src/test/java</directory>
                                     <includes>
                                         <include>**/*.groovy</include>
                                     </includes>
+                                    <excludes>
+                                        <exclude>**/*ITest.groovy</exclude>
+                                    </excludes>
                                 </testSource>
                             </testSources>
                         </configuration>

@@ -6,7 +6,7 @@ import org.testng.annotations.DataProvider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class DataProviderMapper {
+class MapperDataProvider {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
@@ -49,7 +49,7 @@ class DataProviderMapper {
     @DataProvider(name = "provideReview")
     static Object[][] provideReview() {
 
-        def expectedReview = new Review(id: 1, description: "Гениальное кино! Смотришь и думаешь «Так не бывает!», но позже понимаешь, что только так и должно быть. Начинаешь заново осмысливать значение фразы, которую постоянно используешь в своей жизни, «Надежда умирает последней». Ведь если ты не надеешься, то все в твоей жизни гаснет, не остается смысла. Фильм наполнен бесконечным числом правильных афоризмов. Я уверена, что буду пересматривать его сотни раз.",
+        def expectedReview = new Review(id: 1, text: "Гениальное кино! Смотришь и думаешь «Так не бывает!», но позже понимаешь, что только так и должно быть. Начинаешь заново осмысливать значение фразы, которую постоянно используешь в своей жизни, «Надежда умирает последней». Ведь если ты не надеешься, то все в твоей жизни гаснет, не остается смысла. Фильм наполнен бесконечным числом правильных афоризмов. Я уверена, что буду пересматривать его сотни раз.",
                 movie: new Movie(id: 1), user: new User(id: 3))
 
         def array = new Object[1][]

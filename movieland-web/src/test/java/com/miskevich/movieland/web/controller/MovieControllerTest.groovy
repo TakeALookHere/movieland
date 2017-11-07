@@ -234,11 +234,11 @@ class MovieControllerTest {
                 .andExpect(jsonPath('$.countries[1].id', is(expectedMovie.countries.get(1).id)))
                 .andExpect(jsonPath('$.countries[1].name', is(expectedMovie.countries.get(1).name)))
                 .andExpect(jsonPath('$.reviews[0].id', is(expectedMovie.reviews.get(0).getId().intValue())))
-                .andExpect(jsonPath('$.reviews[0].description', is(expectedMovie.reviews.get(0).description)))
+                .andExpect(jsonPath('$.reviews[0].text', is(expectedMovie.reviews.get(0).text)))
                 .andExpect(jsonPath('$.reviews[0].movie.id', is(expectedMovie.reviews.get(0).movie.id)))
                 .andExpect(jsonPath('$.reviews[0].user.id', is(expectedMovie.reviews.get(0).user.id)))
                 .andExpect(jsonPath('$.reviews[1].id', is(expectedMovie.reviews.get(1).getId().intValue())))
-                .andExpect(jsonPath('$.reviews[1].description', is(expectedMovie.reviews.get(1).description)))
+                .andExpect(jsonPath('$.reviews[1].text', is(expectedMovie.reviews.get(1).text)))
                 .andExpect(jsonPath('$.reviews[1].movie.id', is(expectedMovie.reviews.get(1).movie.id)))
                 .andExpect(jsonPath('$.reviews[1].user.id', is(expectedMovie.reviews.get(1).user.id)))
 
@@ -249,7 +249,7 @@ class MovieControllerTest {
     @Test(dataProvider = "provideMovie", dataProviderClass = ControllerDataProvider.class)
     void testGetByIdWithCurrency(Movie expectedMovie) {
 
-        when(rateReader.currentRates).thenReturn([new RateDto(cc: 'USD', rate: 26.931378)])
+        when(rateReader.currentRates).thenReturn([new RateDto(currencyName: 'USD', rate: 26.931378)])
 
         when(mockMovieService.getById(1)).thenReturn(expectedMovie)
         mockMvc.perform(get("/movie/{movieId}", 1)
@@ -274,11 +274,11 @@ class MovieControllerTest {
                 .andExpect(jsonPath('$.countries[1].id', is(expectedMovie.countries.get(1).id)))
                 .andExpect(jsonPath('$.countries[1].name', is(expectedMovie.countries.get(1).name)))
                 .andExpect(jsonPath('$.reviews[0].id', is(expectedMovie.reviews.get(0).getId().intValue())))
-                .andExpect(jsonPath('$.reviews[0].description', is(expectedMovie.reviews.get(0).description)))
+                .andExpect(jsonPath('$.reviews[0].text', is(expectedMovie.reviews.get(0).text)))
                 .andExpect(jsonPath('$.reviews[0].movie.id', is(expectedMovie.reviews.get(0).movie.id)))
                 .andExpect(jsonPath('$.reviews[0].user.id', is(expectedMovie.reviews.get(0).user.id)))
                 .andExpect(jsonPath('$.reviews[1].id', is(expectedMovie.reviews.get(1).getId().intValue())))
-                .andExpect(jsonPath('$.reviews[1].description', is(expectedMovie.reviews.get(1).description)))
+                .andExpect(jsonPath('$.reviews[1].text', is(expectedMovie.reviews.get(1).text)))
                 .andExpect(jsonPath('$.reviews[1].movie.id', is(expectedMovie.reviews.get(1).movie.id)))
                 .andExpect(jsonPath('$.reviews[1].user.id', is(expectedMovie.reviews.get(1).user.id)))
 

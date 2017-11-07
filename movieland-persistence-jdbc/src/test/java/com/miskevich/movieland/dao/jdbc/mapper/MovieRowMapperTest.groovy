@@ -1,6 +1,6 @@
 package com.miskevich.movieland.dao.jdbc.mapper
 
-import com.miskevich.movieland.dao.jdbc.provider.DataProviderMapper
+import com.miskevich.movieland.dao.jdbc.provider.MapperDataProvider
 import com.miskevich.movieland.entity.Movie
 import org.testng.annotations.Test
 
@@ -15,7 +15,7 @@ class MovieRowMapperTest {
 
     private MovieRowMapper movieRowMapper = new MovieRowMapper()
 
-    @Test(dataProvider = "provideMovie", dataProviderClass = DataProviderMapper.class)
+    @Test(dataProvider = "provideMovie", dataProviderClass = MapperDataProvider.class)
     void testMapRow(Movie expectedMovie) {
         ResultSet resultSet = mock(ResultSet.class)
         when(resultSet.next()).thenReturn(true).thenReturn(false)

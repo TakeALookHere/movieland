@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IReviewDao {
     List<Review> getByMovieId(int movieId);
+
+    Review add(Review review);
 }

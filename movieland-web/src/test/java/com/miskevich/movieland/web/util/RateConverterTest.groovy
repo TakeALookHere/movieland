@@ -25,11 +25,11 @@ class RateConverterTest {
         assertEquals(actualMovieAfterConversion.getPrice(), expectedMovieAfterConversion.getPrice())
         assertEquals(actualMovieAfterConversion.getPicturePath(), expectedMovieAfterConversion.getPicturePath())
         assertEquals(actualMovieAfterConversion.getReviews().get(0).getId(), expectedMovieAfterConversion.getReviews().get(0).getId())
-        assertEquals(actualMovieAfterConversion.getReviews().get(0).getDescription(), expectedMovieAfterConversion.getReviews().get(0).getDescription())
+        assertEquals(actualMovieAfterConversion.getReviews().get(0).getText(), expectedMovieAfterConversion.getReviews().get(0).getText())
         assertEquals(actualMovieAfterConversion.getReviews().get(0).getMovie().getId(), expectedMovieAfterConversion.getReviews().get(0).getMovie().getId())
         assertEquals(actualMovieAfterConversion.getReviews().get(0).getUser().getId(), expectedMovieAfterConversion.getReviews().get(0).getUser().getId())
         assertEquals(actualMovieAfterConversion.getReviews().get(1).getId(), expectedMovieAfterConversion.getReviews().get(1).getId())
-        assertEquals(actualMovieAfterConversion.getReviews().get(1).getDescription(), expectedMovieAfterConversion.getReviews().get(1).getDescription())
+        assertEquals(actualMovieAfterConversion.getReviews().get(1).getText(), expectedMovieAfterConversion.getReviews().get(1).getText())
         assertEquals(actualMovieAfterConversion.getReviews().get(1).getMovie().getId(), expectedMovieAfterConversion.getReviews().get(1).getMovie().getId())
         assertEquals(actualMovieAfterConversion.getReviews().get(1).getUser().getId(), expectedMovieAfterConversion.getReviews().get(1).getUser().getId())
     }

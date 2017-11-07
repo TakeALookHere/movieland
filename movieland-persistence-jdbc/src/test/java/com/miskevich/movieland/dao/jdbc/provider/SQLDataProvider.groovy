@@ -2,7 +2,7 @@ package com.miskevich.movieland.dao.jdbc.provider
 
 import org.testng.annotations.DataProvider
 
-class DataProviderSQL {
+class SQLDataProvider {
 
     @DataProvider(name = "provideParamsMapWithSQL")
     static Object[][] provideParamsMapWithSQL() {

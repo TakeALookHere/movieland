@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping(produces = "application/json;charset=UTF-8")
 @Controller
 public class GenreController {
 
@@ -24,7 +25,7 @@ public class GenreController {
     private IGenreService genreService;
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, value = "/genre", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/genre", method = RequestMethod.GET)
     public String getAllGenres() {
         LOG.info("Sending request to get all genres");
         long startTime = System.currentTimeMillis();

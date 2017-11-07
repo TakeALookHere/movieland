@@ -1,6 +1,6 @@
 package com.miskevich.movieland.dao.jdbc.mapper
 
-import com.miskevich.movieland.dao.jdbc.provider.DataProviderMapper
+import com.miskevich.movieland.dao.jdbc.provider.MapperDataProvider
 import org.testng.annotations.Test
 
 import java.sql.ResultSet
@@ -13,7 +13,7 @@ class GenreRowMapperTest {
 
     private GenreRowMapper genreRowMapper = new GenreRowMapper()
 
-    @Test(dataProvider = 'provideGenre', dataProviderClass = DataProviderMapper.class)
+    @Test(dataProvider = 'provideGenre', dataProviderClass = MapperDataProvider.class)
     void testMapRow(def expectedGenre) {
         ResultSet resultSet = mock(ResultSet.class)
         when(resultSet.next()).thenReturn(true).thenReturn(false)

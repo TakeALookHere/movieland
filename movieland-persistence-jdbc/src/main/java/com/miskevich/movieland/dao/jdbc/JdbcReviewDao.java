@@ -23,6 +23,8 @@ public class JdbcReviewDao implements IReviewDao {
 
     @Autowired
     private String getReviewsByMovieIdSQL;
+    @Autowired
+    private String addReviewSQL;
 
     @Override
     public List<Review> getByMovieId(int movieId) {
@@ -34,5 +36,19 @@ public class JdbcReviewDao implements IReviewDao {
         List<Review> reviews = namedParameterJdbcTemplate.query(getReviewsByMovieIdSQL, parameters, REVIEW_ROW_MAPPER);
         LOG.info("Finish query to get reviews from DB by movieId. It took {} ms", System.currentTimeMillis() - startTime);
         return reviews;
+    }
+
+    @Override
+    public Review add(Review review) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("movieId", review.getMovie().getId());
+        parameters.addValue("userId", review.getUser().getId());
+        parameters.addValue("description", review.getText());
+
+        LOG.info("Start query to add review into DB");
+        long startTime = System.currentTimeMillis();
+        namedParameterJdbcTemplate.update(addReviewSQL, parameters);
+        LOG.info("Finish query to add review into DB. It took {} ms", System.currentTimeMillis() - startTime);
+        return review;
     }
 }

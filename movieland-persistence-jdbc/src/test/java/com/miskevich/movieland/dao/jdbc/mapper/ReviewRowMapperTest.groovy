@@ -1,6 +1,6 @@
 package com.miskevich.movieland.dao.jdbc.mapper
 
-import com.miskevich.movieland.dao.jdbc.provider.DataProviderMapper
+import com.miskevich.movieland.dao.jdbc.provider.MapperDataProvider
 import com.miskevich.movieland.entity.Review
 import org.testng.annotations.Test
 
@@ -14,7 +14,7 @@ class ReviewRowMapperTest {
 
     private ReviewRowMapper reviewRowMapper = new ReviewRowMapper()
 
-    @Test(dataProvider = 'provideReview', dataProviderClass = DataProviderMapper.class)
+    @Test(dataProvider = 'provideReview', dataProviderClass = MapperDataProvider.class)
     void testMapRow(Review expectedReview) {
         ResultSet resultSet = mock(ResultSet.class)
         when(resultSet.next()).thenReturn(true).thenReturn(false)
@@ -25,7 +25,7 @@ class ReviewRowMapperTest {
 
         def actualReview = reviewRowMapper.mapRow(resultSet, 0)
         assertEquals(actualReview.getId(), expectedReview.getId())
-        assertEquals(actualReview.getDescription(), expectedReview.getDescription())
+        assertEquals(actualReview.getText(), expectedReview.getText())
         assertEquals(actualReview.getMovie().getId(), expectedReview.getMovie().getId())
         assertEquals(actualReview.getUser().getId(), expectedReview.getUser().getId())
     }

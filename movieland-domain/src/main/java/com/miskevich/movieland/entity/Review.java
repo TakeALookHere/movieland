@@ -3,7 +3,7 @@ package com.miskevich.movieland.entity;
 public class Review {
 
     private long id;
-    private String description;
+    private String text;
     private Movie movie;
     private User user;
 
@@ -15,12 +15,12 @@ public class Review {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getText() {
+        return text;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public Movie getMovie() {
@@ -47,7 +47,7 @@ public class Review {
         Review review = (Review) o;
 
         if (id != review.id) return false;
-        if (description != null ? !description.equals(review.description) : review.description != null) return false;
+        if (text != null ? !text.equals(review.text) : review.text != null) return false;
         if (movie != null ? !movie.equals(review.movie) : review.movie != null) return false;
         return user != null ? user.equals(review.user) : review.user == null;
     }
@@ -55,7 +55,7 @@ public class Review {
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (text != null ? text.hashCode() : 0);
         result = 31 * result + (movie != null ? movie.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
         return result;
@@ -65,7 +65,7 @@ public class Review {
     public String toString() {
         return "Review{" +
                 "id=" + id +
-                ", description='" + description + '\'' +
+                ", text='" + text + '\'' +
                 ", movie=" + movie +
                 ", user=" + user +
                 '}';
