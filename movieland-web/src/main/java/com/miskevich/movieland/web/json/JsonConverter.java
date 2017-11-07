@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.List;
 
 public abstract class JsonConverter {
@@ -28,6 +30,14 @@ public abstract class JsonConverter {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             LOG.error("ERROR: ", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T fromJson(BufferedReader reader, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(reader, clazz);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

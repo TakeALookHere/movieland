@@ -2,7 +2,7 @@ package com.miskevich.movieland.web.controller
 
 import com.miskevich.movieland.entity.Movie
 import com.miskevich.movieland.service.IMovieService
-import com.miskevich.movieland.web.controller.provider.DataProviderController
+import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
 import com.miskevich.movieland.web.dto.RateDto
 import com.miskevich.movieland.web.util.RateReader
 import org.mockito.InjectMocks
@@ -37,7 +37,7 @@ class MovieControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(movieController).build()
     }
 
-    @Test(dataProvider = "provideMovies", dataProviderClass = DataProviderController.class)
+    @Test(dataProvider = "provideMovies", dataProviderClass = ControllerDataProvider.class)
     void testGetAllMovies(List<Movie> expectedMovies) {
 
         def emptyParametersMap = new LinkedHashMap<String, String>()
@@ -68,7 +68,7 @@ class MovieControllerTest {
         verifyNoMoreInteractions(mockMovieService)
     }
 
-    @Test(dataProvider = "provideMoviesWithRequestParams", dataProviderClass = DataProviderController.class)
+    @Test(dataProvider = "provideMoviesWithRequestParams", dataProviderClass = ControllerDataProvider.class)
     void testGetAllMoviesWithSorting(List<Movie> expectedMovies, Map<String, String> requestParams) {
 
         when(mockMovieService.getAll(requestParams)).thenReturn(expectedMovies)
@@ -103,7 +103,7 @@ class MovieControllerTest {
     }
 
 
-    @Test(dataProvider = "provideMoviesWithGenreAndCountry", dataProviderClass = DataProviderController.class)
+    @Test(dataProvider = "provideMoviesWithGenreAndCountry", dataProviderClass = ControllerDataProvider.class)
     void testGetThreeRandomMovies(List<Movie> expectedMovies) {
 
         when(mockMovieService.getThreeRandomMovies()).thenReturn(expectedMovies)
@@ -145,7 +145,7 @@ class MovieControllerTest {
         verifyNoMoreInteractions(mockMovieService)
     }
 
-    @Test(dataProvider = "provideMovies", dataProviderClass = DataProviderController.class)
+    @Test(dataProvider = "provideMovies", dataProviderClass = ControllerDataProvider.class)
     void testGetByGenres(List<Movie> expectedMovies) {
         def emptyParametersMap = new LinkedHashMap<String, String>()
 
@@ -176,7 +176,7 @@ class MovieControllerTest {
         verifyNoMoreInteractions(mockMovieService)
     }
 
-    @Test(dataProvider = "provideMoviesWithRequestParams", dataProviderClass = DataProviderController.class)
+    @Test(dataProvider = "provideMoviesWithRequestParams", dataProviderClass = ControllerDataProvider.class)
     void testGetByGenresWithSorting(List<Movie> expectedMovies, Map<String, String> requestParams) {
 
         when(mockMovieService.getByGenre(3, requestParams)).thenReturn(expectedMovies)
@@ -210,7 +210,7 @@ class MovieControllerTest {
         verifyNoMoreInteractions(mockMovieService)
     }
 
-    @Test(dataProvider = "provideMovie", dataProviderClass = DataProviderController.class)
+    @Test(dataProvider = "provideMovie", dataProviderClass = ControllerDataProvider.class)
     void testGetById(Movie expectedMovie) {
 
         when(mockMovieService.getById(1)).thenReturn(expectedMovie)
@@ -246,7 +246,7 @@ class MovieControllerTest {
         verifyNoMoreInteractions(mockMovieService)
     }
 
-    @Test(dataProvider = "provideMovie", dataProviderClass = DataProviderController.class)
+    @Test(dataProvider = "provideMovie", dataProviderClass = ControllerDataProvider.class)
     void testGetByIdWithCurrency(Movie expectedMovie) {
 
         when(rateReader.currentRates).thenReturn([new RateDto(cc: 'USD', rate: 26.931378)])

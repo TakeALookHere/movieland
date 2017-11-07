@@ -21,6 +21,6 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
-        LOG.info("Successful signing in for user: " + request.getParameter("email"));
+        LOG.info("Successful signing in for user");
     }
 }

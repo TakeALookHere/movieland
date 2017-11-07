@@ -2,7 +2,7 @@ package com.miskevich.movieland.web.controller
 
 import com.miskevich.movieland.entity.Genre
 import com.miskevich.movieland.service.IGenreService
-import com.miskevich.movieland.web.controller.provider.DataProviderController
+import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -33,7 +33,7 @@ class GenreControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(genreController).build()
     }
 
-    @Test(dataProvider = "provideGenres", dataProviderClass = DataProviderController.class)
+    @Test(dataProvider = "provideGenres", dataProviderClass = ControllerDataProvider.class)
     void testGetAllGenres(List<Genre> expectedGenres) {
         when(mockGenreService.getAll()).thenReturn(expectedGenres)
         mockMvc.perform(get("/genre").accept(MediaType.APPLICATION_JSON))

@@ -7,7 +7,7 @@ import org.testng.annotations.DataProvider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class DataProviderController {
+class ControllerDataProvider {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
     private static LocalDate convertStringToDate(String releasedDate) {
@@ -146,14 +146,17 @@ class DataProviderController {
         return array
     }
 
-    @DataProvider(name = "provideUser")
-    static Object[][] provideUser() {
+    @DataProvider(name = "provideUserJson")
+    static Object[][] provideUserJson() {
 
+        def email = 'ronald.reynolds66@example.com'
+        def password = 'paco'
+        def userJson = "{\"email\": \"ronald.reynolds66@example.com\", \"password\": \"paco\"}"
         def expectedUser =
                 new User(id: 1, nickname: 'Рональд Рейнольдс', email: 'ronald.reynolds66@example.com', password: '311020666a5776c57d265ace682dc46d')
 
         def array = new Object[1][]
-        array[0] = expectedUser
+        array[0] = [email, password, userJson, expectedUser]
         return array
     }
 }

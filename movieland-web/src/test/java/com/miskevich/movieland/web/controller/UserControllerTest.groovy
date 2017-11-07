@@ -2,7 +2,7 @@ package com.miskevich.movieland.web.controller
 
 import com.miskevich.movieland.entity.User
 import com.miskevich.movieland.service.IUserService
-import com.miskevich.movieland.web.controller.provider.DataProviderController
+import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -34,15 +34,12 @@ class UserControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build()
     }
 
-    @Test(dataProvider = 'provideUser', dataProviderClass = DataProviderController.class)
-    void testLogin(User expectedUser) {
-        def email = 'ronald.reynolds66@example.com'
-        def password = 'paco'
+    @Test(dataProvider = 'provideUserJson', dataProviderClass = ControllerDataProvider.class)
+    void testLogin(String email, String password, String userJson, User expectedUser) {
 
         when(mockUserService.getByEmailAndPassword(email, password)).thenReturn(expectedUser)
         mockMvc.perform(post("/login")
-                .param('email', email)
-                .param('password', password)
+                .content(userJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
 
@@ -55,15 +52,12 @@ class UserControllerTest {
         verifyNoMoreInteractions(mockUserService)
     }
 
-    @Test
-    void testLoginBadRequest() {
-        def email = 'ronald.reynolds66@example.com'
-        def password = 'paco'
+    @Test(dataProvider = 'provideUserJson', dataProviderClass = ControllerDataProvider.class)
+    void testLoginBadRequest(String email, String password, String userJson, User expectedUser) {
 
         when(mockUserService.getByEmailAndPassword(email, password)).thenThrow(EmptyResultDataAccessException)
         mockMvc.perform(post("/login")
-                .param('email', email)
-                .param('password', password)
+                .content(userJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
 

@@ -18,7 +18,10 @@ import org.springframework.util.IdGenerator;
 import org.springframework.util.JdkIdGenerator;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -32,8 +35,8 @@ import java.util.concurrent.TimeUnit;
 public class UserController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
-    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
-    private static final Map<UUID, User> UUID_USER = new HashMap<>();
+    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    private static final Map<UUID, User> UUID_USER_CACHE = new HashMap<>();
 
     @Autowired
     private IUserService userService;
@@ -43,28 +46,36 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@RequestParam(name = "email") String email,
-                        @RequestParam(name = "password") String password, HttpServletResponse response) {
+    public String login(HttpServletRequest request, HttpServletResponse response) {
 
-        LOG.info("Sending request to get user by email and password");
-        long startTime = System.currentTimeMillis();
         User user;
-        try {
-            user = userService.getByEmailAndPassword(email, password);
-        } catch (EmptyResultDataAccessException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            String message = "No user in DB with such pair of email + password was found!";
-            LOG.error(message);
-            return null;
+        long startTime;
+        try (BufferedReader reader = request.getReader()) {
+            user = JsonConverter.fromJson(reader, User.class);
+
+            LOG.info("Sending request to get user by email and password");
+            startTime = System.currentTimeMillis();
+
+            try {
+                user = userService.getByEmailAndPassword(user.getEmail(), user.getPassword());
+            } catch (EmptyResultDataAccessException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                String message = "No user in DB with such pair of email + password was found!";
+                LOG.error(message);
+                return null;
+            }
+        } catch (IOException e) {
+            LOG.error("ERROR: ", e);
+            throw new RuntimeException(e);
         }
 
         UUID uuid = idGenerator.generateId();
-        UUID_USER.put(uuid, user);
+        UUID_USER_CACHE.put(uuid, user);
         user.setUuid(uuid);
         LOG.info("User's UUID was set");
         LOG.debug("User with UUID: " + user);
 
-        UUIDRefresher uuidRefresher = new UUIDRefresher(UUID_USER, uuid);
+        UUIDRefresher uuidRefresher = new UUIDRefresher(UUID_USER_CACHE, uuid);
         scheduledExecutorService.schedule(uuidRefresher, initDelayUserUUID, TimeUnit.MINUTES);
 
         UserDto userDto = UserDtoConverter.mapObject(user);
@@ -80,7 +91,7 @@ public class UserController {
     @RequestMapping(value = "/logout", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
     public void logout(@RequestHeader("X-Request-ID") UUID uuid) {
-        UUID_USER.remove(uuid);
+        UUID_USER_CACHE.remove(uuid);
         LOG.info("User with UUID " + uuid + " performed logout");
     }
 }

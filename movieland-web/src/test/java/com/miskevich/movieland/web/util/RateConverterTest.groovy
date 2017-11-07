@@ -1,6 +1,6 @@
 package com.miskevich.movieland.web.util
 
-import com.miskevich.movieland.web.controller.provider.DataProviderController
+import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
 import com.miskevich.movieland.web.dto.MovieDto
 import org.testng.annotations.Test
 
@@ -8,7 +8,7 @@ import static org.testng.Assert.assertEquals
 
 class RateConverterTest {
 
-    @Test(dataProvider = 'provideMovieForRateConversion', dataProviderClass = DataProviderController.class)
+    @Test(dataProvider = 'provideMovieForRateConversion', dataProviderClass = ControllerDataProvider.class)
     void testEnrichMovieWithPriceForRate(MovieDto movieBeforeConversion, MovieDto expectedMovieAfterConversion) {
         double rate = 26.931378
         def actualMovieAfterConversion = RateConverter.enrichMovieWithPriceForRate(movieBeforeConversion, rate)
