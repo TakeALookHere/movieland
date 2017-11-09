@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.UUID;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @Controller
 @RequestMapping(produces = "application/json;charset=UTF-8")
 public class ReviewController {

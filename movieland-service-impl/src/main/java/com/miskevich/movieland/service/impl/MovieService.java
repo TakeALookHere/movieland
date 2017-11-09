@@ -2,6 +2,8 @@ package com.miskevich.movieland.service.impl;
 
 import com.miskevich.movieland.dao.IMovieDao;
 import com.miskevich.movieland.entity.Movie;
+import com.miskevich.movieland.model.SortingField;
+import com.miskevich.movieland.model.SortingType;
 import com.miskevich.movieland.service.ICountryService;
 import com.miskevich.movieland.service.IGenreService;
 import com.miskevich.movieland.service.IMovieService;
@@ -25,7 +27,7 @@ public class MovieService implements IMovieService {
     private IReviewService reviewService;
 
     @Override
-    public List<Movie> getAll(Map<String, String> params) {
+    public List<Movie> getAll(Map<SortingField, SortingType> params) {
         return movieDao.getAll(params);
     }
 
@@ -40,7 +42,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    public List<Movie> getByGenre(int id, Map<String, String> params) {
+    public List<Movie> getByGenre(int id, Map<SortingField, SortingType> params) {
         return movieDao.getByGenre(id, params);
     }
 

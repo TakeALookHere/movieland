@@ -17,11 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @Controller
 @RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
 public class MovieController {
@@ -35,34 +36,29 @@ public class MovieController {
 
     @ResponseBody
     @RequestMapping(value = "/movie")
-    public String getAllMovies(@RequestParam(required = false) LinkedHashMap<String, String> params) {
-        validateInputParameters(params);
+    //@ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String getAllMovies(@RequestParam(required = false) LinkedHashMap<String, String> params,
+                               HttpServletResponse response) {
+
+        Map<SortingField, SortingType> sortingFieldSortingTypeMap = new LinkedHashMap<>();
+        if(!params.isEmpty()){
+            try {
+                sortingFieldSortingTypeMap = validateInputParameters(params, response);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         LOG.info("Sending request to get all movies");
         long startTime = System.currentTimeMillis();
 
-        List<Movie> movies = movieService.getAll(params);
+        List<Movie> movies = movieService.getAll(sortingFieldSortingTypeMap);
 
         List<MovieDto> movieDtos = MovieDtoConverter.mapList(movies);
         String moviesJson = JsonConverter.toJson(movieDtos);
 
         LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
-    }
-
-    private void validateInputParameters(LinkedHashMap<String, String> params) {
-        LOG.info("Start validate parameters from request");
-        try {
-            for (Map.Entry<String, String> param : params.entrySet()) {
-                String paramName = param.getKey();
-                SortingField.getSortingFieldByName(paramName);
-                SortingType.getSortingTypeByName(param.getValue());
-                LOG.info("Finish validate parameters from request");
-            }
-        } catch (IllegalArgumentException e) {
-            LOG.error("ERROR", e);
-            throw new RuntimeException(e);
-        }
     }
 
     @ResponseBody
@@ -81,12 +77,21 @@ public class MovieController {
 
     @ResponseBody
     @RequestMapping(value = "/movie/genre/{genreId}")
-    public String getByGenre(@PathVariable int genreId, @RequestParam(required = false) LinkedHashMap<String, String> params) {
-        validateInputParameters(params);
+    public String getByGenre(@PathVariable int genreId,
+                             @RequestParam(required = false) LinkedHashMap<String, String> params,
+                             HttpServletResponse response) {
+        Map<SortingField, SortingType> sortingFieldSortingTypeMap = new LinkedHashMap<>();
+        if(!params.isEmpty()){
+            try {
+                sortingFieldSortingTypeMap = validateInputParameters(params, response);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         LOG.info("Sending request to get movies by genre");
         long startTime = System.currentTimeMillis();
-        List<Movie> movies = movieService.getByGenre(genreId, params);
+        List<Movie> movies = movieService.getByGenre(genreId, sortingFieldSortingTypeMap);
 
         List<MovieDto> movieDtos = MovieDtoConverter.mapList(movies);
         String moviesJson = JsonConverter.toJson(movieDtos);
@@ -130,13 +135,29 @@ public class MovieController {
 
     private void validateCurrencyCode(String currency) {
         try {
-            LOG.info("Start validate parameter \"currency\" from request");
+            LOG.info("Start validate parameter \"currency\" from request fot movie");
             Currency.getCurrencyByName(currency);
-            LOG.info("Finish validate parameter \"currency\" from request");
+            LOG.info("Finish validate parameter \"currency\" from request for movie");
         } catch (IllegalArgumentException e) {
-            LOG.error("ERROR", e);
+            LOG.warn("WARN: invalid CCY code in request parameter", e);
             throw new RuntimeException(e);
         }
     }
 
+    private Map<SortingField, SortingType> validateInputParameters(LinkedHashMap<String, String> params, HttpServletResponse response) throws IOException {
+        Map<SortingField, SortingType> sortingFieldSortingTypeMap = new LinkedHashMap<>();
+        LOG.info("Start validate parameters from request for sorting movies");
+        try {
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                SortingField sortingFieldByName = SortingField.getSortingFieldByName(param.getKey());
+                SortingType sortingTypeByName = SortingType.getSortingTypeByName(param.getValue());
+                sortingFieldSortingTypeMap.put(sortingFieldByName, sortingTypeByName);
+                LOG.info("Finish validate parameters from request for sorting movies");
+            }
+        } catch (IllegalArgumentException e) {
+            LOG.warn("WARN: validation for input parameters for sorting movies failed", e);
+            throw new RuntimeException(e);
+        }
+        return sortingFieldSortingTypeMap;
+    }
 }

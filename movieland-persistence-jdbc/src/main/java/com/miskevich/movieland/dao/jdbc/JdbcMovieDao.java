@@ -4,6 +4,7 @@ import com.miskevich.movieland.dao.IMovieDao;
 import com.miskevich.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.miskevich.movieland.entity.Movie;
 import com.miskevich.movieland.model.SortingField;
+import com.miskevich.movieland.model.SortingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class JdbcMovieDao implements IMovieDao {
     private String getMovieByIdSQL;
 
     @Override
-    public List<Movie> getAll(Map<String, String> params) {
+    public List<Movie> getAll(Map<SortingField, SortingType> params) {
         List<Movie> movies;
         long startTime = System.currentTimeMillis();
 
@@ -70,7 +71,7 @@ public class JdbcMovieDao implements IMovieDao {
     }
 
     @Override
-    public List<Movie> getByGenre(int id, Map<String, String> params) {
+    public List<Movie> getByGenre(int id, Map<SortingField, SortingType> params) {
         List<Movie> movies;
         MapSqlParameterSource parameters = new MapSqlParameterSource("genreId", id);
 
@@ -120,21 +121,21 @@ public class JdbcMovieDao implements IMovieDao {
         return randomMovies;
     }
 
-    String generateSortingSQL(Map<String, String> params) {
+    String generateSortingSQL(Map<SortingField, SortingType> params) {
         int counter = 1;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(" ORDER BY ");
 
-        for (Map.Entry<String, String> param : params.entrySet()) {
-            String columnName = param.getKey();
-            if (columnName.equalsIgnoreCase(SortingField.RATING.getValue())
-                    || columnName.equalsIgnoreCase(SortingField.PRICE.getValue())) {
+        for (Map.Entry<SortingField, SortingType> param : params.entrySet()) {
+            SortingField columnName = param.getKey();
+            if (columnName.equals(SortingField.RATING)
+                    || columnName.equals(SortingField.PRICE)) {
                 stringBuilder.append("substring(")
                         .append(columnName)
                         .append(" from 1 for 9) ")
                         .append(param.getValue());
             } else {
-                stringBuilder.append("IF(name_russian RLIKE '^[a-z]', 1, 2), name_russian ")
+                stringBuilder.append("IF(NAME_RUSSIAN RLIKE '^[a-z]', 1, 2), NAME_RUSSIAN ")
                         .append(param.getValue());
             }
 

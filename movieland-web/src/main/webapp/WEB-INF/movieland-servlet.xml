@@ -30,6 +30,10 @@
             <mvc:mapping path="/login"/>
             <bean class="com.miskevich.movieland.web.util.UserInterceptor"/>
         </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.miskevich.movieland.web.util.CorsInterceptor"/>
+        </mvc:interceptor>
     </mvc:interceptors>
 
 </beans>

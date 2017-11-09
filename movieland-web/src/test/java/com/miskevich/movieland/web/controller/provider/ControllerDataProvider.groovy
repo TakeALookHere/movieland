@@ -1,6 +1,8 @@
 package com.miskevich.movieland.web.controller.provider
 
 import com.miskevich.movieland.entity.*
+import com.miskevich.movieland.model.SortingField
+import com.miskevich.movieland.model.SortingType
 import com.miskevich.movieland.web.dto.MovieDto
 import org.testng.annotations.DataProvider
 
@@ -45,10 +47,10 @@ class ControllerDataProvider {
                         rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg")
         ]
 
-        def params = [
-                price       : 'asc',
-                name_russian: 'DESC',
-                RATING      : 'desc'
+        LinkedHashMap<SortingField, SortingType> params = [
+                (SortingField.PRICE)       : SortingType.ASC,
+                (SortingField.NAME_RUSSIAN): SortingType.DESC,
+                (SortingField.RATING)      : SortingType.ASC
         ]
 
         def array = new Object[1][]

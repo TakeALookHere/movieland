@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(produces = "application/json;charset=UTF-8")
 @Controller
 public class GenreController {

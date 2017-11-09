@@ -2,6 +2,8 @@ package com.miskevich.movieland.dao.jdbc
 
 import com.miskevich.movieland.dao.jdbc.provider.SQLDataProvider
 import com.miskevich.movieland.entity.Movie
+import com.miskevich.movieland.model.SortingField
+import com.miskevich.movieland.model.SortingType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
@@ -28,7 +30,7 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
     }
 
     @Test(dataProvider = "provideParamsSQL", dataProviderClass = SQLDataProvider.class)
-    void testGetAllWithSorting(Map<String, String> paramsMap) {
+    void testGetAllWithSorting(Map<SortingField, SortingType> paramsMap) {
         def movies = jdbcMovieDao.getAll(paramsMap)
         for (Movie movie : movies) {
             assertNotNull(movie.getNameRussian())
@@ -53,7 +55,7 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
 
     @Test
     void testGetByGenre() {
-        def movies = jdbcMovieDao.getByGenre(3, new LinkedHashMap<String, String>())
+        def movies = jdbcMovieDao.getByGenre(3, new LinkedHashMap<SortingField, SortingType>())
         for (Movie movie : movies) {
             assertNotNull(movie.getNameRussian())
             assertNotNull(movie.getNameNative())
@@ -64,7 +66,7 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
     }
 
     @Test(dataProvider = "provideParamsSQL", dataProviderClass = SQLDataProvider.class)
-    void testGetByGenreWithSorting(Map<String, String> paramsMap) {
+    void testGetByGenreWithSorting(Map<SortingField, SortingType> paramsMap) {
         def movies = jdbcMovieDao.getByGenre(3, paramsMap)
         for (Movie movie : movies) {
             assertNotNull(movie.getNameRussian())
