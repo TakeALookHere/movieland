@@ -11,8 +11,16 @@
 
     <context:component-scan base-package="com.miskevich.movieland.service"/>
 
-    <bean class="com.miskevich.movieland.service.impl.GenreService">
-        <property name="genreDao" ref="genreCache"/>
+    <bean id="serviceConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:external.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="nbuUrl" class="java.lang.String">
+        <constructor-arg value="https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"/>
     </bean>
 
 </beans>

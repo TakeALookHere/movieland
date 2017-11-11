@@ -4,6 +4,7 @@ import com.miskevich.movieland.entity.*
 import com.miskevich.movieland.model.SortingField
 import com.miskevich.movieland.model.SortingType
 import com.miskevich.movieland.web.dto.MovieDto
+import org.springframework.util.MultiValueMap
 import org.testng.annotations.DataProvider
 
 import java.time.LocalDate
@@ -51,6 +52,12 @@ class ControllerDataProvider {
                 (SortingField.PRICE)       : SortingType.ASC,
                 (SortingField.NAME_RUSSIAN): SortingType.DESC,
                 (SortingField.RATING)      : SortingType.ASC
+        ]
+
+        LinkedHashMap<String, String> requestParams = [
+                price: 'ASC',
+                NAME_RUSSIAN: 'desc',
+                RATING: 'asc'
         ]
 
         def array = new Object[1][]

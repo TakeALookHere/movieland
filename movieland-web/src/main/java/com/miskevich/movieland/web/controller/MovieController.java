@@ -5,19 +5,18 @@ import com.miskevich.movieland.model.Currency;
 import com.miskevich.movieland.model.SortingField;
 import com.miskevich.movieland.model.SortingType;
 import com.miskevich.movieland.service.IMovieService;
+import com.miskevich.movieland.service.dto.RateDto;
+import com.miskevich.movieland.service.impl.RateService;
 import com.miskevich.movieland.web.dto.MovieDto;
-import com.miskevich.movieland.web.dto.RateDto;
 import com.miskevich.movieland.web.json.JsonConverter;
 import com.miskevich.movieland.web.json.MovieDtoConverter;
 import com.miskevich.movieland.web.util.RateConverter;
-import com.miskevich.movieland.web.util.RateReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,18 +31,16 @@ public class MovieController {
     @Autowired
     private IMovieService movieService;
     @Autowired
-    private RateReader rateReader;
+    private RateService rateService;
 
     @ResponseBody
     @RequestMapping(value = "/movie")
-    //@ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String getAllMovies(@RequestParam(required = false) LinkedHashMap<String, String> params,
-                               HttpServletResponse response) {
+    public String getAllMovies(@RequestParam(required = false) LinkedHashMap<String, String> params) {
 
         Map<SortingField, SortingType> sortingFieldSortingTypeMap = new LinkedHashMap<>();
-        if(!params.isEmpty()){
+        if (!params.isEmpty()) {
             try {
-                sortingFieldSortingTypeMap = validateInputParameters(params, response);
+                sortingFieldSortingTypeMap = validateInputParameters(params);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -78,12 +75,11 @@ public class MovieController {
     @ResponseBody
     @RequestMapping(value = "/movie/genre/{genreId}")
     public String getByGenre(@PathVariable int genreId,
-                             @RequestParam(required = false) LinkedHashMap<String, String> params,
-                             HttpServletResponse response) {
+                             @RequestParam(required = false) LinkedHashMap<String, String> params) {
         Map<SortingField, SortingType> sortingFieldSortingTypeMap = new LinkedHashMap<>();
-        if(!params.isEmpty()){
+        if (!params.isEmpty()) {
             try {
-                sortingFieldSortingTypeMap = validateInputParameters(params, response);
+                sortingFieldSortingTypeMap = validateInputParameters(params);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -111,7 +107,7 @@ public class MovieController {
 
         if (currency != null) {
             validateCurrencyCode(currency);
-            List<RateDto> rates = rateReader.getCurrentRates();
+            List<RateDto> rates = rateService.getAll();
             Double rateValue = getRateValue(rates, currency);
             RateConverter.enrichMovieWithPriceForRate(movieDto, rateValue);
         }
@@ -144,7 +140,7 @@ public class MovieController {
         }
     }
 
-    private Map<SortingField, SortingType> validateInputParameters(LinkedHashMap<String, String> params, HttpServletResponse response) throws IOException {
+    private Map<SortingField, SortingType> validateInputParameters(LinkedHashMap<String, String> params) throws IOException {
         Map<SortingField, SortingType> sortingFieldSortingTypeMap = new LinkedHashMap<>();
         LOG.info("Start validate parameters from request for sorting movies");
         try {

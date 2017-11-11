@@ -5,22 +5,24 @@ import com.miskevich.movieland.entity.Genre;
 import com.miskevich.movieland.entity.Movie;
 import com.miskevich.movieland.service.IGenreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class GenreService implements IGenreService {
 
     @Autowired
-    private IGenreDao genreCache;
+    private IGenreDao genreDao;
 
     @Override
     public List<Genre> getAll() {
-        return genreCache.getAll();
+        return genreDao.getAll();
     }
 
     @Override
     public List<Genre> getByMovieId(int movieId) {
-        return genreCache.getByMovieId(movieId);
+        return genreDao.getByMovieId(movieId);
     }
 
     @Override
@@ -28,7 +30,4 @@ public class GenreService implements IGenreService {
         movie.setGenres(getByMovieId(movie.getId()));
     }
 
-    public void setGenreDao(IGenreDao genreDao) {
-        this.genreCache = genreDao;
-    }
 }
