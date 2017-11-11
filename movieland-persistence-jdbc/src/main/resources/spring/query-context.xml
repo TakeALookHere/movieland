@@ -49,11 +49,16 @@
 
     <bean id="getUserByEmailAndPasswordSQL" class="java.lang.String">
         <constructor-arg
-                value="select id, nickname, email, password from user where email = :email and password = md5(:password);"/>
+                value="select id, nickname, email from user where email = :email and password = md5(:password);"/>
     </bean>
 
     <bean id="addReviewSQL" class="java.lang.String">
         <constructor-arg
                 value="insert into review (movie_id, user_id, description) values(:movieId, :userId, :description);"/>
+    </bean>
+
+    <bean id="getUserRoleSQL" class="java.lang.String">
+        <constructor-arg
+                value="select name from role where id in(select role_id from user_role where user_id = :userId);"/>
     </bean>
 </beans>

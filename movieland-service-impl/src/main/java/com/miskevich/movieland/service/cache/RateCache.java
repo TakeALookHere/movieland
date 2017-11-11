@@ -6,7 +6,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -27,10 +26,10 @@ public class RateCache implements IRateService {
     private RestTemplate restTemplate = new RestTemplate();
     private volatile List<RateDto> rates;
 
-    @Value("${nbu.url}")
-    private String nbuUrl;
-//    @Autowired
+//    @Value("${nbu.url}")
 //    private String nbuUrl;
+    @Autowired
+    private String nbuUrl;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -57,7 +56,7 @@ public class RateCache implements IRateService {
         LOG.info("Rate cache was initialized");
     }
 
-    @Scheduled(cron = "${nbu.cache.crone.refresh.timeout.test}")
+    @Scheduled(cron = "${nbu.cache.crone.refresh.timeout}")
     private void initCacheRefreshTask() {
         initCache();
     }

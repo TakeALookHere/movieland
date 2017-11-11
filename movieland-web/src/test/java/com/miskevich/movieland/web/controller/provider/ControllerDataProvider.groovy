@@ -4,7 +4,6 @@ import com.miskevich.movieland.entity.*
 import com.miskevich.movieland.model.SortingField
 import com.miskevich.movieland.model.SortingType
 import com.miskevich.movieland.web.dto.MovieDto
-import org.springframework.util.MultiValueMap
 import org.testng.annotations.DataProvider
 
 import java.time.LocalDate
@@ -55,9 +54,9 @@ class ControllerDataProvider {
         ]
 
         LinkedHashMap<String, String> requestParams = [
-                price: 'ASC',
+                price       : 'ASC',
                 NAME_RUSSIAN: 'desc',
-                RATING: 'asc'
+                RATING      : 'asc'
         ]
 
         def array = new Object[1][]
@@ -166,6 +165,24 @@ class ControllerDataProvider {
 
         def array = new Object[1][]
         array[0] = [email, password, userJson, expectedUser]
+        return array
+    }
+
+    @DataProvider(name = "provideReviewAdd")
+    static Object[][] provideReviewAdd() {
+
+        UUID uuid = UUID.randomUUID()
+        def userCacheMap = [
+                (uuid): new User(id: 1)
+        ]
+
+        def roleValid = 'USER'
+        def roleInvalid = 'ADMIN'
+        def roleIncorrect = 'manager'
+        def reviewJson = "{\"movieId\": \"1\", \"text\": \"Очень понравилось!\"}"
+
+        def array = new Object[1][]
+        array[0] = [userCacheMap, roleValid, reviewJson, uuid, roleInvalid, roleIncorrect]
         return array
     }
 }

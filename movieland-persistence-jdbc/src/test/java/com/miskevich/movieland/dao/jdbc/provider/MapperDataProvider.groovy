@@ -50,7 +50,7 @@ class MapperDataProvider {
     static Object[][] provideReview() {
 
         def expectedReview = new Review(id: 1, text: "Гениальное кино! Смотришь и думаешь «Так не бывает!», но позже понимаешь, что только так и должно быть. Начинаешь заново осмысливать значение фразы, которую постоянно используешь в своей жизни, «Надежда умирает последней». Ведь если ты не надеешься, то все в твоей жизни гаснет, не остается смысла. Фильм наполнен бесконечным числом правильных афоризмов. Я уверена, что буду пересматривать его сотни раз.",
-                movie: new Movie(id: 1), user: new User(id: 3))
+                movie: new Movie(id: 1), user: new User(3))
 
         def array = new Object[1][]
         array[0] = expectedReview
@@ -60,7 +60,7 @@ class MapperDataProvider {
     @DataProvider(name = "provideUser")
     static Object[][] provideUser() {
 
-        def expectedUser = new User(id: 1, nickname: 'Рональд Рейнольдс', email: 'ronald.reynolds66@example.com', password: '311020666a5776c57d265ace682dc46d')
+        def expectedUser = new User(1, 'Рональд Рейнольдс', 'ronald.reynolds66@example.com')
 
         def array = new Object[1][]
         array[0] = expectedUser

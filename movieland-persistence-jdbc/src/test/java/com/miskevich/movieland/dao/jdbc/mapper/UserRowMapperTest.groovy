@@ -21,12 +21,10 @@ class UserRowMapperTest {
         when(resultSet.getInt("id")).thenReturn(expectedUser.getId())
         when(resultSet.getString("nickname")).thenReturn(expectedUser.getNickname())
         when(resultSet.getString("email")).thenReturn(expectedUser.getEmail())
-        when(resultSet.getString("password")).thenReturn(expectedUser.getPassword())
 
         def actualUser = userRowMapper.mapRow(resultSet, 0)
         assertEquals(actualUser.getId(), expectedUser.getId())
         assertEquals(actualUser.getNickname(), expectedUser.getNickname())
         assertEquals(actualUser.getEmail(), expectedUser.getEmail())
-        assertEquals(actualUser.getPassword(), expectedUser.getPassword())
     }
 }

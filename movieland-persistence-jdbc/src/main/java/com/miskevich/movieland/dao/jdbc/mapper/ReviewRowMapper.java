@@ -20,8 +20,7 @@ public class ReviewRowMapper implements RowMapper<Review> {
         movie.setId(resultSet.getInt("movie_id"));
         review.setMovie(movie);
 
-        User user = new User();
-        user.setId(resultSet.getInt("user_id"));
+        User user = new User(resultSet.getInt("user_id"));
         review.setUser(user);
         return review;
     }

@@ -18,13 +18,15 @@ public class JdbcUserDao implements IUserDao {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
     @Autowired
     private String getUserByEmailAndPasswordSQL;
+    @Autowired
+    private String getUserRoleSQL;
 
     @Override
     public User getByEmailAndPassword(String email, String password) {
-        MapSqlParameterSource parameters = new MapSqlParameterSource("email", email);
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("email", email);
         parameters.addValue("password", password);
 
         LOG.info("Start query to get user from DB by email and password");
@@ -32,5 +34,17 @@ public class JdbcUserDao implements IUserDao {
         User user = namedParameterJdbcTemplate.queryForObject(getUserByEmailAndPasswordSQL, parameters, USER_ROW_MAPPER);
         LOG.info("Finish query to get user from DB by email and password. It took {} ms", System.currentTimeMillis() - startTime);
         return user;
+    }
+
+    @Override
+    public String getRole(int id) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("userId", id);
+
+        LOG.info("Start query to get user's role from DB");
+        long startTime = System.currentTimeMillis();
+        String role = namedParameterJdbcTemplate.queryForObject(getUserRoleSQL, parameters, String.class);
+        LOG.info("Finish query to get user's role from DB. It took {} ms", System.currentTimeMillis() - startTime);
+        return role;
     }
 }

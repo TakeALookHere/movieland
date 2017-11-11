@@ -3,6 +3,7 @@ package com.miskevich.movieland.web.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -15,12 +16,16 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        LOG.info("User sent request for email for login");
+        if (request.getMethod().equals(RequestMethod.POST.name())) {
+            LOG.info("User sent request with email and password for login");
+        }
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
-        LOG.info("Successful signing in for user");
+        if ((request.getMethod().equals(RequestMethod.POST.name()) && (response.getStatus() == 200))) {
+            LOG.info("Successful signing in for user");
+        }
     }
 }

@@ -16,4 +16,9 @@ public class UserService implements IUserService {
     public User getByEmailAndPassword(String email, String password) {
         return userDao.getByEmailAndPassword(email, password);
     }
+
+    @Override
+    public String getRole(int id) {
+        return userDao.getRole(id);
+    }
 }

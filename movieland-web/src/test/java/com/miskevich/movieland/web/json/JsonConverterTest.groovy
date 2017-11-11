@@ -29,6 +29,5 @@ class JsonConverterTest {
         assertEquals(actualUser.getEmail(), expectedUser.getEmail())
         assertEquals(actualUser.getPassword(), expectedUser.getPassword())
         assertEquals(actualUser.getNickname(), expectedUser.getNickname())
-        assertEquals(actualUser.getUuid(), expectedUser.getUuid())
     }
 }

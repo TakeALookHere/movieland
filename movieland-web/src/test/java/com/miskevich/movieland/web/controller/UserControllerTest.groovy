@@ -10,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.util.NestedServletException
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 
@@ -52,19 +53,15 @@ class UserControllerTest {
         verifyNoMoreInteractions(mockUserService)
     }
 
-    @Test(dataProvider = 'provideUserJson', dataProviderClass = ControllerDataProvider.class)
+    @Test(dataProvider = 'provideUserJson', dataProviderClass = ControllerDataProvider.class,
+            expectedExceptionsMessageRegExp = ".*No user in DB with such pair of email and password was found: ronald.reynolds66@example.com and paco",
+            expectedExceptions = NestedServletException.class)
     void testLoginBadRequest(String email, String password, String userJson, User expectedUser) {
-
         when(mockUserService.getByEmailAndPassword(email, password)).thenThrow(EmptyResultDataAccessException)
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-
-                .andExpect(jsonPath('$.nickname').doesNotExist())
-                .andExpect(jsonPath('$.password').doesNotExist())
-                .andExpect(jsonPath('$.id').doesNotExist())
-                .andExpect(jsonPath('$.uuid').doesNotExist())
 
         verify(mockUserService, times(2)).getByEmailAndPassword(email, password)
         verifyNoMoreInteractions(mockUserService)
@@ -73,7 +70,7 @@ class UserControllerTest {
     @Test
     void testLogout() {
         mockMvc.perform(delete("/logout")
-                .header('X-Request-ID', '8495da92-093c-4e5d-b178-82da08b66d7b')
+                .header('uuid', '8495da92-093c-4e5d-b178-82da08b66d7b')
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
     }
