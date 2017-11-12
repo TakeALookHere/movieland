@@ -12,7 +12,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.JdkIdGenerator;
@@ -21,23 +21,25 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 @RequestMapping(produces = "application/json;charset=UTF-8")
 public class UserController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
-    private final Map<UUID, User> UUID_USER_CACHE = new HashMap<>();
+    private final Map<UUID, User> UUID_USER_CACHE = new ConcurrentHashMap<>();
 
     @Autowired
     private IUserService userService;
-    //    @Value("${init.delay.user.uuid}")
-    //    private long initDelayUserUUID;
+    @Autowired
+    private TaskScheduler webCacheScheduler;
     private IdGenerator idGenerator = new JdkIdGenerator();
-    private UUID uuid;
 
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -47,7 +49,7 @@ public class UserController {
         long startTime = System.currentTimeMillis();
 
         user = getUserFromDB(user);
-        putUserIntoCache(user);
+        UUID uuid = putUserIntoCache(user);
 
         UserDto userDto = UserDtoConverter.mapObject(user, uuid);
         String userJson = JsonConverter.toJson(userDto);
@@ -65,11 +67,16 @@ public class UserController {
         LOG.info("User was redirected to login page");
     }
 
-    private void putUserIntoCache(User user) {
-        uuid = idGenerator.generateId();
+    private UUID putUserIntoCache(User user) {
+        UUID uuid = idGenerator.generateId();
         UUID_USER_CACHE.put(uuid, user);
-        LOG.info("User's UUID was set");
+        LOG.info("User's UUID was set for userId: " + user.getId());
         LOG.debug("User with UUID: " + user);
+
+        webCacheScheduler.schedule(new CacheCleaner(UUID_USER_CACHE, uuid),
+                Instant.now().plus(2, ChronoUnit.HOURS));
+        LOG.info("Task for cache cleaning was scheduled for userId: " + user.getId());
+        return uuid;
     }
 
     private User getUserFromDB(User user) {
@@ -104,19 +111,30 @@ public class UserController {
         LOG.info("User with UUID " + uuid + " performed logout");
     }
 
-    @Scheduled(initialDelayString = "${init.delay.user.cache}", fixedRateString = "${fixed.rate.user.cache}")
-    private void initCacheRefreshTask() {
-        User removedUser = UUID_USER_CACHE.remove(uuid);
-        if (removedUser != null) {
-            LOG.info("User's UUID in cache was cleared for userId: " + removedUser.getId());
-        }
-    }
-
     public Map<UUID, User> getUuidUserCache() {
         Map<UUID, User> copy = new HashMap<>();
         for (Map.Entry<UUID, User> entry : UUID_USER_CACHE.entrySet()) {
             copy.put(entry.getKey(), entry.getValue());
         }
         return copy;
+    }
+
+    class CacheCleaner implements Runnable {
+
+        private Map<UUID, User> uuidUserCache;
+        private UUID uuid;
+
+        CacheCleaner(Map<UUID, User> uuidUserCache, UUID uuid) {
+            this.uuidUserCache = uuidUserCache;
+            this.uuid = uuid;
+        }
+
+        @Override
+        public void run() {
+            User removedUser = uuidUserCache.remove(uuid);
+            if (removedUser != null) {
+                LOG.info("User's UUID in cache was cleared for userId: " + removedUser.getId());
+            }
+        }
     }
 }
