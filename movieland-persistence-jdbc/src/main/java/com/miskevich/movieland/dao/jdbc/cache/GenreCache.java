@@ -25,9 +25,8 @@ public class GenreCache implements IGenreDao {
 
     @Override
     public List<Genre> getAll() {
-        List<Genre> copy = new ArrayList<>();
-        copy.addAll(genres);
-        return copy;
+        List<Genre> genreRef = genres;
+        return new ArrayList<>(genreRef);
     }
 
     @Override

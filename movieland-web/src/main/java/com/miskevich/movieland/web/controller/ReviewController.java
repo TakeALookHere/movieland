@@ -5,6 +5,7 @@ import com.miskevich.movieland.entity.User;
 import com.miskevich.movieland.model.Role;
 import com.miskevich.movieland.service.IReviewService;
 import com.miskevich.movieland.service.IUserService;
+import com.miskevich.movieland.service.impl.UserSecurityService;
 import com.miskevich.movieland.web.dto.ReviewDto;
 import com.miskevich.movieland.web.exception.InvalidAccessException;
 import com.miskevich.movieland.web.json.JsonConverter;
@@ -37,6 +38,8 @@ public class ReviewController {
     private IUserService userService;
     @Autowired
     private UserController userController;
+    @Autowired
+    private UserSecurityService userSecurityService;
 
     @ResponseBody
     @RequestMapping(value = "/review", method = RequestMethod.POST)

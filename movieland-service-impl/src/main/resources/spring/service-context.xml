@@ -23,4 +23,6 @@
         <constructor-arg value="https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"/>
     </bean>
 
+    <bean class="org.springframework.util.JdkIdGenerator" id="idGenerator"/>
+
 </beans>
