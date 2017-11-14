@@ -159,12 +159,13 @@ class ControllerDataProvider {
 
         def email = 'ronald.reynolds66@example.com'
         def password = 'paco'
-        def userJson = "{\"email\": \"ronald.reynolds66@example.com\", \"password\": \"paco\"}"
+        def userJson = new User(email: 'ronald.reynolds66@example.com', password: 'paco')
         def expectedUser =
                 new User(id: 1, nickname: 'Рональд Рейнольдс', email: 'ronald.reynolds66@example.com', password: '311020666a5776c57d265ace682dc46d')
+        def uuid = UUID.randomUUID()
 
         def array = new Object[1][]
-        array[0] = [email, password, userJson, expectedUser]
+        array[0] = [email, password, userJson, expectedUser, uuid]
         return array
     }
 

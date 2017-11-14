@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,7 @@ public class MovieController {
 
     @ResponseBody
     @RequestMapping(value = "/movie")
-    public String getAllMovies(@RequestParam(required = false) LinkedHashMap<String, String> params) {
+    public String getAllMovies(@RequestParam(required = false) LinkedHashMap<String, String> params, HttpServletRequest request) {
 
         Map<SortingField, SortingType> sortingFieldSortingTypeMap = new LinkedHashMap<>();
         if (!params.isEmpty()) {
@@ -55,6 +57,10 @@ public class MovieController {
         String moviesJson = JsonConverter.toJson(movieDtos);
 
         LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
+        Principal userPrincipal = request.getUserPrincipal();
+        if(userPrincipal != null){
+            LOG.info("PRINCIPAL: " + userPrincipal.getName());
+        }
         return moviesJson;
     }
 

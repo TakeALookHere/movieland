@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -36,22 +33,23 @@ public class UserSecurityService {
         return uuid;
     }
 
-    public Optional<User> getFromCache(UUID uuid){
-        User user;
+    public Optional<User> getFromCache(UUID uuid) {
         Map<User, LocalDateTime> userLocalDateMap = UUID_USER_CACHE.get(uuid);
-        if(userLocalDateMap == null){
+        if (userLocalDateMap == null) {
             String message = "User with UUID " + uuid + " is not authorized, please login";
             LOG.warn(message);
             throw new AuthRequiredException(message);
         }
-        for (Map.Entry<User, LocalDateTime> entry : userLocalDateMap.entrySet()){
-            if(entry.getValue().isBefore(LocalDateTime.now().minusMinutes(1))){
+
+        for (Map.Entry<User, LocalDateTime> entry : userLocalDateMap.entrySet()) {
+            LocalDateTime time = entry.getValue();
+            User user = entry.getKey();
+            if (time.isBefore(LocalDateTime.now().minusMinutes(1))) {
                 removeUserFromCache(uuid);
-                String message = "UUID " + uuid + " has been expired for userId: " + entry.getKey().getId();
+                String message = "UUID " + uuid + " has been expired for userId: " + user.getId();
                 LOG.warn(message);
                 throw new UuidExpirationException(message);
             }
-            user = entry.getKey();
             return Optional.of(user);
         }
         return Optional.empty();

@@ -5,6 +5,7 @@ import com.miskevich.movieland.service.IUserService
 import com.miskevich.movieland.service.impl.UserSecurityService
 import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
 import com.miskevich.movieland.web.exception.InvalidUserException
+import com.miskevich.movieland.web.helper.FunctionalTestUtil
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -41,20 +42,20 @@ class UserControllerTest {
     }
 
     @Test(dataProvider = 'provideUserJson', dataProviderClass = ControllerDataProvider.class)
-    void testLogin(String email, String password, String userJson, User expectedUser) {
+    void testLogin(String email, String password, User userJson, User expectedUser, UUID uuid) {
 
         when(mockUserService.getByEmailAndPassword(email, password)).thenReturn(expectedUser)
-        def uuid = UUID.randomUUID()
         when(mockUserSecurityService.putUserIntoCache(expectedUser)).thenReturn(uuid)
         mockMvc.perform(post("/login")
-                .content(userJson)
+                .content(FunctionalTestUtil.convertObjectToJsonBytes(userJson))
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath('$.nickname', is(expectedUser.nickname)))
                 .andExpect(jsonPath('$.password').doesNotExist())
                 .andExpect(jsonPath('$.id').doesNotExist())
-                .andExpect(jsonPath('$.uuid', is(uuid)))
+                .andExpect(jsonPath('$.uuid', is(uuid.toString())))
 
         verify(mockUserService, times(1)).getByEmailAndPassword(email, password)
         verifyNoMoreInteractions(mockUserService)
@@ -63,10 +64,11 @@ class UserControllerTest {
     @Test(dataProvider = 'provideUserJson', dataProviderClass = ControllerDataProvider.class,
             expectedExceptionsMessageRegExp = ".*No user in DB with such pair of email and password was found: ronald.reynolds66@example.com and paco",
             expectedExceptions = NestedServletException.class)
-    void testLoginBadRequest(String email, String password, String userJson, User expectedUser) {
+    void testLoginBadRequest(String email, String password, User userJson, User expectedUser, UUID uuid) {
         when(mockUserService.getByEmailAndPassword(email, password)).thenThrow(EmptyResultDataAccessException)
         mockMvc.perform(post("/login")
-                .content(userJson)
+                .content(FunctionalTestUtil.convertObjectToJsonBytes(userJson))
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
 
@@ -82,20 +84,5 @@ class UserControllerTest {
                 .andExpect(status().isOk())
     }
 
-    @Test(dataProvider = 'userCredentials', dataProviderClass = ControllerDataProvider.class)
-    void testAuthAndEnrich(Map<String, String> userCredentialsMap, User expectedUser){
-        when(mockUserService.getByEmailAndPassword(anyString(), anyString())).thenReturn(expectedUser)
-        def actualUser = userController.authAndEnrich(userCredentialsMap)
-        assertEquals(actualUser.getId(), expectedUser.getId())
-        assertEquals(actualUser.getEmail(), expectedUser.getEmail())
-        assertEquals(actualUser.getNickname(), expectedUser.getNickname())
-    }
 
-    @Test(dataProvider = 'userCredentials', dataProviderClass = ControllerDataProvider.class,
-    expectedExceptions = InvalidUserException.class, expectedExceptionsMessageRegExp = 'No user in DB with such pair of email and password was found: testEmail and testPassword')
-    void testAuthAndEnrichNoUserInDB(Map<String, String> userCredentialsMap, User expectedUser){
-        when(mockUserService.getByEmailAndPassword(anyString(), anyString())).thenThrow(EmptyResultDataAccessException)
-        userController.authAndEnrich(userCredentialsMap)
-
-    }
 }

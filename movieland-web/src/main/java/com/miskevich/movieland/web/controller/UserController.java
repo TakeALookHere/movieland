@@ -76,5 +76,6 @@ public class UserController {
     public void logout(@RequestHeader("uuid") UUID uuid) {
         userSecurityService.removeUserFromCache(uuid);
         LOG.info("User with UUID " + uuid + " performed logout");
+        //MDC.remove("nickname", user.getNickname());
     }
 }

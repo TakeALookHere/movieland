@@ -12,15 +12,12 @@
     <context:component-scan base-package="com.miskevich.movieland.service"/>
 
     <bean id="serviceConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="locations">
             <list>
                 <value>classpath:external.properties</value>
             </list>
         </property>
-    </bean>
-
-    <bean id="nbuUrl" class="java.lang.String">
-        <constructor-arg value="https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"/>
     </bean>
 
     <bean class="org.springframework.util.JdkIdGenerator" id="idGenerator"/>
