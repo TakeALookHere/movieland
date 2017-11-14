@@ -33,7 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private IUserService userService;
     @Autowired
@@ -58,7 +57,7 @@ public class UserController {
         return userJson;
     }
 
-    private User authAndEnrich(Map<String, String> userCredentials) {
+    User authAndEnrich(Map<String, String> userCredentials) {
         String email = userCredentials.get("email");
         String password = userCredentials.get("password");
         User user;

@@ -5,6 +5,7 @@ import com.miskevich.movieland.entity.User;
 import com.miskevich.movieland.model.Role;
 import com.miskevich.movieland.service.IReviewService;
 import com.miskevich.movieland.service.IUserService;
+import com.miskevich.movieland.service.exception.AuthRequiredException;
 import com.miskevich.movieland.service.impl.UserSecurityService;
 import com.miskevich.movieland.web.dto.ReviewDto;
 import com.miskevich.movieland.web.exception.InvalidAccessException;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -44,25 +46,28 @@ public class ReviewController {
     @ResponseBody
     @RequestMapping(value = "/review", method = RequestMethod.POST)
     public void add(@RequestHeader("uuid") UUID uuid, HttpServletRequest request, HttpServletResponse response) {
-        Map<UUID, User> uuidUserCache = userController.getUuidUserCache();
-        User userFromCache = uuidUserCache.get(uuid);
+        Optional<User> userFromCache = userSecurityService.getFromCache(uuid);
+        //Map<UUID, User> uuidUserCache = userController.getUuidUserCache();
+        //User userFromCache = uuidUserCache.get(uuid);
 
-        if (userFromCache == null) {
-            redirectToLoginPage(uuid, response);
+        if (!userFromCache.isPresent()) {
+            String message = "User's uuid: " + uuid + " has been expired, please login";
+            LOG.warn(message);
+            throw new AuthRequiredException(message);
         } else {
-            String role = userService.getRole(userFromCache.getId());
+            String role = userService.getRole(userFromCache.get().getId());
             try {
                 Role roleByName = Role.getRoleByName(role);
                 if (roleByName.equals(Role.USER)) {
                     ReviewDto reviewDto = getReviewFromRequest(request);
-                    saveReview(userFromCache, reviewDto);
+                    saveReview(userFromCache.get(), reviewDto);
                 } else {
-                    String message = "WARN: validation of user's role access type failed, required role: USER";
+                    String message = "Validation of user's role access type failed, required role: USER";
                     LOG.warn(message);
                     throw new InvalidAccessException(message);
                 }
             } catch (IllegalArgumentException e) {
-                LOG.warn("WARN: validation of user's role name failed", e);
+                LOG.warn("Validation of user's role name failed", e);
                 throw new IllegalArgumentException(e);
             }
         }

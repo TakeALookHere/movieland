@@ -13,6 +13,7 @@ import org.springframework.util.IdGenerator;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,16 +36,8 @@ public class UserSecurityService {
         return uuid;
     }
 
-    public Map<UUID, User> getUuidUserCache() {
-        Map<UUID, User> copy = new HashMap<>();
-        for (Map.Entry<UUID, User> entry : UUID_USER_CACHE.entrySet()) {
-            copy.put(entry.getKey(), entry.getValue());
-        }
-        return copy;
-    }
-
-    public User getFromCache(UUID uuid){
-        User user = null;
+    public Optional<User> getFromCache(UUID uuid){
+        User user;
         Map<User, LocalDateTime> userLocalDateMap = UUID_USER_CACHE.get(uuid);
         if(userLocalDateMap == null){
             String message = "User with UUID " + uuid + " is not authorized, please login";
@@ -59,8 +52,9 @@ public class UserSecurityService {
                 throw new UuidExpirationException(message);
             }
             user = entry.getKey();
+            return Optional.of(user);
         }
-        return user;
+        return Optional.empty();
     }
 
     @Scheduled(initialDelayString = "${init.delay.user.cache}", fixedRateString = "${fixed.rate.user.cache}")

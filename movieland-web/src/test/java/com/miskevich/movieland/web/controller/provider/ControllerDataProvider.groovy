@@ -185,4 +185,19 @@ class ControllerDataProvider {
         array[0] = [userCacheMap, roleValid, reviewJson, uuid, roleInvalid, roleIncorrect]
         return array
     }
+
+    @DataProvider(name = "userCredentials")
+    static Object[][] userCredentials() {
+
+        def userCredentialsMap = [
+                email : 'testEmail',
+                password: 'testPassword'
+        ]
+
+        def user = new User(1, 'testNickName', 'testEmail')
+
+        def array = new Object[1][]
+        array[0] = [userCredentialsMap, user]
+        return array
+    }
 }
