@@ -45,10 +45,10 @@ public class JdbcReviewDao implements IReviewDao {
         parameters.addValue("userId", review.getUser().getId());
         parameters.addValue("description", review.getText());
 
-        LOG.info("Start query to add review into DB");
+        LOG.info("Start query to add review into DB: {}", review);
         long startTime = System.currentTimeMillis();
         namedParameterJdbcTemplate.update(addReviewSQL, parameters);
-        LOG.info("Finish query to add review into DB. It took {} ms", System.currentTimeMillis() - startTime);
+        LOG.info("Finish query to add review into DB: {}. It took {} ms", review, System.currentTimeMillis() - startTime);
         return review;
     }
 }

@@ -16,6 +16,7 @@
         <property name="locations">
             <list>
                 <value>classpath:external.properties</value>
+                <value>classpath:security.properties</value>
             </list>
         </property>
     </bean>

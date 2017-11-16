@@ -1,5 +1,7 @@
 package com.miskevich.movieland.web.util;
 
+import com.miskevich.movieland.service.exception.AuthRequiredException;
+import com.miskevich.movieland.service.exception.UuidExpirationException;
 import com.miskevich.movieland.web.dto.ErrorDto;
 import com.miskevich.movieland.web.exception.InvalidAccessException;
 import com.miskevich.movieland.web.exception.InvalidUserException;
@@ -18,8 +20,11 @@ public class ExceptionController extends DefaultHandlerExceptionResolver {
     private static final String ILLEGAL_ARGUMENT = "Invalid Query Parameter";
     private static final String INVALID_USER = "Invalid User Details";
     private static final String INVALID_ACCESS = "Invalid Access Rights";
+    private static final String AUTHORIZATION_REQUIRED = "Authorization Required";
+    private static final String UUID_EXPIRED = "Uuid Expired";
 
-    @ExceptionHandler({IllegalArgumentException.class, InvalidUserException.class, InvalidAccessException.class})
+    @ExceptionHandler({IllegalArgumentException.class, InvalidUserException.class,
+            InvalidAccessException.class, AuthRequiredException.class, UuidExpirationException.class})
     void handler(HttpServletResponse response, RuntimeException exception) throws IOException {
         ErrorDto errorDto = new ErrorDto();
         if (exception instanceof IllegalArgumentException) {
@@ -28,9 +33,13 @@ public class ExceptionController extends DefaultHandlerExceptionResolver {
             errorDto.setTitle(INVALID_USER);
         } else if (exception instanceof InvalidAccessException) {
             errorDto.setTitle(INVALID_ACCESS);
+        } else if (exception instanceof AuthRequiredException) {
+            errorDto.setTitle(AUTHORIZATION_REQUIRED);
+        } else if (exception instanceof UuidExpirationException) {
+            errorDto.setTitle(UUID_EXPIRED);
         }
-        errorDto.setDetail(exception.getMessage());
 
+        errorDto.setDetail(exception.getMessage());
         String errorJson = JsonConverter.toJson(errorDto);
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());

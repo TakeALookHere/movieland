@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public abstract class UserDtoConverter {
 
-    public static UserDto mapObject(User user, UUID uuid) {
+    public static UserDto mapObject(User user, String uuid) {
         UserDto userDto = new UserDto();
         userDto.setNickname(user.getNickname());
         userDto.setUuid(uuid);

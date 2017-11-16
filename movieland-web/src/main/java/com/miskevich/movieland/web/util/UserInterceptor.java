@@ -34,6 +34,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
                                 user.getNickname()));
                 nickname = user.getNickname();
                 MDC.put("nickname", nickname);
+                MDC.put("requestId", uuid);
             }
         } else {
             nickname = GUEST_NICKNAME;

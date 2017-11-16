@@ -4,6 +4,8 @@ import com.miskevich.movieland.entity.*
 import com.miskevich.movieland.model.SortingField
 import com.miskevich.movieland.model.SortingType
 import com.miskevich.movieland.web.dto.MovieDto
+import com.miskevich.movieland.web.dto.ReviewDto
+import com.miskevich.movieland.web.security.UserPrincipal
 import org.testng.annotations.DataProvider
 
 import java.time.LocalDate
@@ -162,28 +164,61 @@ class ControllerDataProvider {
         def userJson = new User(email: 'ronald.reynolds66@example.com', password: 'paco')
         def expectedUser =
                 new User(id: 1, nickname: 'Рональд Рейнольдс', email: 'ronald.reynolds66@example.com', password: '311020666a5776c57d265ace682dc46d')
-        def uuid = UUID.randomUUID()
+        String uuid = UUID.randomUUID()
 
         def array = new Object[1][]
         array[0] = [email, password, userJson, expectedUser, uuid]
         return array
     }
 
-    @DataProvider(name = "provideReviewAdd")
-    static Object[][] provideReviewAdd() {
+    @DataProvider(name = "provideUserJsonBadRequest")
+    static Object[][] provideUserJsonBadRequest() {
 
-        UUID uuid = UUID.randomUUID()
-        def userCacheMap = [
-                (uuid): new User(id: 1)
-        ]
-
-        def roleValid = 'USER'
-        def roleInvalid = 'ADMIN'
-        def roleIncorrect = 'manager'
-        def reviewJson = "{\"movieId\": \"1\", \"text\": \"Очень понравилось!\"}"
+        def email = 'ronald.reynolds66@example.com'
+        def password = 'paco'
+        def userJson = new User(email: 'ronald.reynolds66@example.com', password: 'paco')
 
         def array = new Object[1][]
-        array[0] = [userCacheMap, roleValid, reviewJson, uuid, roleInvalid, roleIncorrect]
+        array[0] = [email, password, userJson]
+        return array
+    }
+
+    @DataProvider(name = "provideReviewAddSuccess")
+    static Object[][] provideReviewAddSuccess() {
+
+        String uuid = UUID.randomUUID()
+        def roleValid = 'USER'
+        def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
+        def principal = new UserPrincipal(1, 'SuperUser')
+
+        def array = new Object[1][]
+        array[0] = [roleValid, reviewJson, uuid, principal]
+        return array
+    }
+
+    @DataProvider(name = "provideReviewAddIncorrectRole")
+    static Object[][] provideReviewAddIncorrectRole() {
+
+        String uuid = UUID.randomUUID()
+        def roleIncorrect = 'manager'
+        def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
+        def principal = new UserPrincipal(1, 'SuperUser')
+
+        def array = new Object[1][]
+        array[0] = [reviewJson, uuid, roleIncorrect, principal]
+        return array
+    }
+
+    @DataProvider(name = "provideReviewAddInvalidRole")
+    static Object[][] provideReviewAddInvalidRole() {
+
+        String uuid = UUID.randomUUID()
+        def roleInvalid = 'ADMIN'
+        def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
+        def principal = new UserPrincipal(1, 'SuperUser')
+
+        def array = new Object[1][]
+        array[0] = [reviewJson, uuid, roleInvalid, principal]
         return array
     }
 
@@ -191,7 +226,7 @@ class ControllerDataProvider {
     static Object[][] userCredentials() {
 
         def userCredentialsMap = [
-                email : 'testEmail',
+                email   : 'testEmail',
                 password: 'testPassword'
         ]
 

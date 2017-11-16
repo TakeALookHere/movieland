@@ -4,8 +4,7 @@ import com.miskevich.movieland.entity.User
 import com.miskevich.movieland.service.IUserService
 import com.miskevich.movieland.service.impl.UserSecurityService
 import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
-import com.miskevich.movieland.web.exception.InvalidUserException
-import com.miskevich.movieland.web.helper.FunctionalTestUtil
+import com.miskevich.movieland.web.json.JsonConverter
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -17,7 +16,6 @@ import org.springframework.web.util.NestedServletException
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 
-import static org.testng.Assert.assertEquals
 import static org.hamcrest.core.Is.is
 import static org.mockito.Mockito.*
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
@@ -25,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class UserControllerTest {
+class UserControllerFTest {
 
     @Mock
     private IUserService mockUserService
@@ -42,12 +40,12 @@ class UserControllerTest {
     }
 
     @Test(dataProvider = 'provideUserJson', dataProviderClass = ControllerDataProvider.class)
-    void testLogin(String email, String password, User userJson, User expectedUser, UUID uuid) {
+    void testLogin(String email, String password, User userJson, User expectedUser, String uuid) {
 
         when(mockUserService.getByEmailAndPassword(email, password)).thenReturn(expectedUser)
         when(mockUserSecurityService.putUserIntoCache(expectedUser)).thenReturn(uuid)
         mockMvc.perform(post("/login")
-                .content(FunctionalTestUtil.convertObjectToJsonBytes(userJson))
+                .content(JsonConverter.toJson(userJson))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -61,13 +59,13 @@ class UserControllerTest {
         verifyNoMoreInteractions(mockUserService)
     }
 
-    @Test(dataProvider = 'provideUserJson', dataProviderClass = ControllerDataProvider.class,
+    @Test(dataProvider = 'provideUserJsonBadRequest', dataProviderClass = ControllerDataProvider.class,
             expectedExceptionsMessageRegExp = ".*No user in DB with such pair of email and password was found: ronald.reynolds66@example.com and paco",
             expectedExceptions = NestedServletException.class)
-    void testLoginBadRequest(String email, String password, User userJson, User expectedUser, UUID uuid) {
+    void testLoginBadRequest(String email, String password, User userJson) {
         when(mockUserService.getByEmailAndPassword(email, password)).thenThrow(EmptyResultDataAccessException)
         mockMvc.perform(post("/login")
-                .content(FunctionalTestUtil.convertObjectToJsonBytes(userJson))
+                .content(JsonConverter.toJson(userJson))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())

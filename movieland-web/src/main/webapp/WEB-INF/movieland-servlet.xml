@@ -19,14 +19,6 @@
 
     <mvc:annotation-driven/>
 
-    <bean id="webConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations">
-            <list>
-                <value>classpath:web-cache.properties</value>
-            </list>
-        </property>
-    </bean>
-
     <task:annotation-driven executor="webCacheExecutor" scheduler="webCacheScheduler"/>
     <task:executor id="webCacheExecutor" pool-size="1"/>
     <task:scheduler id="webCacheScheduler" pool-size="1"/>

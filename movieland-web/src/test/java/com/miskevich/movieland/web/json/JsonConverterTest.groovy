@@ -22,9 +22,7 @@ class JsonConverterTest {
 
     @Test(dataProvider = "provideJson", dataProviderClass = JsonDataProvider.class)
     void testFromJson(String userJson, User expectedUser) {
-        InputStream inputStream = new ByteArrayInputStream(userJson.getBytes())
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))
-        def actualUser = JsonConverter.fromJson(bufferedReader, User.class)
+        def actualUser = JsonConverter.fromJson(userJson, User.class)
         assertEquals(actualUser.getId(), expectedUser.getId())
         assertEquals(actualUser.getEmail(), expectedUser.getEmail())
         assertEquals(actualUser.getPassword(), expectedUser.getPassword())

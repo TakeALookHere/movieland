@@ -14,6 +14,7 @@ import com.miskevich.movieland.web.util.RateConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET)
 public class MovieController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -58,7 +59,7 @@ public class MovieController {
 
         LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         Principal userPrincipal = request.getUserPrincipal();
-        if(userPrincipal != null){
+        if (userPrincipal != null) {
             LOG.info("PRINCIPAL: " + userPrincipal.getName());
         }
         return moviesJson;

@@ -34,9 +34,9 @@ public abstract class JsonConverter {
         }
     }
 
-    public static <T> T fromJson(BufferedReader reader, Class<T> clazz) {
+    public static <T> T fromJson(String json, Class<T> clazz) {
         try {
-            return objectMapper.readValue(reader, clazz);
+            return objectMapper.readValue(json, clazz);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

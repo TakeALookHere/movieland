@@ -1,11 +1,9 @@
 package com.miskevich.movieland.web.dto;
 
-import java.util.UUID;
-
 public class UserDto {
 
     private String nickname;
-    private UUID uuid;
+    private String uuid;
 
     public String getNickname() {
         return nickname;
@@ -15,11 +13,11 @@ public class UserDto {
         this.nickname = nickname;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 

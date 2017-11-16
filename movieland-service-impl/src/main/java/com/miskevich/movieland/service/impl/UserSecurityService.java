@@ -44,7 +44,7 @@ public class UserSecurityService {
         for (Map.Entry<User, LocalDateTime> entry : userLocalDateMap.entrySet()) {
             LocalDateTime time = entry.getValue();
             User user = entry.getKey();
-            if (time.isBefore(LocalDateTime.now().minusMinutes(1))) {
+            if (time.isBefore(LocalDateTime.now().minusHours(2))) {
                 removeUserFromCache(uuid);
                 String message = "UUID " + uuid + " has been expired for userId: " + user.getId();
                 LOG.warn(message);
@@ -62,7 +62,7 @@ public class UserSecurityService {
             Map<User, LocalDateTime> userLocalDateMap = entry.getValue();
 
             userLocalDateMap.forEach((k, v) -> {
-                if (v.isBefore(LocalDateTime.now().minusMinutes(1))) {
+                if (v.isBefore(LocalDateTime.now().minusHours(2))) {
                     removeUserFromCache(uuid);
                     LOG.info("User's UUID in cache was cleared for userId: " + k.getId());
                 }
