@@ -42,7 +42,7 @@ public class ReviewController {
 
     @ResponseBody
     @RequestMapping(value = "/review", method = RequestMethod.POST)
-    public void add(@RequestHeader("uuid") UUID uuid, HttpServletRequest request, HttpServletResponse response) {
+    public void add(@RequestHeader("uuid") String uuid, HttpServletRequest request, HttpServletResponse response) {
         Optional<User> userFromCache = userSecurityService.getFromCache(uuid);
         //Map<UUID, User> uuidUserCache = userController.getUuidUserCache();
         //User userFromCache = uuidUserCache.get(uuid);

@@ -18,13 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserSecurityService {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
-    private static final Map<UUID, Map<User, LocalDateTime>> UUID_USER_CACHE = new ConcurrentHashMap<>();
+    private static final Map<String, Map<User, LocalDateTime>> UUID_USER_CACHE = new ConcurrentHashMap<>();
 
     @Autowired
     private IdGenerator idGenerator;
 
-    public UUID putUserIntoCache(User user) {
-        UUID uuid = idGenerator.generateId();
+    public String putUserIntoCache(User user) {
+        String uuid = String.valueOf(idGenerator.generateId());
         Map<User, LocalDateTime> userLocalDateTimeMap = new HashMap<>();
         userLocalDateTimeMap.put(user, LocalDateTime.now());
         UUID_USER_CACHE.put(uuid, userLocalDateTimeMap);
@@ -33,7 +33,7 @@ public class UserSecurityService {
         return uuid;
     }
 
-    public Optional<User> getFromCache(UUID uuid) {
+    public Optional<User> getFromCache(String uuid) {
         Map<User, LocalDateTime> userLocalDateMap = UUID_USER_CACHE.get(uuid);
         if (userLocalDateMap == null) {
             String message = "User with UUID " + uuid + " is not authorized, please login";
@@ -57,8 +57,8 @@ public class UserSecurityService {
 
     @Scheduled(initialDelayString = "${init.delay.user.cache}", fixedRateString = "${fixed.rate.user.cache}")
     private void clearUserCache() {
-        for (Map.Entry<UUID, Map<User, LocalDateTime>> entry : UUID_USER_CACHE.entrySet()) {
-            UUID uuid = entry.getKey();
+        for (Map.Entry<String, Map<User, LocalDateTime>> entry : UUID_USER_CACHE.entrySet()) {
+            String uuid = entry.getKey();
             Map<User, LocalDateTime> userLocalDateMap = entry.getValue();
 
             userLocalDateMap.forEach((k, v) -> {
@@ -70,7 +70,7 @@ public class UserSecurityService {
         }
     }
 
-    public void removeUserFromCache(UUID uuid) {
+    public void removeUserFromCache(String uuid) {
         UUID_USER_CACHE.remove(uuid);
         LOG.info("User's UUID " + uuid + " was removed from cache");
     }

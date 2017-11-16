@@ -7,6 +7,7 @@ import com.miskevich.movieland.web.dto.UserDto;
 import com.miskevich.movieland.web.exception.InvalidUserException;
 import com.miskevich.movieland.web.json.JsonConverter;
 import com.miskevich.movieland.web.json.UserDtoConverter;
+import com.sun.security.auth.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.security.Principal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -40,7 +42,7 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@RequestBody Map<String, String> userCredentials) {
+    public String login(@RequestBody Map<String, String> userCredentials, HttpServletRequest request, Principal principal) {
         LOG.info("Sending request to get user by email and password");
         long startTime = System.currentTimeMillis();
 

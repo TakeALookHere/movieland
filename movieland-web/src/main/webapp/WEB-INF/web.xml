@@ -22,4 +22,14 @@
         </param-value>
     </context-param>
 
+    <filter>
+        <filter-name>AuthenticationFilter</filter-name>
+        <filter-class>com.miskevich.movieland.web.security.UserSecurityFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name> <!-- mandatory -->
+        <url-pattern>/v1/*</url-pattern>
+    </filter-mapping>
+
 </web-app>
