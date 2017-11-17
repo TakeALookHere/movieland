@@ -5,7 +5,7 @@ import com.miskevich.movieland.entity.Movie
 import com.miskevich.movieland.model.SortingField
 import com.miskevich.movieland.model.SortingType
 import com.miskevich.movieland.service.IMovieService
-import com.miskevich.movieland.service.dto.RateDto
+import com.miskevich.movieland.dto.RateDto
 import com.miskevich.movieland.service.impl.RateService
 import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
 import org.mockito.InjectMocks
@@ -44,7 +44,7 @@ class MovieControllerFTest {
     }
 
     @Test(dataProvider = "provideMoviesWithRequestParams", dataProviderClass = ControllerDataProvider.class)
-    void testGetAllMovies(List<Movie> expectedMovies, def params) {
+    void testGetAllMovies(List<Movie> expectedMovies, params) {
 
         def emptyParametersMap = new LinkedHashMap<SortingField, SortingType>()
         when(mockMovieService.getAll(emptyParametersMap)).thenReturn(expectedMovies)

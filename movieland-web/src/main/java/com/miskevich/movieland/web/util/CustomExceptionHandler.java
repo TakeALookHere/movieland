@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @ControllerAdvice
-public class ExceptionController extends DefaultHandlerExceptionResolver {
+public class CustomExceptionHandler extends DefaultHandlerExceptionResolver {
 
     private static final String ILLEGAL_ARGUMENT = "Invalid Query Parameter";
     private static final String INVALID_USER = "Invalid User Details";

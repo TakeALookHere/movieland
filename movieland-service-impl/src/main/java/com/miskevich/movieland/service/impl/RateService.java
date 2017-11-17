@@ -1,13 +1,13 @@
 package com.miskevich.movieland.service.impl;
 
 import com.miskevich.movieland.service.IRateService;
-import com.miskevich.movieland.service.dto.RateDto;
+import com.miskevich.movieland.dto.RateDto;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,7 +30,6 @@ public class RateService implements IRateService {
     private String nbuUrl;
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<RateDto> getAll() {
         LOG.info("Start get all rates from cache");
         long startTime = System.currentTimeMillis();
@@ -56,7 +55,7 @@ public class RateService implements IRateService {
         long startTime = System.currentTimeMillis();
 
         ResponseEntity<List<RateDto>> rateResponse =
-                restTemplate.exchange(nbuUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<RateDto>>() {
+                restTemplate.exchange(nbuUrl, HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<List<RateDto>>() {
                 });
 
         rates = rateResponse.getBody();
