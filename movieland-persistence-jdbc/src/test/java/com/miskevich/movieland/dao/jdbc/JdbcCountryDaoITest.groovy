@@ -21,4 +21,12 @@ class JdbcCountryDaoITest extends AbstractTestNGSpringContextTests {
             assertNotNull(country.getName())
         }
     }
+
+    @Test
+    void testGetAllCountries(){
+        def countries = jdbcCountryDao.getAll()
+        for (Country country : countries) {
+            assertNotNull(country.getName())
+        }
+    }
 }

@@ -21,6 +21,11 @@ public class CountryService implements ICountryService {
     }
 
     @Override
+    public List<Country> getAll() {
+        return countryDao.getAll();
+    }
+
+    @Override
     public void enrichWithCountry(Movie movie) {
         movie.setCountries(getByMovieId(movie.getId()));
     }

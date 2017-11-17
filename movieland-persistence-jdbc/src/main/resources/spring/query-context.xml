@@ -61,4 +61,9 @@
         <constructor-arg
                 value="select name from role where id in(select role_id from user_role where user_id = :userId);"/>
     </bean>
+
+    <bean id="getAllCountriesSQL" class="java.lang.String">
+        <constructor-arg
+                value="select id, name from country;"/>
+    </bean>
 </beans>

@@ -103,6 +103,19 @@ class ControllerDataProvider {
         return array
     }
 
+    @DataProvider(name = "provideCountries")
+    static Object[][] provideCountries() {
+
+        def expectedCountries = [
+                new Country(id:  1, name:  "США"),
+                new Country(id:  2, name:  "Франция"),
+        ]
+
+        def array = new Object[1][]
+        array[0] = [expectedCountries]
+        return array
+    }
+
     @DataProvider(name = "provideMovie")
     static Object[][] provideMovie() {
 
