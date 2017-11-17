@@ -25,7 +25,7 @@ public class CountryController {
 
     @ResponseBody
     @RequestMapping(value = "/country")
-    public String getAllGenres() {
+    public String getAll() {
         LOG.info("Sending request to get all countries");
         long startTime = System.currentTimeMillis();
         List<Country> countries = countryService.getAll();
