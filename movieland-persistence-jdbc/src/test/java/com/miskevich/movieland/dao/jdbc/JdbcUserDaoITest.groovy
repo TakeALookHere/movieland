@@ -1,5 +1,6 @@
 package com.miskevich.movieland.dao.jdbc
 
+import com.miskevich.movieland.model.Role
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
@@ -24,6 +25,6 @@ class JdbcUserDaoITest extends AbstractTestNGSpringContextTests {
     @Test
     void testGetRole(){
         def actualRole = jdbcUserDao.getRole(1)
-        assertEquals(actualRole, 'USER')
+        assertEquals(actualRole, Role.USER)
     }
 }

@@ -20,6 +20,7 @@
             <artifactId>movieland-domain</artifactId>
             <version>${global.version}</version>
         </dependency>
+
         <!-- JSON -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

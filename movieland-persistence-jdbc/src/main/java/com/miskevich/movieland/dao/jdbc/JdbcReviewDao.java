@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -47,7 +49,11 @@ public class JdbcReviewDao implements IReviewDao {
 
         LOG.info("Start query to add review into DB: {}", review);
         long startTime = System.currentTimeMillis();
-        namedParameterJdbcTemplate.update(addReviewSQL, parameters);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(addReviewSQL, parameters, keyHolder);
+        long reviewId = keyHolder.getKey().longValue();
+        review.setId(reviewId);
+
         LOG.info("Finish query to add review into DB: {}. It took {} ms", review, System.currentTimeMillis() - startTime);
         return review;
     }

@@ -79,6 +79,7 @@
         </plugins>
     </build>
 
+    <dependencyManagement>
         <dependencies>
             <!--SPRING-->
             <dependency>
@@ -137,5 +138,6 @@
                 <scope>test</scope>
             </dependency>
         </dependencies>
+    </dependencyManagement>
 
 </project>

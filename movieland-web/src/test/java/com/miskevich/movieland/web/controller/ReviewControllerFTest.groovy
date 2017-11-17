@@ -5,7 +5,7 @@ import com.miskevich.movieland.service.IUserService
 import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
 import com.miskevich.movieland.web.dto.ReviewDto
 import com.miskevich.movieland.web.json.JsonConverter
-import com.miskevich.movieland.web.security.UserPrincipal
+import com.miskevich.movieland.service.security.UserPrincipal
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -36,11 +36,11 @@ class ReviewControllerFTest {
         mockMvc = MockMvcBuilders.standaloneSetup(reviewController).build()
     }
 
-    @Test(dataProvider = 'provideReviewAddIncorrectRole', dataProviderClass = ControllerDataProvider.class,
-            expectedExceptionsMessageRegExp = '.*User has not applicable role: manager!',
+    @Test(dataProvider = 'provideReviewAddInvalidRole', dataProviderClass = ControllerDataProvider.class,
+            expectedExceptionsMessageRegExp = '.*Validation of user\'s role access type failed, required role: USER/ADMIN',
             expectedExceptions = NestedServletException.class)
-    void testAddIncorrectRole(ReviewDto reviewJson, String uuid, String roleIncorrect, UserPrincipal principal) {
-        when(mockUserService.getRole(1)).thenReturn(roleIncorrect)
+    void testAddInvalidRole(ReviewDto reviewJson, String uuid, roleInvalid, UserPrincipal principal) {
+        when(mockUserService.getRole(1)).thenReturn(roleInvalid)
         mockMvc.perform(post("/review")
                 .header('uuid', uuid)
                 .content(JsonConverter.toJson(reviewJson))
@@ -52,24 +52,8 @@ class ReviewControllerFTest {
         verifyNoMoreInteractions(mockUserService)
     }
 
-    @Test(dataProvider = 'provideReviewAddInvalidRole', dataProviderClass = ControllerDataProvider.class,
-            expectedExceptionsMessageRegExp = '.*Validation of user\'s role access type failed, required role: USER',
-            expectedExceptions = NestedServletException.class)
-    void testAddInvalidRole(ReviewDto reviewJson, String uuid, String roleInvalid, UserPrincipal principal) {
-        when(mockUserService.getRole(1)).thenReturn(roleInvalid)
-        mockMvc.perform(post("/review")
-                .header('uuid', uuid)
-                .content(JsonConverter.toJson(reviewJson))
-                .principal(principal)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-
-        verify(mockUserService, times(2)).getRole(1)
-        verifyNoMoreInteractions(mockUserService)
-    }
-
     @Test(dataProvider = 'provideReviewAddSuccess', dataProviderClass = ControllerDataProvider.class)
-    void testAddSuccess(String roleValid, ReviewDto reviewJson,
+    void testAddSuccess(roleValid, ReviewDto reviewJson,
                         String uuid, UserPrincipal principal) {
         when(mockUserService.getRole(1)).thenReturn(roleValid)
         mockMvc.perform(post("/review")
@@ -80,7 +64,7 @@ class ReviewControllerFTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
 
-        verify(mockUserService, times(3)).getRole(1)
+        verify(mockUserService, times(2)).getRole(1)
         verifyNoMoreInteractions(mockUserService)
     }
 }

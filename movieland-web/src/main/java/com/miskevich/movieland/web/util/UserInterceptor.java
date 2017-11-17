@@ -1,9 +1,8 @@
 package com.miskevich.movieland.web.util;
 
-import com.miskevich.movieland.entity.User;
 import com.miskevich.movieland.service.impl.UserSecurityService;
+import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.security.SecurityHttpRequestWrapper;
-import com.miskevich.movieland.web.security.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -26,19 +25,18 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         String uuid = request.getHeader("uuid");
         String nickname;
         if (uuid != null) {
-            Optional<User> userFromCache = userSecurityService.getFromCache(uuid);
-            if (userFromCache.isPresent()) {
-                User user = userFromCache.get();
-                ((SecurityHttpRequestWrapper) request)
-                        .setPrincipal(new UserPrincipal(user.getId(),
-                                user.getNickname()));
-                nickname = user.getNickname();
+            Optional<UserPrincipal> userPrincipalFromCache = userSecurityService.getFromCache(uuid);
+            if (userPrincipalFromCache.isPresent()) {
+                UserPrincipal principal = userPrincipalFromCache.get();
+
+                ((SecurityHttpRequestWrapper) request).setPrincipal(principal);
+                nickname = principal.getUser().getNickname();
                 MDC.put("nickname", nickname);
                 MDC.put("requestId", uuid);
             }
         } else {
             nickname = GUEST_NICKNAME;
-            LOG.info("No \"uuid\" header in request");
+            LOG.debug("No \"uuid\" header in request");
             MDC.put("nickname", nickname);
         }
         return true;

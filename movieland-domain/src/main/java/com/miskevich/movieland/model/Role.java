@@ -2,7 +2,8 @@ package com.miskevich.movieland.model;
 
 public enum Role {
     ADMIN("ADMIN"),
-    USER("USER");
+    USER("USER"),
+    MANAGER("MANAGER");
 
     private String value;
 

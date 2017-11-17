@@ -5,11 +5,11 @@ import com.miskevich.movieland.entity.User;
 import com.miskevich.movieland.model.Role;
 import com.miskevich.movieland.service.IReviewService;
 import com.miskevich.movieland.service.IUserService;
+import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.ReviewDto;
 import com.miskevich.movieland.web.exception.InvalidAccessException;
 import com.miskevich.movieland.web.json.JsonConverter;
 import com.miskevich.movieland.web.json.ReviewDtoConverter;
-import com.miskevich.movieland.web.security.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,32 +33,30 @@ public class ReviewController {
 
     @ResponseBody
     @RequestMapping(value = "/review", method = RequestMethod.POST)
-    public void add(@RequestBody String review, UserPrincipal principal) {
+    public String add(@RequestBody String review, UserPrincipal principal) {
+        String reviewJson = null;
         if (principal != null) {
-            String role = userService.getRole(principal.getId());
-            try {
-                Role roleByName = Role.getRoleByName(role);
-                if (roleByName.equals(Role.USER)) {
-                    ReviewDto reviewDto = JsonConverter.fromJson(review, ReviewDto.class);
-                    saveReview(principal.getId(), reviewDto);
-                } else {
-                    String message = "Validation of user's role access type failed, required role: USER";
-                    LOG.warn(message);
-                    throw new InvalidAccessException(message);
-                }
-            } catch (IllegalArgumentException e) {
-                LOG.warn("Validation of user's role name failed", e);
-                throw new IllegalArgumentException(e);
+            Role role = userService.getRole(principal.getUser().getId());
+            if (!(role.equals(Role.USER) || role.equals(Role.ADMIN))) {
+                String message = "Validation of user's role access type failed, required role: USER/ADMIN";
+                LOG.warn(message);
+                throw new InvalidAccessException(message);
             }
+
+            ReviewDto reviewDto = JsonConverter.fromJson(review, ReviewDto.class);
+            Review addedReview = saveReview(principal, reviewDto);
+            reviewJson = JsonConverter.toJson(addedReview);
         }
+        return reviewJson;
     }
 
-    private void saveReview(int userId, ReviewDto reviewDto) {
+    private Review saveReview(UserPrincipal principal, ReviewDto reviewDto) {
         Review review = ReviewDtoConverter.mapDtoIntoObject(reviewDto);
-        review.setUser(new User(userId));
+        review.setUser(new User(principal.getUser().getId()));
         LOG.info("Sending request to add review: {}", review);
         long startTime = System.currentTimeMillis();
-        reviewService.add(review);
+        Review addedReview = reviewService.add(review);
         LOG.info("Review was added. It took {} ms", System.currentTimeMillis() - startTime);
+        return addedReview;
     }
 }

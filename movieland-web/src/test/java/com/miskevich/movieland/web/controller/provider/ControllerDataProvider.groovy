@@ -1,14 +1,16 @@
 package com.miskevich.movieland.web.controller.provider
 
 import com.miskevich.movieland.entity.*
+import com.miskevich.movieland.model.Role
 import com.miskevich.movieland.model.SortingField
 import com.miskevich.movieland.model.SortingType
 import com.miskevich.movieland.web.dto.MovieDto
 import com.miskevich.movieland.web.dto.ReviewDto
-import com.miskevich.movieland.web.security.UserPrincipal
+import com.miskevich.movieland.service.security.UserPrincipal
 import org.testng.annotations.DataProvider
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class ControllerDataProvider {
@@ -187,25 +189,12 @@ class ControllerDataProvider {
     static Object[][] provideReviewAddSuccess() {
 
         String uuid = UUID.randomUUID()
-        def roleValid = 'USER'
+        def roleValid = Role.USER
         def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
-        def principal = new UserPrincipal(1, 'SuperUser')
+        def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
 
         def array = new Object[1][]
         array[0] = [roleValid, reviewJson, uuid, principal]
-        return array
-    }
-
-    @DataProvider(name = "provideReviewAddIncorrectRole")
-    static Object[][] provideReviewAddIncorrectRole() {
-
-        String uuid = UUID.randomUUID()
-        def roleIncorrect = 'manager'
-        def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
-        def principal = new UserPrincipal(1, 'SuperUser')
-
-        def array = new Object[1][]
-        array[0] = [reviewJson, uuid, roleIncorrect, principal]
         return array
     }
 
@@ -213,9 +202,9 @@ class ControllerDataProvider {
     static Object[][] provideReviewAddInvalidRole() {
 
         String uuid = UUID.randomUUID()
-        def roleInvalid = 'ADMIN'
+        def roleInvalid = Role.MANAGER
         def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
-        def principal = new UserPrincipal(1, 'SuperUser')
+        def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
 
         def array = new Object[1][]
         array[0] = [reviewJson, uuid, roleInvalid, principal]

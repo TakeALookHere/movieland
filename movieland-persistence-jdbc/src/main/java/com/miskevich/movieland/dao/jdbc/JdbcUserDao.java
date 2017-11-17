@@ -1,8 +1,10 @@
 package com.miskevich.movieland.dao.jdbc;
 
 import com.miskevich.movieland.dao.IUserDao;
+import com.miskevich.movieland.dao.jdbc.mapper.RoleRowMapper;
 import com.miskevich.movieland.dao.jdbc.mapper.UserRowMapper;
 import com.miskevich.movieland.entity.User;
+import com.miskevich.movieland.model.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ public class JdbcUserDao implements IUserDao {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private static final UserRowMapper USER_ROW_MAPPER = new UserRowMapper();
+    private static final RoleRowMapper ROLE_ROW_MAPPER = new RoleRowMapper();
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -37,13 +40,13 @@ public class JdbcUserDao implements IUserDao {
     }
 
     @Override
-    public String getRole(int id) {
+    public Role getRole(int id) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("userId", id);
 
         LOG.info("Start query to get user's role from DB");
         long startTime = System.currentTimeMillis();
-        String role = namedParameterJdbcTemplate.queryForObject(getUserRoleSQL, parameters, String.class);
+        Role role = namedParameterJdbcTemplate.queryForObject(getUserRoleSQL, parameters, ROLE_ROW_MAPPER);
         LOG.info("Finish query to get user's role from DB. It took {} ms", System.currentTimeMillis() - startTime);
         return role;
     }
