@@ -1,5 +1,6 @@
 package com.miskevich.movieland.web.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.miskevich.movieland.entity.Country;
 import com.miskevich.movieland.entity.Genre;
@@ -15,6 +16,7 @@ public class MovieDto {
     private String nameRussian;
     private String nameNative;
     @JsonSerialize(using = LocalDateToStringSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDate yearOfRelease;
     private List<Country> countries;
     private String description;

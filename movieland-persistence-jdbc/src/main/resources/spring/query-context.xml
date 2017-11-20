@@ -66,4 +66,10 @@
         <constructor-arg
                 value="select id, name from country;"/>
     </bean>
+
+    <bean id="addMovieSQL" class="java.lang.String">
+        <constructor-arg
+                value="insert into movie (name_russian, name_native, released_date, plot, rating, price, picture_path)
+                        values (:nameRussian, :nameNative, :yearOfRelease, :description, :rating, :price, :picturePath)"/>
+    </bean>
 </beans>

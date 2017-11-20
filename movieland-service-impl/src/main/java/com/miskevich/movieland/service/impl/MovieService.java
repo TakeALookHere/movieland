@@ -54,4 +54,9 @@ public class MovieService implements IMovieService {
         reviewService.enrichWithReview(movie);
         return movie;
     }
+
+    @Override
+    public Movie save(Movie movie) {
+        return movieDao.save(movie);
+    }
 }

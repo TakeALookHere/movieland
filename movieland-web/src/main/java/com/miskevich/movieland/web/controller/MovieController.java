@@ -7,6 +7,7 @@ import com.miskevich.movieland.model.SortingType;
 import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.dto.RateDto;
 import com.miskevich.movieland.service.impl.RateService;
+import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.MovieDto;
 import com.miskevich.movieland.web.json.JsonConverter;
 import com.miskevich.movieland.web.json.MovieDtoConverter;
@@ -46,6 +47,19 @@ public class MovieController {
         String moviesJson = JsonConverter.toJson(movieDtos);
         LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/movie", method = RequestMethod.POST)
+    public String add(@RequestBody String movie, UserPrincipal principal){
+        LOG.info("Sending request to add movie");
+        long startTime = System.currentTimeMillis();
+        MovieDto movieDto = JsonConverter.fromJson(movie, MovieDto.class);
+        Movie movie1 = MovieDtoConverter.mapDtoIntoObject(movieDto);
+        Movie movie2 = movieService.save(movie1);
+        String movieJson = JsonConverter.toJson(movie2);
+        LOG.info("Movie {} was added. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
+        return movieJson;
     }
 
     @ResponseBody

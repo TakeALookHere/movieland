@@ -31,4 +31,18 @@ public abstract class MovieDtoConverter {
         movieDto.setReviews(movie.getReviews());
         return movieDto;
     }
+
+    public static Movie mapDtoIntoObject(MovieDto movieDto) {
+        Movie movie = new Movie();
+        movie.setNameRussian(movieDto.getNameRussian());
+        movie.setNameNative(movieDto.getNameNative());
+        movie.setYearOfRelease(movieDto.getYearOfRelease());
+        movie.setDescription(movieDto.getDescription());
+        movie.setRating(movieDto.getRating());
+        movie.setPrice(movieDto.getPrice());
+        movie.setPicturePath(movieDto.getPicturePath());
+        movie.setGenres(movieDto.getGenres());
+        movie.setCountries(movieDto.getCountries());
+        return movie;
+    }
 }
