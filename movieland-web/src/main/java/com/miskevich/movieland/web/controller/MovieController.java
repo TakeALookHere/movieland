@@ -2,13 +2,16 @@ package com.miskevich.movieland.web.controller;
 
 import com.miskevich.movieland.entity.Movie;
 import com.miskevich.movieland.model.Currency;
+import com.miskevich.movieland.model.Role;
 import com.miskevich.movieland.model.SortingField;
 import com.miskevich.movieland.model.SortingType;
 import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.dto.RateDto;
+import com.miskevich.movieland.service.IUserService;
 import com.miskevich.movieland.service.impl.RateService;
 import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.MovieDto;
+import com.miskevich.movieland.web.exception.InvalidAccessException;
 import com.miskevich.movieland.web.json.JsonConverter;
 import com.miskevich.movieland.web.json.MovieDtoConverter;
 import com.miskevich.movieland.web.util.RateConverter;
@@ -33,6 +36,8 @@ public class MovieController {
     private IMovieService movieService;
     @Autowired
     private RateService rateService;
+    @Autowired
+    private IUserService userService;
 
     @ResponseBody
     @RequestMapping(value = "/movie")
@@ -51,14 +56,26 @@ public class MovieController {
 
     @ResponseBody
     @RequestMapping(value = "/movie", method = RequestMethod.POST)
-    public String add(@RequestBody String movie, UserPrincipal principal){
-        LOG.info("Sending request to add movie");
-        long startTime = System.currentTimeMillis();
-        MovieDto movieDto = JsonConverter.fromJson(movie, MovieDto.class);
-        Movie movie1 = MovieDtoConverter.mapDtoIntoObject(movieDto);
-        Movie movie2 = movieService.save(movie1);
-        String movieJson = JsonConverter.toJson(movie2);
-        LOG.info("Movie {} was added. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
+    public String add(@RequestBody String movieFromRequest, UserPrincipal principal){
+        String movieJson = null;
+
+        if(principal != null){
+            Role role = userService.getRole(principal.getUser().getId());
+            if (!(role.equals(Role.ADMIN))) {
+                String message = "Validation of user's role access type failed, required role: ADMIN";
+                LOG.warn(message);
+                throw new InvalidAccessException(message);
+            }
+
+            LOG.info("Sending request to add movie");
+            long startTime = System.currentTimeMillis();
+            MovieDto movieDto = JsonConverter.fromJson(movieFromRequest, MovieDto.class);
+            Movie movie = MovieDtoConverter.mapDtoIntoObject(movieDto);
+            movie = movieService.save(movie);
+            movieDto = MovieDtoConverter.mapObject(movie);
+            movieJson = JsonConverter.toJson(movieDto);
+            LOG.info("Movie {} was added. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
+        }
         return movieJson;
     }
 
