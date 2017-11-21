@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -109,7 +110,7 @@ public class JdbcMovieDao implements IMovieDao {
     }
 
     @Override
-    public Movie save(Movie movie) {
+    public Movie saveMovie(Movie movie) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("nameRussian", movie.getNameRussian());
         parameters.addValue("nameNative", movie.getNameNative());

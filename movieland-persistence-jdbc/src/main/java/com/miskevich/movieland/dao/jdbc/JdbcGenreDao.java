@@ -3,6 +3,7 @@ package com.miskevich.movieland.dao.jdbc;
 import com.miskevich.movieland.dao.IGenreDao;
 import com.miskevich.movieland.dao.jdbc.mapper.GenreRowMapper;
 import com.miskevich.movieland.entity.Genre;
+import com.miskevich.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class JdbcGenreDao implements IGenreDao {
     private String getAllGenresSQL;
     @Autowired
     private String getGenresByMovieIdSQL;
+    @Autowired
+    private String addMovieGenresSQL;
 
     @Override
     public List<Genre> getAll() {
@@ -43,5 +46,21 @@ public class JdbcGenreDao implements IGenreDao {
         List<Genre> genres = namedParameterJdbcTemplate.query(getGenresByMovieIdSQL, parameters, GENRE_ROW_MAPPER);
         LOG.info("Finish query to get genres from DB by movieId. It took {} ms", System.currentTimeMillis() - startTime);
         return genres;
+    }
+
+    @Override
+    public void saveMovieGenres(Movie movie) {
+        for (int i = 0; i < movie.getGenres().size(); i++) {
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            int movieId = movie.getId();
+            int genreId = movie.getGenres().get(i).getId();
+            parameters.addValue("movieId", movieId);
+            parameters.addValue("genreId", genreId);
+
+            LOG.info("Start query to insert genreId {} for movieId {}", genreId, movieId);
+            long startTime = System.currentTimeMillis();
+            namedParameterJdbcTemplate.update(addMovieGenresSQL, parameters);
+            LOG.info("Finish query to insert genreId {} for movieId {}. It took {} ms", genreId, movieId, System.currentTimeMillis() - startTime);
+        }
     }
 }

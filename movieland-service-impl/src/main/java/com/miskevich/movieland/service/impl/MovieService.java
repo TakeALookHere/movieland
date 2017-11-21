@@ -10,6 +10,7 @@ import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.service.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,10 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    @Transactional
     public Movie save(Movie movie) {
-        return movieDao.save(movie);
+        movie = movieDao.saveMovie(movie);
+        genreService.saveMovieGenres(movie);
+        return movie;
     }
 }

@@ -218,14 +218,50 @@ class ControllerDataProvider {
         def roleValid = Role.ADMIN
         def movieExpected = new Movie(id: 1, nameRussian: "Зеленая миля", nameNative: "The Green Mile", yearOfRelease: convertStringToDate("1999-01-01"),
                 description: "Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.",
-                rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg")
+                rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg",
+                genres: [new Genre(1, 'драма'), new Genre(2, 'криминал')],
+                countries: [new Country(id: 1, name: 'США'), new Country(id: 2, name: 'Франция')],
+                reviews: [new Review(id: 1, text: 'Гениальное кино! Смотришь и думаешь «Так не бывает!», но позже понимаешь, что только так и должно быть. Начинаешь заново осмысливать значение фразы, которую постоянно используешь в своей жизни, «Надежда умирает последней». Ведь если ты не надеешься, то все в твоей жизни гаснет, не остается смысла. Фильм наполнен бесконечным числом правильных афоризмов. Я уверена, что буду пересматривать его сотни раз.',
+                        movie: new Movie(id: 1),
+                        user: new User(id: 1)),
+                          new Review(id: 2, text: 'Назначается Киношедевром среди развлекательных фильмов.',
+                                  movie: new Movie(id: 1),
+                                  user: new User(id: 5))])
         def movieJson = new MovieDto(nameRussian: "Зеленая миля", nameNative: "The Green Mile", yearOfRelease: convertStringToDate("1999-01-01"),
                 description: "Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.",
-                rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg")
+                rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg",
+                genres: [new Genre(1, 'драма'), new Genre(2, 'криминал')],
+                countries: [new Country(id: 1, name: 'США'), new Country(id: 2, name: 'Франция')],
+                reviews: [new Review(id: 1, text: 'Гениальное кино! Смотришь и думаешь «Так не бывает!», но позже понимаешь, что только так и должно быть. Начинаешь заново осмысливать значение фразы, которую постоянно используешь в своей жизни, «Надежда умирает последней». Ведь если ты не надеешься, то все в твоей жизни гаснет, не остается смысла. Фильм наполнен бесконечным числом правильных афоризмов. Я уверена, что буду пересматривать его сотни раз.',
+                        movie: new Movie(id: 1),
+                        user: new User(id: 1)),
+                          new Review(id: 2, text: 'Назначается Киношедевром среди развлекательных фильмов.',
+                                  movie: new Movie(id: 1),
+                                  user: new User(id: 5))])
         def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
 
         def array = new Object[1][]
         array[0] = [roleValid, movieExpected, movieJson, uuid, principal]
+        return array
+    }
+
+    @DataProvider(name = "provideMovieJson")
+    static Object[][] provideMovieJson() {
+
+        def movieJson = new MovieDto(nameRussian: "Зеленая миля", nameNative: "The Green Mile", yearOfRelease: convertStringToDate("1999-01-01"),
+                description: "Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.",
+                rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg",
+                genres: [new Genre(1, 'драма'), new Genre(2, 'криминал')],
+                countries: [new Country(id: 1, name: 'США'), new Country(id: 2, name: 'Франция')],
+                reviews: [new Review(id: 1, text: 'Гениальное кино! Смотришь и думаешь «Так не бывает!», но позже понимаешь, что только так и должно быть. Начинаешь заново осмысливать значение фразы, которую постоянно используешь в своей жизни, «Надежда умирает последней». Ведь если ты не надеешься, то все в твоей жизни гаснет, не остается смысла. Фильм наполнен бесконечным числом правильных афоризмов. Я уверена, что буду пересматривать его сотни раз.',
+                        movie: new Movie(id: 1),
+                        user: new User(id: 1)),
+                          new Review(id: 2, text: 'Назначается Киношедевром среди развлекательных фильмов.',
+                                  movie: new Movie(id: 1),
+                                  user: new User(id: 5))])
+
+        def array = new Object[1][]
+        array[0] = [movieJson]
         return array
     }
 

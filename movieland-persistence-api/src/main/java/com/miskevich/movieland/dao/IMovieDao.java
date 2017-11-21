@@ -17,5 +17,5 @@ public interface IMovieDao {
 
     Movie getById(int id);
 
-    Movie save(Movie movie);
+    Movie saveMovie(Movie movie);
 }

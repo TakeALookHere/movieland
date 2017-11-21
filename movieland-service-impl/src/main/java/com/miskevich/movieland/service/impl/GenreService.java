@@ -30,4 +30,9 @@ public class GenreService implements IGenreService {
         movie.setGenres(getByMovieId(movie.getId()));
     }
 
+    @Override
+    public void saveMovieGenres(Movie movie) {
+        genreDao.saveMovieGenres(movie);
+    }
+
 }
