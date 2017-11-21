@@ -211,6 +211,24 @@ class ControllerDataProvider {
         return array
     }
 
+    @DataProvider(name = "provideMovieAddSuccess")
+    static Object[][] provideMovieAddSuccess() {
+
+        String uuid = UUID.randomUUID()
+        def roleValid = Role.ADMIN
+        def movieExpected = new Movie(id: 1, nameRussian: "Зеленая миля", nameNative: "The Green Mile", yearOfRelease: convertStringToDate("1999-01-01"),
+                description: "Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.",
+                rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg")
+        def movieJson = new MovieDto(nameRussian: "Зеленая миля", nameNative: "The Green Mile", yearOfRelease: convertStringToDate("1999-01-01"),
+                description: "Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.",
+                rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg")
+        def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
+
+        def array = new Object[1][]
+        array[0] = [roleValid, movieExpected, movieJson, uuid, principal]
+        return array
+    }
+
     @DataProvider(name = "provideReviewAddInvalidRole")
     static Object[][] provideReviewAddInvalidRole() {
 

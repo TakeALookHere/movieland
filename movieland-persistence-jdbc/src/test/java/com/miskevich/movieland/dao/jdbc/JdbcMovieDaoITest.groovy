@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
 import org.testng.annotations.Test
 
+import static org.testng.Assert.assertEquals
 import static org.testng.Assert.assertNotNull
 
 @ContextConfiguration(locations = "classpath:spring/jdbc-context.xml")
@@ -85,5 +86,18 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
         assertNotNull(movie.getYearOfRelease())
         assertNotNull(movie.getDescription())
         assertNotNull(movie.getPicturePath())
+    }
+
+    @Test(dataProvider = 'provideMovieSave', dataProviderClass = SQLDataProvider.class)
+    void testSave(movieExpected) {
+        def movie = jdbcMovieDao.save(movieExpected)
+        assertEquals(movie.getNameRussian(), movieExpected.getNameRussian())
+        assertEquals(movie.getNameNative(), movieExpected.getNameNative())
+        assertEquals(movie.getYearOfRelease(), movieExpected.getYearOfRelease())
+        assertEquals(movie.getDescription(), movieExpected.getDescription())
+        assertEquals(movie.getPicturePath(), movieExpected.getPicturePath())
+        assertEquals(movie.getRating(), movieExpected.getRating())
+        assertEquals(movie.getPrice(), movieExpected.getPrice())
+        assertEquals(movie.getPicturePath(), movieExpected.getPicturePath())
     }
 }

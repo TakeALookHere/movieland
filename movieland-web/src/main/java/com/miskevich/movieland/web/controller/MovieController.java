@@ -71,8 +71,8 @@ public class MovieController {
             long startTime = System.currentTimeMillis();
             MovieDto movieDto = JsonConverter.fromJson(movieFromRequest, MovieDto.class);
             Movie movie = MovieDtoConverter.mapDtoIntoObject(movieDto);
-            movie = movieService.save(movie);
-            movieDto = MovieDtoConverter.mapObject(movie);
+            Movie movieAfterSave = movieService.save(movie);
+            movieDto = MovieDtoConverter.mapObject(movieAfterSave);
             movieJson = JsonConverter.toJson(movieDto);
             LOG.info("Movie {} was added. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
         }
