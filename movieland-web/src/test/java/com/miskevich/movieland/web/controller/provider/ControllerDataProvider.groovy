@@ -225,4 +225,14 @@ class ControllerDataProvider {
         array[0] = [userCredentialsMap, user]
         return array
     }
+
+    @DataProvider(name = "provideReviewJson")
+    static Object[][] provideReviewJson() {
+
+        def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
+
+        def array = new Object[1][]
+        array[0] = [reviewJson]
+        return array
+    }
 }

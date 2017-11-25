@@ -5,6 +5,7 @@ import com.miskevich.movieland.entity.User;
 import com.miskevich.movieland.model.Role;
 import com.miskevich.movieland.service.IReviewService;
 import com.miskevich.movieland.service.IUserService;
+import com.miskevich.movieland.service.exception.AuthRequiredException;
 import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.ReviewDto;
 import com.miskevich.movieland.web.exception.InvalidAccessException;
@@ -34,7 +35,6 @@ public class ReviewController {
     @ResponseBody
     @RequestMapping(value = "/review", method = RequestMethod.POST)
     public String add(@RequestBody String review, UserPrincipal principal) {
-        String reviewJson = null;
         if (principal != null) {
             Role role = userService.getRole(principal.getUser().getId());
             if (!(role.equals(Role.USER) || role.equals(Role.ADMIN))) {
@@ -45,9 +45,12 @@ public class ReviewController {
 
             ReviewDto reviewDto = JsonConverter.fromJson(review, ReviewDto.class);
             Review addedReview = saveReview(principal, reviewDto);
-            reviewJson = JsonConverter.toJson(addedReview);
+            return JsonConverter.toJson(addedReview);
+        }else {
+            String message = "Request header doesn't contain uuid";
+            LOG.warn(message);
+            throw new AuthRequiredException(message);
         }
-        return reviewJson;
     }
 
     private Review saveReview(UserPrincipal principal, ReviewDto reviewDto) {
