@@ -19,7 +19,6 @@ import com.miskevich.movieland.web.util.RateConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -88,7 +87,7 @@ public class MovieController {
     @ResponseBody
     @RequestMapping(value = "/movie/{movieId}", method = RequestMethod.PUT)
     public String update(@RequestBody String movieFromRequest, UserPrincipal principal) {
-        if(principal != null){
+        if (principal != null) {
             Role role = userService.getRole(principal.getUser().getId());
             if (!(role.equals(Role.ADMIN))) {
                 String message = "Validation of user's role access type failed, required role: ADMIN";
@@ -107,7 +106,7 @@ public class MovieController {
             String movieJson = JsonConverter.toJson(movieDto);
             LOG.info("Movie after update was received. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
             return movieJson;
-        }else {
+        } else {
             String message = "Request header doesn't contain uuid";
             LOG.warn(message);
             throw new AuthRequiredException(message);

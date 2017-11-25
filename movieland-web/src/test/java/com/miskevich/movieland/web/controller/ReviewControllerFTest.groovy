@@ -2,10 +2,10 @@ package com.miskevich.movieland.web.controller
 
 import com.miskevich.movieland.service.IReviewService
 import com.miskevich.movieland.service.IUserService
+import com.miskevich.movieland.service.security.UserPrincipal
 import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
 import com.miskevich.movieland.web.dto.ReviewDto
 import com.miskevich.movieland.web.json.JsonConverter
-import com.miskevich.movieland.service.security.UserPrincipal
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
