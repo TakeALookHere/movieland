@@ -63,23 +63,27 @@ public class JdbcReviewDao implements IReviewDao {
 
     @Override
     public void persist(Movie movie) {
-        for (int i = 0; i < movie.getReviews().size(); i++) {
-            add(movie.getReviews().get(i));
+        if (movie.getReviews() != null) {
+            for (int i = 0; i < movie.getReviews().size(); i++) {
+                add(movie.getReviews().get(i));
+            }
         }
     }
 
     @Override
     public void update(Movie movie) {
-        for (int i = 0; i < movie.getReviews().size(); i++) {
-            long reviewId = movie.getReviews().get(i).getId();
-            int userId = movie.getReviews().get(i).getUser().getId();
-            String description = movie.getReviews().get(i).getText();
-            MapSqlParameterSource parameters = populateSQLParameters(reviewId, userId, description);
+        if (movie.getReviews() != null) {
+            for (int i = 0; i < movie.getReviews().size(); i++) {
+                long reviewId = movie.getReviews().get(i).getId();
+                int userId = movie.getReviews().get(i).getUser().getId();
+                String description = movie.getReviews().get(i).getText();
+                MapSqlParameterSource parameters = populateSQLParameters(reviewId, userId, description);
 
-            LOG.info("Start query to update reviewId into DB: {}", reviewId);
-            long startTime = System.currentTimeMillis();
-            namedParameterJdbcTemplate.update(updateReviewSQL, parameters);
-            LOG.info("Finish query to update reviewId into DB: {}. It took {} ms", reviewId, System.currentTimeMillis() - startTime);
+                LOG.info("Start query to update reviewId into DB: {}", reviewId);
+                long startTime = System.currentTimeMillis();
+                namedParameterJdbcTemplate.update(updateReviewSQL, parameters);
+                LOG.info("Finish query to update reviewId into DB: {}. It took {} ms", reviewId, System.currentTimeMillis() - startTime);
+            }
         }
     }
 

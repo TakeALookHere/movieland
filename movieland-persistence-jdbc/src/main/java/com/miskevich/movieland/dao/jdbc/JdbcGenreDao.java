@@ -52,29 +52,33 @@ public class JdbcGenreDao implements IGenreDao {
 
     @Override
     public void persist(Movie movie) {
-        for (int i = 0; i < movie.getGenres().size(); i++) {
-            int movieId = movie.getId();
-            int genreId = movie.getGenres().get(i).getId();
-            MapSqlParameterSource parameters = populateSQLParameters(movieId, genreId);
+        if (movie.getGenres() != null) {
+            for (int i = 0; i < movie.getGenres().size(); i++) {
+                int movieId = movie.getId();
+                int genreId = movie.getGenres().get(i).getId();
+                MapSqlParameterSource parameters = populateSQLParameters(movieId, genreId);
 
-            LOG.info("Start query to insert genreId {} for movieId {}", genreId, movieId);
-            long startTime = System.currentTimeMillis();
-            namedParameterJdbcTemplate.update(addMovieGenresSQL, parameters);
-            LOG.info("Finish query to insert genreId {} for movieId {}. It took {} ms", genreId, movieId, System.currentTimeMillis() - startTime);
+                LOG.info("Start query to insert genreId {} for movieId {}", genreId, movieId);
+                long startTime = System.currentTimeMillis();
+                namedParameterJdbcTemplate.update(addMovieGenresSQL, parameters);
+                LOG.info("Finish query to insert genreId {} for movieId {}. It took {} ms", genreId, movieId, System.currentTimeMillis() - startTime);
+            }
         }
     }
 
     @Override
     public void update(Movie movie) {
-        for (int i = 0; i < movie.getGenres().size(); i++) {
-            int movieId = movie.getId();
-            int genreId = movie.getGenres().get(i).getId();
-            MapSqlParameterSource parameters = populateSQLParameters(movieId, genreId);
+        if (movie.getGenres() != null) {
+            for (int i = 0; i < movie.getGenres().size(); i++) {
+                int movieId = movie.getId();
+                int genreId = movie.getGenres().get(i).getId();
+                MapSqlParameterSource parameters = populateSQLParameters(movieId, genreId);
 
-            LOG.info("Start query to update genreId {} for movieId {}", genreId, movieId);
-            long startTime = System.currentTimeMillis();
-            namedParameterJdbcTemplate.update(updateMovieGenresSQL, parameters);
-            LOG.info("Finish query to update genreId {} for movieId {}. It took {} ms", genreId, movieId, System.currentTimeMillis() - startTime);
+                LOG.info("Start query to update genreId {} for movieId {}", genreId, movieId);
+                long startTime = System.currentTimeMillis();
+                namedParameterJdbcTemplate.update(updateMovieGenresSQL, parameters);
+                LOG.info("Finish query to update genreId {} for movieId {}. It took {} ms", genreId, movieId, System.currentTimeMillis() - startTime);
+            }
         }
     }
 

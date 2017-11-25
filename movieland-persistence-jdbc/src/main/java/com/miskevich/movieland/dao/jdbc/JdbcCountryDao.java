@@ -53,15 +53,17 @@ public class JdbcCountryDao implements ICountryDao {
 
     @Override
     public void persist(Movie movie) {
-        for (int i = 0; i < movie.getCountries().size(); i++) {
-            int movieId = movie.getId();
-            int countryId = movie.getCountries().get(i).getId();
-            MapSqlParameterSource parameters = populateSQLParameters(movieId, countryId);
+        if (movie.getCountries() != null) {
+            for (int i = 0; i < movie.getCountries().size(); i++) {
+                int movieId = movie.getId();
+                int countryId = movie.getCountries().get(i).getId();
+                MapSqlParameterSource parameters = populateSQLParameters(movieId, countryId);
 
-            LOG.info("Start query to insert countryId {} for movieId {}", countryId, movieId);
-            long startTime = System.currentTimeMillis();
-            namedParameterJdbcTemplate.update(addMovieCountriesSQL, parameters);
-            LOG.info("Finish query to insert countryId {} for movieId {}. It took {} ms", countryId, movieId, System.currentTimeMillis() - startTime);
+                LOG.info("Start query to insert countryId {} for movieId {}", countryId, movieId);
+                long startTime = System.currentTimeMillis();
+                namedParameterJdbcTemplate.update(addMovieCountriesSQL, parameters);
+                LOG.info("Finish query to insert countryId {} for movieId {}. It took {} ms", countryId, movieId, System.currentTimeMillis() - startTime);
+            }
         }
     }
 
@@ -74,15 +76,17 @@ public class JdbcCountryDao implements ICountryDao {
 
     @Override
     public void update(Movie movie) {
-        for (int i = 0; i < movie.getCountries().size(); i++) {
-            int movieId = movie.getId();
-            int countryId = movie.getCountries().get(i).getId();
-            MapSqlParameterSource parameters = populateSQLParameters(movieId, countryId);
+        if (movie.getCountries() != null) {
+            for (int i = 0; i < movie.getCountries().size(); i++) {
+                int movieId = movie.getId();
+                int countryId = movie.getCountries().get(i).getId();
+                MapSqlParameterSource parameters = populateSQLParameters(movieId, countryId);
 
-            LOG.info("Start query to update countryId {} for movieId {}", countryId, movieId);
-            long startTime = System.currentTimeMillis();
-            namedParameterJdbcTemplate.update(updateMovieCountriesSQL, parameters);
-            LOG.info("Finish query to update countryId {} for movieId {}. It took {} ms", countryId, movieId, System.currentTimeMillis() - startTime);
+                LOG.info("Start query to update countryId {} for movieId {}", countryId, movieId);
+                long startTime = System.currentTimeMillis();
+                namedParameterJdbcTemplate.update(updateMovieCountriesSQL, parameters);
+                LOG.info("Finish query to update countryId {} for movieId {}. It took {} ms", countryId, movieId, System.currentTimeMillis() - startTime);
+            }
         }
     }
 }
