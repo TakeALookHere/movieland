@@ -67,4 +67,15 @@ class ReviewControllerFTest {
         verify(mockUserService, times(2)).getRole(1)
         verifyNoMoreInteractions(mockUserService)
     }
+
+    @Test(dataProvider = "provideReviewJson", dataProviderClass = ControllerDataProvider.class,
+            expectedExceptionsMessageRegExp = '.*Request header doesn\'t contain uuid',
+            expectedExceptions = NestedServletException.class)
+    void testSaveNoUuidHeader(reviewJson) {
+        mockMvc.perform(post("/review")
+                .content(JsonConverter.toJson(reviewJson))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+    }
 }
