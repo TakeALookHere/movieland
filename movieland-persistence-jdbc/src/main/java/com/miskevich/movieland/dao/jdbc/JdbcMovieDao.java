@@ -16,6 +16,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.*;
 
 @Repository
@@ -39,6 +40,8 @@ public class JdbcMovieDao implements IMovieDao {
     private String getMovieByIdSQL;
     @Autowired
     private String addMovieSQL;
+    @Autowired
+    private String updateMovieSQL;
 
     @Override
     public List<Movie> getAll(Map<SortingField, SortingType> params) {
@@ -110,15 +113,8 @@ public class JdbcMovieDao implements IMovieDao {
     }
 
     @Override
-    public Movie saveMovie(Movie movie) {
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("nameRussian", movie.getNameRussian());
-        parameters.addValue("nameNative", movie.getNameNative());
-        parameters.addValue("yearOfRelease", movie.getYearOfRelease());
-        parameters.addValue("description", movie.getDescription());
-        parameters.addValue("rating", movie.getRating());
-        parameters.addValue("price", movie.getPrice());
-        parameters.addValue("picturePath", movie.getPicturePath());
+    public Movie save(Movie movie) {
+        MapSqlParameterSource parameters = populateSQLParameters(movie);
         LOG.info("Start query to insert movie");
         long startTime = System.currentTimeMillis();
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -126,6 +122,17 @@ public class JdbcMovieDao implements IMovieDao {
         int movieId = keyHolder.getKey().intValue();
         movie.setId(movieId);
         LOG.info("Finish query to insert movie into DB. It took {} ms", System.currentTimeMillis() - startTime);
+        return movie;
+    }
+
+    @Override
+    public Movie update(Movie movie) {
+        MapSqlParameterSource parameters = populateSQLParameters(movie);
+        parameters.addValue("movieId", movie.getId());
+        LOG.info("Start query to update movie");
+        long startTime = System.currentTimeMillis();
+        namedParameterJdbcTemplate.update(updateMovieSQL, parameters);
+        LOG.info("Finish query to update movie into DB. It took {} ms", System.currentTimeMillis() - startTime);
         return movie;
     }
 
@@ -170,5 +177,17 @@ public class JdbcMovieDao implements IMovieDao {
             counter++;
         }
         return stringBuilder.toString();
+    }
+
+    private MapSqlParameterSource populateSQLParameters(Movie movie) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("nameRussian", movie.getNameRussian());
+        parameters.addValue("nameNative", movie.getNameNative());
+        parameters.addValue("yearOfRelease", Date.valueOf(movie.getYearOfRelease()));
+        parameters.addValue("description", movie.getDescription());
+        parameters.addValue("rating", movie.getRating());
+        parameters.addValue("price", movie.getPrice());
+        parameters.addValue("picturePath", movie.getPicturePath());
+        return parameters;
     }
 }

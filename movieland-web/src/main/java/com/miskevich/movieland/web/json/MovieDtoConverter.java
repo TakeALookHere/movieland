@@ -43,6 +43,7 @@ public abstract class MovieDtoConverter {
         movie.setPicturePath(movieDto.getPicturePath());
         movie.setGenres(movieDto.getGenres());
         movie.setCountries(movieDto.getCountries());
+        movie.setReviews(movieDto.getReviews());
         return movie;
     }
 }

@@ -1,6 +1,7 @@
 package com.miskevich.movieland.dao.jdbc
 
 import com.miskevich.movieland.dao.jdbc.provider.JdbcDataProvider
+import com.miskevich.movieland.dao.jdbc.provider.SQLDataProvider
 import com.miskevich.movieland.entity.Review
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -28,5 +29,15 @@ class JdbcReviewDaoITest extends AbstractTestNGSpringContextTests {
     @Test(dataProvider = "provideAddReview", dataProviderClass = JdbcDataProvider.class)
     void testAdd(Review reviewForAdd) {
         jdbcReviewDao.add(reviewForAdd)
+    }
+
+    @Test(dataProvider = 'provideMovieForEnrichmentSave', dataProviderClass = SQLDataProvider.class)
+    void testSaveMovieGenresDuplicateKey(movie) {
+        jdbcReviewDao.persist(movie)
+    }
+
+    @Test(dataProvider = 'provideMovieForEnrichmentUpdate', dataProviderClass = SQLDataProvider.class)
+    void testUpdateMovieGenresDuplicateKey(movie) {
+        jdbcReviewDao.update(movie)
     }
 }

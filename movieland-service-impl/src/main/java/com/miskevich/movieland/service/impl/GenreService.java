@@ -31,8 +31,13 @@ public class GenreService implements IGenreService {
     }
 
     @Override
-    public void saveMovieGenres(Movie movie) {
-        genreDao.saveMovieGenres(movie);
+    public void persist(Movie movie) {
+        genreDao.persist(movie);
+    }
+
+    @Override
+    public void update(Movie movie) {
+        genreDao.update(movie);
     }
 
 }

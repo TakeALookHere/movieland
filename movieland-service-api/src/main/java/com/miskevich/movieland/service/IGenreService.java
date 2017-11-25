@@ -12,5 +12,7 @@ public interface IGenreService {
 
     void enrichWithGenre(Movie movie);
 
-    void saveMovieGenres(Movie movie);
+    void persist(Movie movie);
+
+    void update(Movie movie);
 }

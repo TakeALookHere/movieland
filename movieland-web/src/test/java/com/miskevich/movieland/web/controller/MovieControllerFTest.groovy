@@ -29,6 +29,7 @@ import static org.mockito.Matchers.anyMap
 import static org.mockito.Mockito.*
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -318,8 +319,8 @@ class MovieControllerFTest {
     @Test(dataProvider = "provideMovieAddSuccess", dataProviderClass = ControllerDataProvider.class)
     void testSaveSuccess(roleValid, Movie movieExpected, movieJson, String uuid, UserPrincipal principal) {
 
-        when(mockUserService.getRole(1)).thenReturn(roleValid)
-        when(mockMovieService.save(any())).thenReturn(movieExpected)
+        when(mockUserService.getRole(anyInt())).thenReturn(roleValid)
+        when(mockMovieService.save(any(Movie.class))).thenReturn(movieExpected)
         mockMvc.perform(post("/movie")
                 .header('uuid', uuid)
                 .content(JsonConverter.toJson(movieJson))
@@ -353,14 +354,14 @@ class MovieControllerFTest {
                 .andExpect(jsonPath('$.reviews[1].movie.id', is(movieExpected.reviews.get(1).movie.id)))
                 .andExpect(jsonPath('$.reviews[1].user.id', is(movieExpected.reviews.get(1).user.id)))
 
-        verify(mockUserService, times(1)).getRole(1)
+        verify(mockUserService, times(1)).getRole(anyInt())
         verifyNoMoreInteractions(mockUserService)
-        verify(mockMovieService, times(1)).save(any())
+        verify(mockMovieService, times(1)).save(any(Movie.class))
         verifyNoMoreInteractions(mockMovieService)
     }
 
     @Test(dataProvider = "provideMovieJson", dataProviderClass = ControllerDataProvider.class,
-            expectedExceptionsMessageRegExp = '.*Request headers don\'t contains uuid',
+            expectedExceptionsMessageRegExp = '.*Request header doesn\'t contain uuid',
             expectedExceptions = NestedServletException.class)
     void testSaveNoUuidHeader(movieJson) {
         mockMvc.perform(post("/movie")
@@ -368,5 +369,60 @@ class MovieControllerFTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
+    }
+
+    @Test(dataProvider = "provideMovieJson", dataProviderClass = ControllerDataProvider.class,
+            expectedExceptionsMessageRegExp = '.*Request header doesn\'t contain uuid',
+            expectedExceptions = NestedServletException.class)
+    void testUpdateNoUuidHeader(movieJson) {
+        mockMvc.perform(put("/movie/{movieId}", 1)
+                .content(JsonConverter.toJson(movieJson))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+    }
+
+    @Test(dataProvider = "provideMovieUpdateSuccess", dataProviderClass = ControllerDataProvider.class)
+    void testUpdateSuccess(roleValid, Movie movieExpected, movieJson, String uuid, UserPrincipal principal) {
+
+        when(mockUserService.getRole(anyInt())).thenReturn(roleValid)
+        when(mockMovieService.update(any(Movie.class))).thenReturn(movieExpected)
+        mockMvc.perform(put("/movie/{movieId}", movieExpected.id)
+                .header('uuid', uuid)
+                .content(JsonConverter.toJson(movieJson))
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+
+                .andExpect(jsonPath('$.id', is(movieExpected.id)))
+                .andExpect(jsonPath('$.nameRussian', is(movieExpected.nameRussian)))
+                .andExpect(jsonPath('$.nameNative', is(movieExpected.nameNative)))
+                .andExpect(jsonPath('$.yearOfRelease', is('1999')))
+                .andExpect(jsonPath('$.description', is(movieExpected.description)))
+                .andExpect(jsonPath('$.rating', is(movieExpected.rating)))
+                .andExpect(jsonPath('$.price', is(movieExpected.price)))
+                .andExpect(jsonPath('$.picturePath', is(movieExpected.picturePath)))
+                .andExpect(jsonPath('$.genres[0].id', is(movieExpected.genres.get(0).id)))
+                .andExpect(jsonPath('$.genres[0].name', is(movieExpected.genres.get(0).name)))
+                .andExpect(jsonPath('$.genres[1].id', is(movieExpected.genres.get(1).id)))
+                .andExpect(jsonPath('$.genres[1].name', is(movieExpected.genres.get(1).name)))
+                .andExpect(jsonPath('$.countries[0].id', is(movieExpected.countries.get(0).id)))
+                .andExpect(jsonPath('$.countries[0].name', is(movieExpected.countries.get(0).name)))
+                .andExpect(jsonPath('$.countries[1].id', is(movieExpected.countries.get(1).id)))
+                .andExpect(jsonPath('$.countries[1].name', is(movieExpected.countries.get(1).name)))
+                .andExpect(jsonPath('$.reviews[0].id', is(movieExpected.reviews.get(0).id.intValue())))
+                .andExpect(jsonPath('$.reviews[0].text', is(movieExpected.reviews.get(0).text)))
+                .andExpect(jsonPath('$.reviews[0].movie.id', is(movieExpected.reviews.get(0).movie.id)))
+                .andExpect(jsonPath('$.reviews[0].user.id', is(movieExpected.reviews.get(0).user.id)))
+                .andExpect(jsonPath('$.reviews[1].id', is(movieExpected.reviews.get(1).id.intValue())))
+                .andExpect(jsonPath('$.reviews[1].text', is(movieExpected.reviews.get(1).text)))
+                .andExpect(jsonPath('$.reviews[1].movie.id', is(movieExpected.reviews.get(1).movie.id)))
+                .andExpect(jsonPath('$.reviews[1].user.id', is(movieExpected.reviews.get(1).user.id)))
+
+        verify(mockUserService, times(2)).getRole(anyInt())
+        verifyNoMoreInteractions(mockUserService)
+        verify(mockMovieService, times(1)).update(any(Movie.class))
+        verifyNoMoreInteractions(mockMovieService)
     }
 }

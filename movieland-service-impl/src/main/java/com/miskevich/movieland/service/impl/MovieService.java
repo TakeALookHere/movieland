@@ -57,10 +57,23 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    @Transactional
+    //SQLIntegrityConstraintViolationException is not unchecked
+    @Transactional(rollbackFor = Exception.class)
     public Movie save(Movie movie) {
-        movie = movieDao.saveMovie(movie);
-        genreService.saveMovieGenres(movie);
+        movie = movieDao.save(movie);
+        genreService.persist(movie);
+        countryService.persist(movie);
+        reviewService.persist(movie);
+        return movie;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Movie update(Movie movie) {
+        movieDao.update(movie);
+        genreService.update(movie);
+        countryService.update(movie);
+        reviewService.update(movie);
         return movie;
     }
 }

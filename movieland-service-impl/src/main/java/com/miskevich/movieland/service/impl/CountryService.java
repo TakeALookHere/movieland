@@ -29,4 +29,14 @@ public class CountryService implements ICountryService {
     public void enrichWithCountry(Movie movie) {
         movie.setCountries(getByMovieId(movie.getId()));
     }
+
+    @Override
+    public void persist(Movie movie) {
+        countryDao.persist(movie);
+    }
+
+    @Override
+    public void update(Movie movie) {
+        countryDao.update(movie);
+    }
 }

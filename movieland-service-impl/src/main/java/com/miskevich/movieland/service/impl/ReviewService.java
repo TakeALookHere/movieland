@@ -29,4 +29,14 @@ public class ReviewService implements IReviewService {
     public Review add(Review review) {
         return reviewDao.add(review);
     }
+
+    @Override
+    public void persist(Movie movie) {
+        reviewDao.persist(movie);
+    }
+
+    @Override
+    public void update(Movie movie) {
+        reviewDao.update(movie);
+    }
 }

@@ -10,5 +10,7 @@ public interface IGenreDao {
 
     List<Genre> getByMovieId(int movieId);
 
-    void saveMovieGenres(Movie movie);
+    void persist(Movie movie);
+
+    void update(Movie movie);
 }

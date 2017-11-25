@@ -35,6 +35,12 @@ class JdbcGenreDaoITest extends AbstractTestNGSpringContextTests {
     @Test(dataProvider = 'provideMovieForEnrichmentSave', dataProviderClass = SQLDataProvider.class,
             expectedExceptionsMessageRegExp = '.*Duplicate entry \'1-1\' for key \'unique_index\'', expectedExceptions = DuplicateKeyException.class)
     void testSaveMovieGenresDuplicateKey(movie) {
-        jdbcGenreDao.saveMovieGenres(movie)
+        jdbcGenreDao.persist(movie)
+    }
+
+    @Test(dataProvider = 'provideMovieForEnrichmentUpdate', dataProviderClass = SQLDataProvider.class,
+            expectedExceptionsMessageRegExp = '.*Duplicate entry \'1-1\' for key \'unique_index\'', expectedExceptions = DuplicateKeyException.class)
+    void testUpdateMovieGenresDuplicateKey(movie) {
+        jdbcGenreDao.update(movie)
     }
 }

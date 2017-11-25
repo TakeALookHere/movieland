@@ -71,13 +71,44 @@ public class MovieController {
             long startTime = System.currentTimeMillis();
             MovieDto movieDto = JsonConverter.fromJson(movieFromRequest, MovieDto.class);
             Movie movie = MovieDtoConverter.mapDtoIntoObject(movieDto);
+
             Movie movieAfterSave = movieService.save(movie);
+
             movieDto = MovieDtoConverter.mapObject(movieAfterSave);
             String movieJson = JsonConverter.toJson(movieDto);
             LOG.info("Movie {} was added. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
             return movieJson;
         } else {
-            String message = "Request headers don't contains uuid";
+            String message = "Request header doesn't contain uuid";
+            LOG.warn(message);
+            throw new AuthRequiredException(message);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/movie/{movieId}", method = RequestMethod.PUT)
+    public String update(@RequestBody String movieFromRequest, UserPrincipal principal) {
+        if(principal != null){
+            Role role = userService.getRole(principal.getUser().getId());
+            if (!(role.equals(Role.ADMIN))) {
+                String message = "Validation of user's role access type failed, required role: ADMIN";
+                LOG.warn(message);
+                throw new InvalidAccessException(message);
+            }
+
+            LOG.info("Sending request to update movie by id");
+            long startTime = System.currentTimeMillis();
+            MovieDto movieDto = JsonConverter.fromJson(movieFromRequest, MovieDto.class);
+            Movie movie = MovieDtoConverter.mapDtoIntoObject(movieDto);
+
+            Movie movieAfterUpdate = movieService.update(movie);
+
+            movieDto = MovieDtoConverter.mapObject(movieAfterUpdate);
+            String movieJson = JsonConverter.toJson(movieDto);
+            LOG.info("Movie after update was received. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
+            return movieJson;
+        }else {
+            String message = "Request header doesn't contain uuid";
             LOG.warn(message);
             throw new AuthRequiredException(message);
         }

@@ -5,6 +5,13 @@ public class Country {
     private int id;
     private String name;
 
+    public Country(int id) {
+        this.id = id;
+    }
+
+    public Country() {
+    }
+
     public int getId() {
         return id;
     }

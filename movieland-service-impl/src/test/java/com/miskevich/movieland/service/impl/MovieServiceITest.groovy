@@ -2,6 +2,7 @@ package com.miskevich.movieland.service.impl
 
 import com.miskevich.movieland.dao.IMovieDao
 import com.miskevich.movieland.entity.Movie
+import com.miskevich.movieland.service.IGenreService
 import com.miskevich.movieland.service.IMovieService
 import com.miskevich.movieland.service.provider.ServiceDataProvider
 import org.mockito.Mock
@@ -11,6 +12,8 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
+
+import java.sql.SQLIntegrityConstraintViolationException
 
 import static org.mockito.Matchers.any
 import static org.mockito.Mockito.when
@@ -22,6 +25,8 @@ class MovieServiceITest extends AbstractTestNGSpringContextTests {
     private IMovieDao movieDao
     @Autowired
     private IMovieService movieService
+    @Mock
+    private IGenreService genreService
 
     @BeforeTest
     private void setup() {
@@ -35,7 +40,10 @@ class MovieServiceITest extends AbstractTestNGSpringContextTests {
 
     @Test(dataProvider = 'provideMovieForEnrichmentSaveUniqueConstraint', dataProviderClass = ServiceDataProvider.class)
     void testSaveUniqueConstraint(movie) {
-        when(movieDao.saveMovie(any(Movie.class))).thenReturn(movie)
-        movieService.save(movie)
+        when(movieDao.save(any(Movie.class))).thenReturn(movie)
+        when(genreService.persist(any(Movie.class))).thenThrow(SQLIntegrityConstraintViolationException.class)
+        println movie.id
+        def savedMovie = movieService.save(movie)
+        println savedMovie
     }
 }

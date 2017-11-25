@@ -2,6 +2,7 @@ package com.miskevich.movieland.dao.jdbc;
 
 import com.miskevich.movieland.dao.IReviewDao;
 import com.miskevich.movieland.dao.jdbc.mapper.ReviewRowMapper;
+import com.miskevich.movieland.entity.Movie;
 import com.miskevich.movieland.entity.Review;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,8 @@ public class JdbcReviewDao implements IReviewDao {
     private String getReviewsByMovieIdSQL;
     @Autowired
     private String addReviewSQL;
+    @Autowired
+    private String updateReviewSQL;
 
     @Override
     public List<Review> getByMovieId(int movieId) {
@@ -56,5 +59,35 @@ public class JdbcReviewDao implements IReviewDao {
 
         LOG.info("Finish query to add review into DB: {}. It took {} ms", review, System.currentTimeMillis() - startTime);
         return review;
+    }
+
+    @Override
+    public void persist(Movie movie) {
+        for (int i = 0; i < movie.getReviews().size(); i++) {
+            add(movie.getReviews().get(i));
+        }
+    }
+
+    @Override
+    public void update(Movie movie) {
+        for (int i = 0; i < movie.getReviews().size(); i++) {
+            long reviewId = movie.getReviews().get(i).getId();
+            int userId = movie.getReviews().get(i).getUser().getId();
+            String description = movie.getReviews().get(i).getText();
+            MapSqlParameterSource parameters = populateSQLParameters(reviewId, userId, description);
+
+            LOG.info("Start query to update reviewId into DB: {}", reviewId);
+            long startTime = System.currentTimeMillis();
+            namedParameterJdbcTemplate.update(updateReviewSQL, parameters);
+            LOG.info("Finish query to update reviewId into DB: {}. It took {} ms", reviewId, System.currentTimeMillis() - startTime);
+        }
+    }
+
+    private MapSqlParameterSource populateSQLParameters(long reviewId, int userId, String description) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("reviewId", reviewId);
+        parameters.addValue("userId", userId);
+        parameters.addValue("description", description);
+        return parameters;
     }
 }

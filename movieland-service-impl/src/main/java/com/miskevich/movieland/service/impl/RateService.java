@@ -38,7 +38,7 @@ public class RateService implements IRateService {
         return new ArrayList<>(rateRef);
     }
 
-    @PostConstruct
+    //@PostConstruct
     private void initCache() {
         //Required do avoid error: Could not generate DH keypair on SSL
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
