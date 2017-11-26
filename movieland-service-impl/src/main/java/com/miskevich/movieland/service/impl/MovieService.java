@@ -57,8 +57,8 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    //SQLIntegrityConstraintViolationException is not unchecked
-    @Transactional(rollbackFor = Exception.class)
+    //SQLIntegrityConstraintViolationException is not unchecked, but spring throw DuplicateKeyException (Runtime) for it. So how to control this?
+    @Transactional
     public Movie save(Movie movie) {
         movie = movieDao.save(movie);
         genreService.persist(movie);
@@ -68,7 +68,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Movie update(Movie movie) {
         movieDao.update(movie);
         genreService.update(movie);

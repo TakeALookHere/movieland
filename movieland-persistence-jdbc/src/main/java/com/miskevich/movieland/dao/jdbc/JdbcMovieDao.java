@@ -182,7 +182,7 @@ public class JdbcMovieDao implements IMovieDao {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("nameRussian", movie.getNameRussian());
         parameters.addValue("nameNative", movie.getNameNative());
-        parameters.addValue("yearOfRelease", Date.valueOf(movie.getYearOfRelease()));
+        parameters.addValue("yearOfRelease", movie.getYearOfRelease());
         parameters.addValue("description", movie.getDescription());
         parameters.addValue("rating", movie.getRating());
         parameters.addValue("price", movie.getPrice());
