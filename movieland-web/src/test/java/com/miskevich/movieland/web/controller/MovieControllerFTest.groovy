@@ -14,6 +14,7 @@ import com.miskevich.movieland.web.json.JsonConverter
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -379,47 +380,18 @@ class MovieControllerFTest {
                 .andExpect(status().isUnauthorized())
     }
 
-    @Test(dataProvider = "provideMovieUpdateSuccess", dataProviderClass = ControllerDataProvider.class)
-    void testUpdateSuccess(roleValid, Movie movieExpected, movieJson, String uuid, UserPrincipal principal) {
-
+    @Test(dataProvider = "provideMovieJsonDuplicateGenres", dataProviderClass = ControllerDataProvider.class,
+            expectedExceptionsMessageRegExp = '.*DuplicateKeyException.*',
+            expectedExceptions = NestedServletException.class)
+    void testUpdateDuplicateGenres(movieJson, uuid, roleValid, principal) {
         when(mockUserService.getRole(anyInt())).thenReturn(roleValid)
-        when(mockMovieService.update(any(Movie.class))).thenReturn(movieExpected)
-        mockMvc.perform(put("/movie/{movieId}", movieExpected.id)
+        when(mockMovieService.update(any(Movie.class))).thenThrow(DuplicateKeyException.class)
+        mockMvc.perform(put("/movie/{movieId}", 1)
                 .header('uuid', uuid)
-                .content(JsonConverter.toJson(movieJson))
                 .principal(principal)
+                .content(JsonConverter.toJson(movieJson))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-
-                .andExpect(jsonPath('$.id', is(movieExpected.id)))
-                .andExpect(jsonPath('$.nameRussian', is(movieExpected.nameRussian)))
-                .andExpect(jsonPath('$.nameNative', is(movieExpected.nameNative)))
-                .andExpect(jsonPath('$.yearOfRelease', is('1999')))
-                .andExpect(jsonPath('$.description', is(movieExpected.description)))
-                .andExpect(jsonPath('$.rating', is(movieExpected.rating)))
-                .andExpect(jsonPath('$.price', is(movieExpected.price)))
-                .andExpect(jsonPath('$.picturePath', is(movieExpected.picturePath)))
-                .andExpect(jsonPath('$.genres[0].id', is(movieExpected.genres.get(0).id)))
-                .andExpect(jsonPath('$.genres[0].name', is(movieExpected.genres.get(0).name)))
-                .andExpect(jsonPath('$.genres[1].id', is(movieExpected.genres.get(1).id)))
-                .andExpect(jsonPath('$.genres[1].name', is(movieExpected.genres.get(1).name)))
-                .andExpect(jsonPath('$.countries[0].id', is(movieExpected.countries.get(0).id)))
-                .andExpect(jsonPath('$.countries[0].name', is(movieExpected.countries.get(0).name)))
-                .andExpect(jsonPath('$.countries[1].id', is(movieExpected.countries.get(1).id)))
-                .andExpect(jsonPath('$.countries[1].name', is(movieExpected.countries.get(1).name)))
-                .andExpect(jsonPath('$.reviews[0].id', is(movieExpected.reviews.get(0).id.intValue())))
-                .andExpect(jsonPath('$.reviews[0].text', is(movieExpected.reviews.get(0).text)))
-                .andExpect(jsonPath('$.reviews[0].movie.id', is(movieExpected.reviews.get(0).movie.id)))
-                .andExpect(jsonPath('$.reviews[0].user.id', is(movieExpected.reviews.get(0).user.id)))
-                .andExpect(jsonPath('$.reviews[1].id', is(movieExpected.reviews.get(1).id.intValue())))
-                .andExpect(jsonPath('$.reviews[1].text', is(movieExpected.reviews.get(1).text)))
-                .andExpect(jsonPath('$.reviews[1].movie.id', is(movieExpected.reviews.get(1).movie.id)))
-                .andExpect(jsonPath('$.reviews[1].user.id', is(movieExpected.reviews.get(1).user.id)))
-
-        verify(mockUserService, times(2)).getRole(anyInt())
-        verifyNoMoreInteractions(mockUserService)
-        verify(mockMovieService, times(1)).update(any(Movie.class))
-        verifyNoMoreInteractions(mockMovieService)
+                .andExpect(status().isBadRequest())
     }
 }

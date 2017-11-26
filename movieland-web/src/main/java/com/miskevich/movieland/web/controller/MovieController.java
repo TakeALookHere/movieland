@@ -86,7 +86,7 @@ public class MovieController {
 
     @ResponseBody
     @RequestMapping(value = "/movie/{movieId}", method = RequestMethod.PUT)
-    public String update(@RequestBody String movieFromRequest, UserPrincipal principal) {
+    public String update(@RequestBody String movieFromRequest, @PathVariable int movieId, UserPrincipal principal) {
         if (principal != null) {
             Role role = userService.getRole(principal.getUser().getId());
             if (!(role.equals(Role.ADMIN))) {
@@ -99,6 +99,7 @@ public class MovieController {
             long startTime = System.currentTimeMillis();
             MovieDto movieDto = JsonConverter.fromJson(movieFromRequest, MovieDto.class);
             Movie movie = MovieDtoConverter.mapDtoIntoObject(movieDto);
+            movie.setId(movieId);
 
             Movie movieAfterUpdate = movieService.update(movie);
 

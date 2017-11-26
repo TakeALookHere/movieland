@@ -64,8 +64,8 @@ class ServiceDataProvider {
         return array
     }
 
-    @DataProvider(name = "provideMovieForUpdateSaveUniqueConstraint")
-    static Object[][] provideMovieForUpdateSaveUniqueConstraint() {
+    @DataProvider(name = "provideMovieForUpdateUniqueConstraint")
+    static Object[][] provideMovieForUpdateUniqueConstraint() {
 
         def movieExpected = new Movie(id: 1, nameRussian: "Зеленая миля", nameNative: "The Green Mile", yearOfRelease: convertStringToDate("1999-01-01"),
                 description: "Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.",

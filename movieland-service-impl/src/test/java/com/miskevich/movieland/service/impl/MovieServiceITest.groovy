@@ -21,7 +21,7 @@ class MovieServiceITest extends AbstractTestNGSpringContextTests {
         movieService.save(movie)
     }
 
-    @Test(dataProvider = 'provideMovieForUpdateSaveUniqueConstraint', dataProviderClass = ServiceDataProvider.class,
+    @Test(dataProvider = 'provideMovieForUpdateUniqueConstraint', dataProviderClass = ServiceDataProvider.class,
             expectedExceptionsMessageRegExp = '.*Duplicate entry \'1-1\' for key \'unique_index\'.*', expectedExceptions = DuplicateKeyException.class)
     void testUpdateUniqueConstraint(movie) {
         movieService.update(movie)
