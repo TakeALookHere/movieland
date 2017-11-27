@@ -69,6 +69,7 @@
                                     </includes>
                                     <excludes>
                                         <exclude>**/*ITest.groovy</exclude>
+                                        <exclude>**/*PTest.groovy</exclude>
                                     </excludes>
                                 </testSource>
                             </testSources>

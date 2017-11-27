@@ -30,7 +30,6 @@ class MovieServiceITest extends AbstractTestNGSpringContextTests {
     @Test
     void validate() {
         def movie = movieService.getById(1)
-        println movie.rating
         assertNotEquals(movie.rating, 0d)
     }
 }

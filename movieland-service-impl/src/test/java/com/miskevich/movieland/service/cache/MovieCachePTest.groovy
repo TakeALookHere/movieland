@@ -9,7 +9,7 @@ import org.testng.annotations.Test
 import static org.testng.Assert.assertFalse
 
 @ContextConfiguration(locations = "classpath:spring/service-context.xml")
-class MovieCacheTest extends AbstractTestNGSpringContextTests {
+class MovieCachePTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private MovieCache movieCache
@@ -17,22 +17,20 @@ class MovieCacheTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void getMovieFromCache() {
-        //-Xms20m -Xmx20m
-        for (int i = 1; i < 65; i++) {
+        //-Xms19m -Xmx19m
+        for (int i = 1; i < 1_500; i++) {
             def movie = new Movie()
             movie.setId(i)
             movieCache.put(i, movie)
         }
         loadMemory()
-        System.gc()
 
         Optional<Movie> optional = movieCache.get(1)
-        println optional.get()
         assertFalse(optional.isPresent())
     }
 
     private void loadMemory() {
-        for (int i = 0; i < 120_000; i++) {
+        for (int i = 0; i < 90_000; i++) {
             loadMemoryList.add(i + "")
         }
     }
