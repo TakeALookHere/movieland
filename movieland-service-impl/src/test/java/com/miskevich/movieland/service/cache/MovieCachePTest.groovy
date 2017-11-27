@@ -13,7 +13,7 @@ class MovieCachePTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private MovieCache movieCache
-    List<String> loadMemoryList = new ArrayList<>()
+    private List<String> loadMemoryList = new ArrayList<>()
 
     @Test
     void getMovieFromCache() {
