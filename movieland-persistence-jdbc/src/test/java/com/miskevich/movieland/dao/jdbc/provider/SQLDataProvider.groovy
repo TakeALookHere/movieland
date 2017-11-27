@@ -101,7 +101,7 @@ class SQLDataProvider {
                 reviews: [new Review(id: 33, text: 'Гениальное кино!',
                         movie: new Movie(id: 1),
                         user: new User(id: 1)),
-                          new Review(id: 34, text: 'Test review update',
+                          new Review(id: 34, text: 'Test review persist',
                                   movie: new Movie(id: 1),
                                   user: new User(id: 5))])
 

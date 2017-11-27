@@ -17,7 +17,7 @@ public interface IMovieService {
 
     Movie getById(int id);
 
-    Movie save(Movie movie);
+    Movie persist(Movie movie);
 
     Movie update(Movie movie);
 }

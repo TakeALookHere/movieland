@@ -36,7 +36,7 @@ public class CountryService implements ICountryService {
     }
 
     @Override
-    public void update(Movie movie) {
-        countryDao.update(movie);
+    public void remove(Movie movie) {
+        countryDao.remove(movie);
     }
 }

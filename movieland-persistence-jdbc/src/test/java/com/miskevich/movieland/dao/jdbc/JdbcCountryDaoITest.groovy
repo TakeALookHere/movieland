@@ -8,6 +8,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
 import org.testng.annotations.Test
 
+import static org.testng.Assert.assertEquals
 import static org.testng.Assert.assertNotNull
 
 @ContextConfiguration(locations = "classpath:spring/jdbc-context.xml")
@@ -15,6 +16,8 @@ class JdbcCountryDaoITest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private JdbcCountryDao jdbcCountryDao
+    @Autowired
+    private JdbcMovieDao jdbcMovieDao
 
     @Test
     void testGetByMovieId() {
@@ -38,9 +41,10 @@ class JdbcCountryDaoITest extends AbstractTestNGSpringContextTests {
         jdbcCountryDao.persist(movie)
     }
 
-    @Test(dataProvider = 'provideMovieForEnrichmentUpdate', dataProviderClass = SQLDataProvider.class,
-            expectedExceptionsMessageRegExp = '.*Duplicate entry \'1-1\' for key \'unique_index\'', expectedExceptions = DuplicateKeyException.class)
-    void testUpdateMovieGenresDuplicateKey(movie) {
-        jdbcCountryDao.update(movie)
+    @Test(dataProvider = 'provideMovieSave', dataProviderClass = SQLDataProvider.class)
+    void testRemove(expectedMovie) {
+        def movie = jdbcMovieDao.persist(expectedMovie)
+        jdbcCountryDao.remove(movie)
+        assertEquals(jdbcCountryDao.getByMovieId(movie.id).size(), 0)
     }
 }

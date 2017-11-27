@@ -13,5 +13,5 @@ public interface ICountryDao {
 
     void persist(Movie movie);
 
-    void update(Movie movie);
+    void remove(Movie movie);
 }

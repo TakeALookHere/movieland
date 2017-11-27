@@ -41,8 +41,8 @@ public class GenreCache implements IGenreDao {
     }
 
     @Override
-    public void update(Movie movie) {
-        genreDao.update(movie);
+    public void remove(Movie movie) {
+        genreDao.remove(movie);
     }
 
     @PostConstruct

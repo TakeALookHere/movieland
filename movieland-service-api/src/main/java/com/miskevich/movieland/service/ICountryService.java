@@ -15,5 +15,5 @@ public interface ICountryService {
 
     void persist(Movie movie);
 
-    void update(Movie movie);
+    void remove(Movie movie);
 }

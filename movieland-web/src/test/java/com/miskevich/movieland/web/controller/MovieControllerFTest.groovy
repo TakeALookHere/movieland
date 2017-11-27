@@ -24,7 +24,6 @@ import org.testng.annotations.Test
 
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.core.Is.is
-import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -317,7 +316,7 @@ class MovieControllerFTest {
     void testSaveSuccess(roleValid, Movie movieExpected, movieJson, String uuid, UserPrincipal principal) {
 
         when(mockUserService.getRole(anyInt())).thenReturn(roleValid)
-        when(mockMovieService.save(any(Movie.class))).thenReturn(movieExpected)
+        when(mockMovieService.persist(any(Movie.class))).thenReturn(movieExpected)
         mockMvc.perform(post("/movie")
                 .header('uuid', uuid)
                 .content(JsonConverter.toJson(movieJson))
@@ -353,7 +352,7 @@ class MovieControllerFTest {
 
         verify(mockUserService, times(1)).getRole(anyInt())
         verifyNoMoreInteractions(mockUserService)
-        verify(mockMovieService, times(1)).save(any(Movie.class))
+        verify(mockMovieService, times(1)).persist(any(Movie.class))
         verifyNoMoreInteractions(mockMovieService)
     }
 

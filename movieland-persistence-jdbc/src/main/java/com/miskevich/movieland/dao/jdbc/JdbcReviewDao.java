@@ -79,10 +79,10 @@ public class JdbcReviewDao implements IReviewDao {
                 String description = movie.getReviews().get(i).getText();
                 MapSqlParameterSource parameters = populateSQLParameters(reviewId, userId, description);
 
-                LOG.info("Start query to update reviewId into DB: {}", reviewId);
+                LOG.info("Start query to persist reviewId into DB: {}", reviewId);
                 long startTime = System.currentTimeMillis();
                 namedParameterJdbcTemplate.update(updateReviewSQL, parameters);
-                LOG.info("Finish query to update reviewId into DB: {}. It took {} ms", reviewId, System.currentTimeMillis() - startTime);
+                LOG.info("Finish query to persist reviewId into DB: {}. It took {} ms", reviewId, System.currentTimeMillis() - startTime);
             }
         }
     }

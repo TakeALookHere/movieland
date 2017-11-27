@@ -90,7 +90,7 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
 
     @Test(dataProvider = 'provideMovieSave', dataProviderClass = SQLDataProvider.class)
     void testSave(movieExpected) {
-        def movie = jdbcMovieDao.save(movieExpected)
+        def movie = jdbcMovieDao.persist(movieExpected)
         assertEquals(movie.nameRussian, movieExpected.nameRussian)
         assertEquals(movie.nameNative, movieExpected.nameNative)
         assertEquals(movie.yearOfRelease, movieExpected.yearOfRelease)

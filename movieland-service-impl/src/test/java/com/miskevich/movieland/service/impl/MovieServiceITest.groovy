@@ -18,7 +18,7 @@ class MovieServiceITest extends AbstractTestNGSpringContextTests {
 
     @Test(dataProvider = 'provideMovieForEnrichmentSave', dataProviderClass = ServiceDataProvider.class)
     void testSaveSuccess(movie) {
-        movieService.save(movie)
+        movieService.persist(movie)
     }
 
     @Test(dataProvider = 'provideMovieForUpdateSaveUniqueConstraint', dataProviderClass = ServiceDataProvider.class,
