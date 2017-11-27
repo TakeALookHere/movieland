@@ -27,7 +27,7 @@ public class JdbcGenreDao implements IGenreDao {
     @Autowired
     private String addMovieGenresSQL;
     @Autowired
-    private String updateMovieGenresSQL;
+    private String removeGenresSQL;
 
     @Override
     public List<Genre> getAll() {
@@ -53,8 +53,9 @@ public class JdbcGenreDao implements IGenreDao {
     @Override
     public void persist(Movie movie) {
         if (movie.getGenres() != null) {
+            int movieId = movie.getId();
+
             for (int i = 0; i < movie.getGenres().size(); i++) {
-                int movieId = movie.getId();
                 int genreId = movie.getGenres().get(i).getId();
                 MapSqlParameterSource parameters = populateSQLParameters(movieId, genreId);
 
@@ -67,18 +68,14 @@ public class JdbcGenreDao implements IGenreDao {
     }
 
     @Override
-    public void update(Movie movie) {
+    public void remove(Movie movie) {
         if (movie.getGenres() != null) {
-            for (int i = 0; i < movie.getGenres().size(); i++) {
-                int movieId = movie.getId();
-                int genreId = movie.getGenres().get(i).getId();
-                MapSqlParameterSource parameters = populateSQLParameters(movieId, genreId);
-
-                LOG.info("Start query to update genreId {} for movieId {}", genreId, movieId);
-                long startTime = System.currentTimeMillis();
-                namedParameterJdbcTemplate.update(updateMovieGenresSQL, parameters);
-                LOG.info("Finish query to update genreId {} for movieId {}. It took {} ms", genreId, movieId, System.currentTimeMillis() - startTime);
-            }
+            int movieId = movie.getId();
+            MapSqlParameterSource parameters = new MapSqlParameterSource("movieId", movieId);
+            LOG.info("Start query to remove genres for movieId {}", movieId);
+            long startTime = System.currentTimeMillis();
+            namedParameterJdbcTemplate.update(removeGenresSQL, parameters);
+            LOG.info("Finish query to remove genres for movieId {}. It took {} ms", movieId, System.currentTimeMillis() - startTime);
         }
     }
 

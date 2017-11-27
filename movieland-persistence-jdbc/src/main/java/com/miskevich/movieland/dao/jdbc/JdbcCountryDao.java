@@ -29,7 +29,7 @@ public class JdbcCountryDao implements ICountryDao {
     @Autowired
     private String addMovieCountriesSQL;
     @Autowired
-    private String updateMovieCountriesSQL;
+    private String removeCountriesSQL;
 
     @Override
     public List<Country> getByMovieId(int movieId) {
@@ -75,18 +75,14 @@ public class JdbcCountryDao implements ICountryDao {
     }
 
     @Override
-    public void update(Movie movie) {
+    public void remove(Movie movie) {
         if (movie.getCountries() != null) {
-            for (int i = 0; i < movie.getCountries().size(); i++) {
-                int movieId = movie.getId();
-                int countryId = movie.getCountries().get(i).getId();
-                MapSqlParameterSource parameters = populateSQLParameters(movieId, countryId);
-
-                LOG.info("Start query to update countryId {} for movieId {}", countryId, movieId);
-                long startTime = System.currentTimeMillis();
-                namedParameterJdbcTemplate.update(updateMovieCountriesSQL, parameters);
-                LOG.info("Finish query to update countryId {} for movieId {}. It took {} ms", countryId, movieId, System.currentTimeMillis() - startTime);
-            }
+            int movieId = movie.getId();
+            MapSqlParameterSource parameters = new MapSqlParameterSource("movieId", movieId);
+            LOG.info("Start query to remove countries for movieId {}", movieId);
+            long startTime = System.currentTimeMillis();
+            namedParameterJdbcTemplate.update(removeCountriesSQL, parameters);
+            LOG.info("Finish query to remove countries for movieId {}. It took {} ms", movieId, System.currentTimeMillis() - startTime);
         }
     }
 }

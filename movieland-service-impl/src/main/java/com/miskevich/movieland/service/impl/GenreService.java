@@ -36,8 +36,8 @@ public class GenreService implements IGenreService {
     }
 
     @Override
-    public void update(Movie movie) {
-        genreDao.update(movie);
+    public void remove(Movie movie) {
+        genreDao.remove(movie);
     }
 
 }

@@ -71,7 +71,7 @@ public class MovieController {
             MovieDto movieDto = JsonConverter.fromJson(movieFromRequest, MovieDto.class);
             Movie movie = MovieDtoConverter.mapDtoIntoObject(movieDto);
 
-            Movie movieAfterSave = movieService.save(movie);
+            Movie movieAfterSave = movieService.persist(movie);
 
             movieDto = MovieDtoConverter.mapObject(movieAfterSave);
             String movieJson = JsonConverter.toJson(movieDto);
@@ -95,7 +95,7 @@ public class MovieController {
                 throw new InvalidAccessException(message);
             }
 
-            LOG.info("Sending request to update movie by id");
+            LOG.info("Sending request to persist movie by id");
             long startTime = System.currentTimeMillis();
             MovieDto movieDto = JsonConverter.fromJson(movieFromRequest, MovieDto.class);
             Movie movie = MovieDtoConverter.mapDtoIntoObject(movieDto);
@@ -105,7 +105,7 @@ public class MovieController {
 
             movieDto = MovieDtoConverter.mapObject(movieAfterUpdate);
             String movieJson = JsonConverter.toJson(movieDto);
-            LOG.info("Movie after update was received. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
+            LOG.info("Movie after persist was received. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
             return movieJson;
         } else {
             String message = "Request header doesn't contain uuid";

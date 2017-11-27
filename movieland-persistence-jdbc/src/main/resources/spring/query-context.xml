@@ -84,25 +84,25 @@
                         values (:movieId, :genreId)"/>
     </bean>
 
-    <bean id="updateMovieGenresSQL" class="java.lang.String">
-        <constructor-arg
-                value="update movie_genre set genre_id = :genreId where movie_id = :movieId;"/>
-    </bean>
-
     <bean id="addMovieCountriesSQL" class="java.lang.String">
         <constructor-arg
                 value="insert into movie_country (movie_id, country_id)
                         values (:movieId, :countryId)"/>
     </bean>
 
-    <bean id="updateMovieCountriesSQL" class="java.lang.String">
+    <bean id="removeCountriesSQL" class="java.lang.String">
         <constructor-arg
-                value="update movie_country set country_id = :countryId where movie_id = :movieId;"/>
+                value="delete from movie_country where movie_id = :movieId;"/>
     </bean>
 
     <bean id="updateMovieSQL" class="java.lang.String">
         <constructor-arg
                 value="update movie set name_russian = :nameRussian, name_native = :nameNative, released_date = :yearOfRelease,
                     plot = :description, rating = :rating, price = :price, picture_path = :picturePath where id = :movieId;"/>
+    </bean>
+
+    <bean id="removeGenresSQL" class="java.lang.String">
+        <constructor-arg
+                value="delete from movie_genre where movie_id = :movieId;"/>
     </bean>
 </beans>

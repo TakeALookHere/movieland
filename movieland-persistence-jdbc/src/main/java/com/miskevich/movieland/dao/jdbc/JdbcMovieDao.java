@@ -112,7 +112,7 @@ public class JdbcMovieDao implements IMovieDao {
     }
 
     @Override
-    public Movie save(Movie movie) {
+    public Movie persist(Movie movie) {
         MapSqlParameterSource parameters = populateSQLParameters(movie);
         LOG.info("Start query to insert movie");
         long startTime = System.currentTimeMillis();
@@ -128,10 +128,10 @@ public class JdbcMovieDao implements IMovieDao {
     public Movie update(Movie movie) {
         MapSqlParameterSource parameters = populateSQLParameters(movie);
         parameters.addValue("movieId", movie.getId());
-        LOG.info("Start query to update movie");
+        LOG.info("Start query to persist movie");
         long startTime = System.currentTimeMillis();
         namedParameterJdbcTemplate.update(updateMovieSQL, parameters);
-        LOG.info("Finish query to update movie into DB. It took {} ms", System.currentTimeMillis() - startTime);
+        LOG.info("Finish query to persist movie into DB. It took {} ms", System.currentTimeMillis() - startTime);
         return movie;
     }
 

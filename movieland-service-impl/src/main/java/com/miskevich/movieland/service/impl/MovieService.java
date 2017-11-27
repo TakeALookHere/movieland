@@ -68,8 +68,8 @@ public class MovieService implements IMovieService {
     @Override
     //SQLIntegrityConstraintViolationException is not unchecked, but spring throw DuplicateKeyException (Runtime) for it. So how to control this?
     @Transactional
-    public Movie save(Movie movie) {
-        movie = movieDao.save(movie);
+    public Movie persist(Movie movie) {
+        movie = movieDao.persist(movie);
         genreService.persist(movie);
         countryService.persist(movie);
         reviewService.persist(movie);
@@ -81,8 +81,10 @@ public class MovieService implements IMovieService {
     @Transactional
     public Movie update(Movie movie) {
         movieDao.update(movie);
-        genreService.update(movie);
-        countryService.update(movie);
+        genreService.remove(movie);
+        genreService.persist(movie);
+        countryService.remove(movie);
+        countryService.persist(movie);
         reviewService.update(movie);
         movieCache.put(movie.getId(), movie);
         return movie;

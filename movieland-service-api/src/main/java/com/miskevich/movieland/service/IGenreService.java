@@ -14,5 +14,5 @@ public interface IGenreService {
 
     void persist(Movie movie);
 
-    void update(Movie movie);
+    void remove(Movie movie);
 }
