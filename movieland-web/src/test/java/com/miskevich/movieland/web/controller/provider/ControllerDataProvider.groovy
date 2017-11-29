@@ -202,12 +202,11 @@ class ControllerDataProvider {
     static Object[][] provideReviewAddSuccess() {
 
         String uuid = UUID.randomUUID()
-        def roleValid = Role.USER
         def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
         def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
 
         def array = new Object[1][]
-        array[0] = [roleValid, reviewJson, uuid, principal]
+        array[0] = [reviewJson, uuid, principal]
         return array
     }
 
@@ -325,12 +324,11 @@ class ControllerDataProvider {
     static Object[][] provideReviewAddInvalidRole() {
 
         String uuid = UUID.randomUUID()
-        def roleInvalid = Role.MANAGER
         def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
         def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
 
         def array = new Object[1][]
-        array[0] = [reviewJson, uuid, roleInvalid, principal]
+        array[0] = [reviewJson, uuid, principal]
         return array
     }
 

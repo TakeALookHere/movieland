@@ -8,9 +8,9 @@ import com.miskevich.movieland.service.IUserService;
 import com.miskevich.movieland.service.exception.AuthRequiredException;
 import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.ReviewDto;
-import com.miskevich.movieland.web.exception.InvalidAccessException;
 import com.miskevich.movieland.web.json.JsonConverter;
 import com.miskevich.movieland.web.json.ReviewDtoConverter;
+import com.miskevich.movieland.web.security.RoleRequired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,28 +29,19 @@ public class ReviewController {
 
     @Autowired
     private IReviewService reviewService;
-    @Autowired
-    private IUserService userService;
 
     @ResponseBody
     @RequestMapping(value = "/review", method = RequestMethod.POST)
+    @RoleRequired({Role.ADMIN, Role.USER})
     public String add(@RequestBody String review, UserPrincipal principal) {
-        if (principal != null) {
-            Role role = userService.getRole(principal.getUser().getId());
-            if (!(role.equals(Role.USER) || role.equals(Role.ADMIN))) {
-                String message = "Validation of user's role access type failed, required role: USER/ADMIN";
-                LOG.warn(message);
-                throw new InvalidAccessException(message);
-            }
-
-            ReviewDto reviewDto = JsonConverter.fromJson(review, ReviewDto.class);
-            Review addedReview = saveReview(principal, reviewDto);
-            return JsonConverter.toJson(addedReview);
-        }else {
+        if(principal == null){
             String message = "Request header doesn't contain uuid";
             LOG.warn(message);
             throw new AuthRequiredException(message);
         }
+        ReviewDto reviewDto = JsonConverter.fromJson(review, ReviewDto.class);
+        Review addedReview = saveReview(principal, reviewDto);
+        return JsonConverter.toJson(addedReview);
     }
 
     private Review saveReview(UserPrincipal principal, ReviewDto reviewDto) {

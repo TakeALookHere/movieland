@@ -24,9 +24,7 @@ class ReviewControllerFTest {
 
     @Mock
     private IReviewService mockReviewService
-    @Mock
-    private IUserService mockUserService
-    @InjectMocks
+        @InjectMocks
     private ReviewController reviewController
     private MockMvc mockMvc
 
@@ -39,23 +37,18 @@ class ReviewControllerFTest {
     @Test(dataProvider = 'provideReviewAddInvalidRole', dataProviderClass = ControllerDataProvider.class,
             expectedExceptionsMessageRegExp = '.*Validation of user\'s role access type failed, required role: USER/ADMIN',
             expectedExceptions = NestedServletException.class)
-    void testAddInvalidRole(ReviewDto reviewJson, String uuid, roleInvalid, UserPrincipal principal) {
-        when(mockUserService.getRole(1)).thenReturn(roleInvalid)
+    void testAddInvalidRole(ReviewDto reviewJson, String uuid, UserPrincipal principal) {
         mockMvc.perform(post("/review")
                 .header('uuid', uuid)
                 .content(JsonConverter.toJson(reviewJson))
                 .principal(principal)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-
-        verify(mockUserService, times(1)).getRole(1)
-        verifyNoMoreInteractions(mockUserService)
     }
 
     @Test(dataProvider = 'provideReviewAddSuccess', dataProviderClass = ControllerDataProvider.class)
-    void testAddSuccess(roleValid, ReviewDto reviewJson,
+    void testAddSuccess(ReviewDto reviewJson,
                         String uuid, UserPrincipal principal) {
-        when(mockUserService.getRole(1)).thenReturn(roleValid)
         mockMvc.perform(post("/review")
                 .header('uuid', uuid)
                 .content(JsonConverter.toJson(reviewJson))
@@ -63,9 +56,6 @@ class ReviewControllerFTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-
-        verify(mockUserService, times(2)).getRole(1)
-        verifyNoMoreInteractions(mockUserService)
     }
 
     @Test(dataProvider = "provideReviewJson", dataProviderClass = ControllerDataProvider.class,
