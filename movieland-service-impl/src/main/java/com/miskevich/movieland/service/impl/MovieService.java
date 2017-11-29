@@ -8,11 +8,14 @@ import com.miskevich.movieland.service.ICountryService;
 import com.miskevich.movieland.service.IGenreService;
 import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.service.IReviewService;
+import com.miskevich.movieland.service.cache.MovieCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class MovieService implements IMovieService {
@@ -25,6 +28,8 @@ public class MovieService implements IMovieService {
     private ICountryService countryService;
     @Autowired
     private IReviewService reviewService;
+    @Autowired
+    private MovieCache movieCache;
 
     @Override
     public List<Movie> getAll(Map<SortingField, SortingType> params) {
@@ -48,10 +53,39 @@ public class MovieService implements IMovieService {
 
     @Override
     public Movie getById(int id) {
-        Movie movie = movieDao.getById(id);
-        genreService.enrichWithGenre(movie);
-        countryService.enrichWithCountry(movie);
-        reviewService.enrichWithReview(movie);
+        Optional<Movie> optional = movieCache.get(id);
+        if(!optional.isPresent()){
+            Movie movie = movieDao.getById(id);
+            genreService.enrichWithGenre(movie);
+            countryService.enrichWithCountry(movie);
+            reviewService.enrichWithReview(movie);
+            movieCache.put(movie);
+            return movie;
+        }
+        return optional.get();
+    }
+
+    @Override
+    @Transactional
+    public Movie persist(Movie movie) {
+        movie = movieDao.persist(movie);
+        genreService.persist(movie);
+        countryService.persist(movie);
+        reviewService.persist(movie);
+        movieCache.put(movie);
+        return movie;
+    }
+
+    @Override
+    @Transactional
+    public Movie update(Movie movie) {
+        movieDao.update(movie);
+        genreService.remove(movie);
+        genreService.persist(movie);
+        countryService.remove(movie);
+        countryService.persist(movie);
+        reviewService.update(movie);
+        movieCache.put(movie);
         return movie;
     }
 }

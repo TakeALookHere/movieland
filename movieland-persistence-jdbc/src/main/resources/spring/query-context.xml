@@ -57,6 +57,11 @@
                 value="insert into review (movie_id, user_id, description) values(:movieId, :userId, :description);"/>
     </bean>
 
+    <bean id="updateReviewSQL" class="java.lang.String">
+        <constructor-arg
+                value="update review set user_id = :userId, description = :description where id = :reviewId;"/>
+    </bean>
+
     <bean id="getUserRoleSQL" class="java.lang.String">
         <constructor-arg
                 value="select name from role where id in(select role_id from user_role where user_id = :userId);"/>
@@ -65,5 +70,39 @@
     <bean id="getAllCountriesSQL" class="java.lang.String">
         <constructor-arg
                 value="select id, name from country;"/>
+    </bean>
+
+    <bean id="addMovieSQL" class="java.lang.String">
+        <constructor-arg
+                value="insert into movie (name_russian, name_native, released_date, plot, rating, price, picture_path)
+                        values (:nameRussian, :nameNative, :yearOfRelease, :description, :rating, :price, :picturePath)"/>
+    </bean>
+
+    <bean id="addMovieGenresSQL" class="java.lang.String">
+        <constructor-arg
+                value="insert into movie_genre (movie_id, genre_id)
+                        values (:movieId, :genreId)"/>
+    </bean>
+
+    <bean id="addMovieCountriesSQL" class="java.lang.String">
+        <constructor-arg
+                value="insert into movie_country (movie_id, country_id)
+                        values (:movieId, :countryId)"/>
+    </bean>
+
+    <bean id="removeCountriesSQL" class="java.lang.String">
+        <constructor-arg
+                value="delete from movie_country where movie_id = :movieId;"/>
+    </bean>
+
+    <bean id="updateMovieSQL" class="java.lang.String">
+        <constructor-arg
+                value="update movie set name_russian = :nameRussian, name_native = :nameNative, released_date = :yearOfRelease,
+                    plot = :description, rating = :rating, price = :price, picture_path = :picturePath where id = :movieId;"/>
+    </bean>
+
+    <bean id="removeGenresSQL" class="java.lang.String">
+        <constructor-arg
+                value="delete from movie_genre where movie_id = :movieId;"/>
     </bean>
 </beans>

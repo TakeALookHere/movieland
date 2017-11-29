@@ -10,6 +10,13 @@ public class Genre {
         this.name = name;
     }
 
+    public Genre() {
+    }
+
+    public Genre(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }

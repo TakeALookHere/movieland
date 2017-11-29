@@ -16,4 +16,8 @@ public interface IMovieService {
     List<Movie> getByGenre(int id, Map<SortingField, SortingType> params);
 
     Movie getById(int id);
+
+    Movie persist(Movie movie);
+
+    Movie update(Movie movie);
 }

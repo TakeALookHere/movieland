@@ -8,6 +8,7 @@ import com.miskevich.movieland.web.exception.InvalidUserException;
 import com.miskevich.movieland.web.json.JsonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -51,6 +52,11 @@ public class CustomExceptionHandler extends DefaultHandlerExceptionResolver {
     @ExceptionHandler(UuidExpirationException.class)
     void handlerUuidExpired(HttpServletResponse response, UuidExpirationException exception) {
         populateErrorData(UUID_EXPIRED, HttpStatus.UNAUTHORIZED.value(), response, exception);
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    void handlerDuplicateKeyException(HttpServletResponse response, DuplicateKeyException exception) {
+        populateErrorData(ILLEGAL_ARGUMENT, HttpStatus.BAD_REQUEST.value(), response, exception);
     }
 
     private void populateErrorData(String errorTitle, int httpStatusCode,

@@ -26,11 +26,11 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <bean class="com.miskevich.movieland.web.util.UserInterceptor"/>
+            <bean class="com.miskevich.movieland.web.util.CorsInterceptor"/>
         </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <bean class="com.miskevich.movieland.web.util.CorsInterceptor"/>
+            <bean class="com.miskevich.movieland.web.util.UserInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 

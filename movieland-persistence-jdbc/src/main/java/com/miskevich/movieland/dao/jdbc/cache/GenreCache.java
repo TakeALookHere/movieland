@@ -3,6 +3,7 @@ package com.miskevich.movieland.dao.jdbc.cache;
 import com.miskevich.movieland.dao.IGenreDao;
 import com.miskevich.movieland.dao.jdbc.JdbcGenreDao;
 import com.miskevich.movieland.entity.Genre;
+import com.miskevich.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,16 @@ public class GenreCache implements IGenreDao {
     @Override
     public List<Genre> getByMovieId(int movieId) {
         return genreDao.getByMovieId(movieId);
+    }
+
+    @Override
+    public void persist(Movie movie) {
+        genreDao.persist(movie);
+    }
+
+    @Override
+    public void remove(Movie movie) {
+        genreDao.remove(movie);
     }
 
     @PostConstruct

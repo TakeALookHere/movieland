@@ -1,11 +1,14 @@
 package com.miskevich.movieland.dao.jdbc
 
+import com.miskevich.movieland.dao.jdbc.provider.SQLDataProvider
 import com.miskevich.movieland.entity.Genre
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
 import org.testng.annotations.Test
 
+import static org.testng.Assert.assertEquals
 import static org.testng.Assert.assertNotNull
 
 @ContextConfiguration(locations = "classpath:spring/jdbc-context.xml")
@@ -13,6 +16,8 @@ class JdbcGenreDaoITest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private JdbcGenreDao jdbcGenreDao
+    @Autowired
+    private JdbcMovieDao jdbcMovieDao
 
     @Test
     void testGetAll() {
@@ -28,5 +33,18 @@ class JdbcGenreDaoITest extends AbstractTestNGSpringContextTests {
         for (Genre genre : genres) {
             assertNotNull(genre.getName())
         }
+    }
+
+    @Test(dataProvider = 'provideMovieForEnrichmentSave', dataProviderClass = SQLDataProvider.class,
+            expectedExceptionsMessageRegExp = '.*Duplicate entry \'1-1\' for key \'unique_index\'', expectedExceptions = DuplicateKeyException.class)
+    void testSaveMovieGenresDuplicateKey(movie) {
+        jdbcGenreDao.persist(movie)
+    }
+
+    @Test(dataProvider = 'provideMovieSave', dataProviderClass = SQLDataProvider.class)
+    void testRemove(expectedMovie) {
+        def movie = jdbcMovieDao.persist(expectedMovie)
+        jdbcGenreDao.remove(movie)
+        assertEquals(jdbcGenreDao.getByMovieId(movie.id).size(), 0)
     }
 }

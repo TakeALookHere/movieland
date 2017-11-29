@@ -1,13 +1,18 @@
 package com.miskevich.movieland.web.controller;
 
+import com.miskevich.movieland.dto.RateDto;
 import com.miskevich.movieland.entity.Movie;
 import com.miskevich.movieland.model.Currency;
+import com.miskevich.movieland.model.Role;
 import com.miskevich.movieland.model.SortingField;
 import com.miskevich.movieland.model.SortingType;
 import com.miskevich.movieland.service.IMovieService;
-import com.miskevich.movieland.dto.RateDto;
+import com.miskevich.movieland.service.IUserService;
+import com.miskevich.movieland.service.exception.AuthRequiredException;
 import com.miskevich.movieland.service.impl.RateService;
+import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.MovieDto;
+import com.miskevich.movieland.web.exception.InvalidAccessException;
 import com.miskevich.movieland.web.json.JsonConverter;
 import com.miskevich.movieland.web.json.MovieDtoConverter;
 import com.miskevich.movieland.web.util.RateConverter;
@@ -23,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class MovieController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -32,10 +37,12 @@ public class MovieController {
     private IMovieService movieService;
     @Autowired
     private RateService rateService;
+    @Autowired
+    private IUserService userService;
 
     @ResponseBody
-    @RequestMapping(value = "/movie")
-    public String getAllMovies(@RequestParam(required = false) LinkedHashMap<String, String> params) {
+    @RequestMapping(value = "/movie", method = RequestMethod.GET)
+    public String getAll(@RequestParam(required = false) LinkedHashMap<String, String> params) {
         Map<SortingField, SortingType> sortingFieldSortingTypeMap = validateInputParameters(params);
         LOG.info("Sending request to get all movies");
         long startTime = System.currentTimeMillis();
@@ -49,7 +56,66 @@ public class MovieController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/movie/random")
+    @RequestMapping(value = "/movie", method = RequestMethod.POST)
+    public String add(@RequestBody String movieFromRequest, UserPrincipal principal) {
+        if (principal != null) {
+            Role role = userService.getRole(principal.getUser().getId());
+            if (!(role.equals(Role.ADMIN))) {
+                String message = "Validation of user's role access type failed, required role: ADMIN";
+                LOG.warn(message);
+                throw new InvalidAccessException(message);
+            }
+
+            LOG.info("Sending request to add movie");
+            long startTime = System.currentTimeMillis();
+            MovieDto movieDto = JsonConverter.fromJson(movieFromRequest, MovieDto.class);
+            Movie movie = MovieDtoConverter.mapDtoIntoObject(movieDto);
+
+            Movie movieAfterSave = movieService.persist(movie);
+
+            movieDto = MovieDtoConverter.mapObject(movieAfterSave);
+            String movieJson = JsonConverter.toJson(movieDto);
+            LOG.info("Movie {} was added. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
+            return movieJson;
+        } else {
+            String message = "Request header doesn't contain uuid";
+            LOG.warn(message);
+            throw new AuthRequiredException(message);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/movie/{movieId}", method = RequestMethod.PUT)
+    public String update(@RequestBody String movieFromRequest, @PathVariable int movieId, UserPrincipal principal) {
+        if (principal != null) {
+            Role role = userService.getRole(principal.getUser().getId());
+            if (!(role.equals(Role.ADMIN))) {
+                String message = "Validation of user's role access type failed, required role: ADMIN";
+                LOG.warn(message);
+                throw new InvalidAccessException(message);
+            }
+
+            LOG.info("Sending request to persist movie by id");
+            long startTime = System.currentTimeMillis();
+            MovieDto movieDto = JsonConverter.fromJson(movieFromRequest, MovieDto.class);
+            Movie movie = MovieDtoConverter.mapDtoIntoObject(movieDto);
+            movie.setId(movieId);
+
+            Movie movieAfterUpdate = movieService.update(movie);
+
+            movieDto = MovieDtoConverter.mapObject(movieAfterUpdate);
+            String movieJson = JsonConverter.toJson(movieDto);
+            LOG.info("Movie after persist was received. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
+            return movieJson;
+        } else {
+            String message = "Request header doesn't contain uuid";
+            LOG.warn(message);
+            throw new AuthRequiredException(message);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/movie/random", method = RequestMethod.GET)
     public String getThreeRandomMovies() {
         LOG.info("Sending request to get 3 random movies");
         long startTime = System.currentTimeMillis();
@@ -63,7 +129,7 @@ public class MovieController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/movie/genre/{genreId}")
+    @RequestMapping(value = "/movie/genre/{genreId}", method = RequestMethod.GET)
     public String getByGenre(@PathVariable int genreId,
                              @RequestParam(required = false) LinkedHashMap<String, String> params) {
         Map<SortingField, SortingType> sortingFieldSortingTypeMap = validateInputParameters(params);
@@ -79,7 +145,7 @@ public class MovieController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/movie/{movieId}")
+    @RequestMapping(value = "/movie/{movieId}", method = RequestMethod.GET)
     public String getById(@PathVariable int movieId, @RequestParam(required = false, name = "currency") String currency) {
         LOG.info("Sending request to get movie by id");
         long startTime = System.currentTimeMillis();
