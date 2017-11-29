@@ -59,21 +59,20 @@ public class MovieService implements IMovieService {
             genreService.enrichWithGenre(movie);
             countryService.enrichWithCountry(movie);
             reviewService.enrichWithReview(movie);
-            movieCache.put(id, movie);
+            movieCache.put(movie);
             return movie;
         }
         return optional.get();
     }
 
     @Override
-    //SQLIntegrityConstraintViolationException is not unchecked, but spring throw DuplicateKeyException (Runtime) for it. So how to control this?
     @Transactional
     public Movie persist(Movie movie) {
         movie = movieDao.persist(movie);
         genreService.persist(movie);
         countryService.persist(movie);
         reviewService.persist(movie);
-        movieCache.put(movie.getId(), movie);
+        movieCache.put(movie);
         return movie;
     }
 
@@ -86,7 +85,7 @@ public class MovieService implements IMovieService {
         countryService.remove(movie);
         countryService.persist(movie);
         reviewService.update(movie);
-        movieCache.put(movie.getId(), movie);
+        movieCache.put(movie);
         return movie;
     }
 }

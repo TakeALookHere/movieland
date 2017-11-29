@@ -28,13 +28,12 @@ public class MovieCache {
         return Optional.ofNullable(movie);
     }
 
-    public void put(int id, Movie movie) {
-        SoftReference<Movie> softReference = MOVIE_CACHE.put(id, new SoftReference<>(movie));
+    public void put(Movie movie) {
+        SoftReference<Movie> softReference = MOVIE_CACHE.put(movie.getId(), new SoftReference<>(movie));
         if (softReference == null) {
             LOG.info("Movie was added into cache {}", movie);
         } else {
             Movie oldMovie = softReference.get();
-            softReference.clear();
             LOG.info("OldMovie {}", oldMovie);
             LOG.info("Was replaced in cache by NewMovie {}", oldMovie, movie);
         }
