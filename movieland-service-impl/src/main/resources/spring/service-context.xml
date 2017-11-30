@@ -17,6 +17,7 @@
             <list>
                 <value>classpath:external.properties</value>
                 <value>classpath:security.properties</value>
+                <value>classpath:util.properties</value>
             </list>
         </property>
     </bean>

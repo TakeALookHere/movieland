@@ -9,6 +9,7 @@ import com.miskevich.movieland.service.IGenreService;
 import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.service.IReviewService;
 import com.miskevich.movieland.service.cache.MovieCache;
+import com.miskevich.movieland.service.util.MovieParallelEnricher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,8 @@ public class MovieService implements IMovieService {
     private IReviewService reviewService;
     @Autowired
     private MovieCache movieCache;
+    @Autowired
+    private MovieParallelEnricher movieParallelEnricher;
 
     @Override
     public List<Movie> getAll(Map<SortingField, SortingType> params) {
@@ -40,8 +43,7 @@ public class MovieService implements IMovieService {
     public List<Movie> getThreeRandomMovies() {
         List<Movie> movies = movieDao.getThreeRandomMovies();
         for (Movie movie : movies) {
-            genreService.enrichWithGenre(movie);
-            countryService.enrichWithCountry(movie);
+            movieParallelEnricher.enrich(movie, false);
         }
         return movies;
     }
@@ -54,11 +56,9 @@ public class MovieService implements IMovieService {
     @Override
     public Movie getById(int id) {
         Optional<Movie> optional = movieCache.get(id);
-        if(!optional.isPresent()){
+        if (!optional.isPresent()) {
             Movie movie = movieDao.getById(id);
-            genreService.enrichWithGenre(movie);
-            countryService.enrichWithCountry(movie);
-            reviewService.enrichWithReview(movie);
+            movieParallelEnricher.enrich(movie, true);
             movieCache.put(movie);
             return movie;
         }
