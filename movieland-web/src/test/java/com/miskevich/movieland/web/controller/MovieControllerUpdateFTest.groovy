@@ -27,8 +27,6 @@ class MovieControllerUpdateFTest {
 
     @Mock
     private IMovieService mockMovieService
-    @Mock
-    private IUserService mockUserService
     @InjectMocks
     private MovieController movieController
     private MockMvc mockMvc
@@ -40,9 +38,7 @@ class MovieControllerUpdateFTest {
     }
 
     @Test(dataProvider = "provideMovieUpdateSuccess", dataProviderClass = ControllerDataProvider.class)
-    void testUpdateSuccess(roleValid, Movie movieExpected, movieJson, String uuid, UserPrincipal principal) {
-
-        when(mockUserService.getRole(anyInt())).thenReturn(roleValid)
+    void testUpdateSuccess(Movie movieExpected, movieJson, String uuid, UserPrincipal principal) {
         when(mockMovieService.update(any(Movie.class))).thenReturn(movieExpected)
         mockMvc.perform(put("/movie/{movieId}", movieExpected.id)
                 .header('uuid', uuid)
@@ -77,8 +73,6 @@ class MovieControllerUpdateFTest {
                 .andExpect(jsonPath('$.reviews[1].movie.id', is(movieExpected.reviews.get(1).movie.id)))
                 .andExpect(jsonPath('$.reviews[1].user.id', is(movieExpected.reviews.get(1).user.id)))
 
-        verify(mockUserService, times(1)).getRole(anyInt())
-        verifyNoMoreInteractions(mockUserService)
         verify(mockMovieService, times(1)).update(any(Movie.class))
         verifyNoMoreInteractions(mockMovieService)
     }

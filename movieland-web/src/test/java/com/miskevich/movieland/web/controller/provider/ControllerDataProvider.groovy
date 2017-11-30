@@ -204,9 +204,10 @@ class ControllerDataProvider {
         String uuid = UUID.randomUUID()
         def reviewJson = new ReviewDto(movieId: 1, text: 'Очень понравилось!')
         def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
+        def expectedReview = new Review(text: reviewJson.text, movie: new Movie(id: reviewJson.movieId), user: new User(id: principal.user.id))
 
         def array = new Object[1][]
-        array[0] = [reviewJson, uuid, principal]
+        array[0] = [reviewJson, uuid, principal, expectedReview]
         return array
     }
 
@@ -214,7 +215,6 @@ class ControllerDataProvider {
     static Object[][] provideMovieAddSuccess() {
 
         String uuid = UUID.randomUUID()
-        def roleValid = Role.ADMIN
         def movieExpected = new Movie(id: 1, nameRussian: "Зеленая миля", nameNative: "The Green Mile", yearOfRelease: convertStringToDate("1999-01-01"),
                 description: "Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.",
                 rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg",
@@ -240,7 +240,7 @@ class ControllerDataProvider {
         def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
 
         def array = new Object[1][]
-        array[0] = [roleValid, movieExpected, movieJson, uuid, principal]
+        array[0] = [movieExpected, movieJson, uuid, principal]
         return array
     }
 
@@ -248,7 +248,6 @@ class ControllerDataProvider {
     static Object[][] provideMovieUpdateSuccess() {
 
         String uuid = UUID.randomUUID()
-        def roleValid = Role.ADMIN
         def movieExpected = new Movie(id: 27, nameRussian: "Зеленая миля", nameNative: "The Green Mile", yearOfRelease: convertStringToDate("1999-01-01"),
                 description: "Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.",
                 rating: 8.9, price: 134.67, picturePath: "green_mile173_173.jpg",
@@ -274,7 +273,7 @@ class ControllerDataProvider {
         def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
 
         def array = new Object[1][]
-        array[0] = [roleValid, movieExpected, movieJson, uuid, principal]
+        array[0] = [movieExpected, movieJson, uuid, principal]
         return array
     }
 
@@ -301,7 +300,6 @@ class ControllerDataProvider {
     @DataProvider(name = "provideMovieJsonDuplicateGenres")
     static Object[][] provideMovieJsonDuplicateGenres() {
         String uuid = UUID.randomUUID()
-        def roleValid = Role.ADMIN
         def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
         def movieJson = new MovieDto(nameRussian: "Зеленая миля", nameNative: "The Green Mile", yearOfRelease: convertStringToDate("1999-01-01"),
                 description: "Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора». Вновь прибывший обладал поразительным ростом и был пугающе спокоен, что, впрочем, никак не влияло на отношение к нему начальника блока Пола Эджкомба, привыкшего исполнять приговор.",
@@ -316,7 +314,7 @@ class ControllerDataProvider {
                                   user: new User(id: 5))])
 
         def array = new Object[1][]
-        array[0] = [movieJson, uuid, roleValid, principal]
+        array[0] = [movieJson, uuid, principal]
         return array
     }
 

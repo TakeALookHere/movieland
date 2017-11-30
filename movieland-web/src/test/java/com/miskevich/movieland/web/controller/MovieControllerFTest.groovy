@@ -6,7 +6,6 @@ import com.miskevich.movieland.entity.Movie
 import com.miskevich.movieland.model.SortingField
 import com.miskevich.movieland.model.SortingType
 import com.miskevich.movieland.service.IMovieService
-import com.miskevich.movieland.service.IUserService
 import com.miskevich.movieland.service.impl.RateService
 import com.miskevich.movieland.service.security.UserPrincipal
 import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
@@ -25,6 +24,8 @@ import org.testng.annotations.Test
 
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.core.Is.is
+import static org.mockito.Matchers.any
+import static org.mockito.Matchers.anyMap
 import static org.mockito.Mockito.*
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -34,8 +35,6 @@ class MovieControllerFTest {
 
     @Mock
     private IMovieService mockMovieService
-    @Mock
-    private IUserService mockUserService
     @InjectMocks
     private MovieController movieController
     private MockMvc mockMvc
@@ -314,9 +313,7 @@ class MovieControllerFTest {
     }
 
     @Test(dataProvider = "provideMovieAddSuccess", dataProviderClass = ControllerDataProvider.class)
-    void testSaveSuccess(roleValid, Movie movieExpected, movieJson, String uuid, UserPrincipal principal) {
-
-        when(mockUserService.getRole(anyInt())).thenReturn(roleValid)
+    void testSaveSuccess(Movie movieExpected, movieJson, String uuid, UserPrincipal principal) {
         when(mockMovieService.persist(any(Movie.class))).thenReturn(movieExpected)
         mockMvc.perform(post("/movie")
                 .header('uuid', uuid)
@@ -351,39 +348,14 @@ class MovieControllerFTest {
                 .andExpect(jsonPath('$.reviews[1].movie.id', is(movieExpected.reviews.get(1).movie.id)))
                 .andExpect(jsonPath('$.reviews[1].user.id', is(movieExpected.reviews.get(1).user.id)))
 
-        verify(mockUserService, times(1)).getRole(anyInt())
-        verifyNoMoreInteractions(mockUserService)
         verify(mockMovieService, times(1)).persist(any(Movie.class))
         verifyNoMoreInteractions(mockMovieService)
-    }
-
-    @Test(dataProvider = "provideMovieJson", dataProviderClass = ControllerDataProvider.class,
-            expectedExceptionsMessageRegExp = '.*Request header doesn\'t contain uuid',
-            expectedExceptions = NestedServletException.class)
-    void testSaveNoUuidHeader(movieJson) {
-        mockMvc.perform(post("/movie")
-                .content(JsonConverter.toJson(movieJson))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-    }
-
-    @Test(dataProvider = "provideMovieJson", dataProviderClass = ControllerDataProvider.class,
-            expectedExceptionsMessageRegExp = '.*Request header doesn\'t contain uuid',
-            expectedExceptions = NestedServletException.class)
-    void testUpdateNoUuidHeader(movieJson) {
-        mockMvc.perform(put("/movie/{movieId}", 1)
-                .content(JsonConverter.toJson(movieJson))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
     }
 
     @Test(dataProvider = "provideMovieJsonDuplicateGenres", dataProviderClass = ControllerDataProvider.class,
             expectedExceptionsMessageRegExp = '.*DuplicateKeyException.*',
             expectedExceptions = NestedServletException.class)
-    void testUpdateDuplicateGenres(movieJson, uuid, roleValid, principal) {
-        when(mockUserService.getRole(anyInt())).thenReturn(roleValid)
+    void testUpdateDuplicateGenres(movieJson, uuid, principal) {
         when(mockMovieService.update(any(Movie.class))).thenThrow(DuplicateKeyException.class)
         mockMvc.perform(put("/movie/{movieId}", 1)
                 .header('uuid', uuid)

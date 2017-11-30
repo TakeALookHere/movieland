@@ -4,8 +4,6 @@ import com.miskevich.movieland.entity.Review;
 import com.miskevich.movieland.entity.User;
 import com.miskevich.movieland.model.Role;
 import com.miskevich.movieland.service.IReviewService;
-import com.miskevich.movieland.service.IUserService;
-import com.miskevich.movieland.service.exception.AuthRequiredException;
 import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.ReviewDto;
 import com.miskevich.movieland.web.json.JsonConverter;
@@ -33,24 +31,16 @@ public class ReviewController {
     @ResponseBody
     @RequestMapping(value = "/review", method = RequestMethod.POST)
     @RoleRequired({Role.ADMIN, Role.USER})
-    public String add(@RequestBody String review, UserPrincipal principal) {
-//        if(principal == null){
-//            String message = "Request header doesn't contain uuid";
-//            LOG.warn(message);
-//            throw new AuthRequiredException(message);
-//        }
-        ReviewDto reviewDto = JsonConverter.fromJson(review, ReviewDto.class);
-        Review addedReview = saveReview(principal, reviewDto);
-        return JsonConverter.toJson(addedReview);
-    }
-
-    private Review saveReview(UserPrincipal principal, ReviewDto reviewDto) {
+    public String add(@RequestBody String reviewFromRequest, UserPrincipal principal) {
+        ReviewDto reviewDto = JsonConverter.fromJson(reviewFromRequest, ReviewDto.class);
         Review review = ReviewDtoConverter.mapDtoIntoObject(reviewDto);
         review.setUser(new User(principal.getUser().getId()));
+
         LOG.info("Sending request to add review: {}", review);
         long startTime = System.currentTimeMillis();
         Review addedReview = reviewService.add(review);
         LOG.info("Review was added. It took {} ms", System.currentTimeMillis() - startTime);
-        return addedReview;
+
+        return JsonConverter.toJson(addedReview);
     }
 }

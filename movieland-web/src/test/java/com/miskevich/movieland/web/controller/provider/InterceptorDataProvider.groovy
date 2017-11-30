@@ -11,11 +11,23 @@ import java.time.LocalDateTime
 
 class InterceptorDataProvider {
 
-    @DataProvider(name = 'userInvalidRole')
-    static Object[][] provideUserJson() {
+    @DataProvider(name = 'userInvalidRoleInvalid')
+    static Object[][] userInvalidRoleInvalid() {
 
         Role[] requiredRoles = [Role.ADMIN, Role.USER]
         def userRole = Role.MANAGER
+        def principal = new UserPrincipal(new User(id: 1), LocalDateTime.now())
+
+        def array = new Object[1][]
+        array[0] = [requiredRoles, userRole, principal]
+        return array
+    }
+
+    @DataProvider(name = 'userInvalidRoleValid')
+    static Object[][] userInvalidRoleValid() {
+
+        Role[] requiredRoles = [Role.ADMIN, Role.USER]
+        def userRole = Role.USER
         def principal = new UserPrincipal(new User(id: 1), LocalDateTime.now())
 
         def array = new Object[1][]

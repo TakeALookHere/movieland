@@ -35,6 +35,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         String uuid = request.getHeader("uuid");
         String nickname;
         Optional<Role[]> requiredRoles = isRoleRequired(handler);
+
         if (uuid != null) {
             Optional<UserPrincipal> userPrincipalFromCache = userSecurityService.getFromCache(uuid);
             if (userPrincipalFromCache.isPresent()) {
@@ -48,7 +49,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
                 requiredRoles.ifPresent(roleRequired -> validateRole(roleRequired, principal));
             }
         } else {
-            if(requiredRoles.isPresent()){
+            if (requiredRoles.isPresent()) {
                 String message = "Request header doesn't contain uuid";
                 LOG.warn(message);
                 throw new AuthRequiredException(message);
@@ -74,15 +75,15 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
     }
 
     boolean validateRole(Role[] requiredRoles, UserPrincipal principal) {
-            Role userRole = userService.getRole(principal.getUser().getId());
-            for (Role requiredRole : requiredRoles) {
-                if (userRole.equals(requiredRole)) {
-                    return true;
-                }
+        Role userRole = userService.getRole(principal.getUser().getId());
+        for (Role requiredRole : requiredRoles) {
+            if (userRole.equals(requiredRole)) {
+                return true;
             }
-            String message = "Validation of user role access type failed, required role: " + Arrays.toString(requiredRoles);
-            LOG.warn(message);
-            throw new InvalidAccessException(message);
+        }
+        String message = "Validation of user's role access type failed, required role: " + Arrays.toString(requiredRoles);
+        LOG.warn(message);
+        throw new InvalidAccessException(message);
     }
 
     @Override

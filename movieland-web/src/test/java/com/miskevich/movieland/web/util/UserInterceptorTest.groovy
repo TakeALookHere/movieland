@@ -1,21 +1,17 @@
 package com.miskevich.movieland.web.util
 
 import com.miskevich.movieland.service.IUserService
-import com.miskevich.movieland.service.impl.UserService
-import com.miskevich.movieland.service.security.UserPrincipal
 import com.miskevich.movieland.web.controller.provider.InterceptorDataProvider
 import com.miskevich.movieland.web.exception.InvalidAccessException
-import com.miskevich.movieland.web.security.RoleRequired
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 
-import static org.mockito.Mockito.*
+import static org.mockito.Matchers.anyInt
+import static org.mockito.Mockito.when
+import static org.testng.AssertJUnit.assertTrue
 
 class UserInterceptorTest {
 
@@ -29,11 +25,17 @@ class UserInterceptorTest {
         MockitoAnnotations.initMocks(this)
     }
 
-    @Test(dataProvider = 'userInvalidRole', dataProviderClass = InterceptorDataProvider.class,
-    expectedExceptionsMessageRegExp = ".*Validation of user role access type failed, required role:.*",
-    expectedExceptions = InvalidAccessException.class)
-    void testValidateRole(requiredRoles, userRole, principal) {
+    @Test(dataProvider = 'userInvalidRoleInvalid', dataProviderClass = InterceptorDataProvider.class,
+            expectedExceptionsMessageRegExp = ".*Validation of user\'s role access type failed, required role:.*",
+            expectedExceptions = InvalidAccessException.class)
+    void testValidateRoleInvalid(requiredRoles, userRole, principal) {
         when(mockUserService.getRole(anyInt())).thenReturn(userRole)
         userInterceptor.validateRole(requiredRoles, principal)
+    }
+
+    @Test(dataProvider = 'userInvalidRoleValid', dataProviderClass = InterceptorDataProvider.class)
+    void testValidateRoleValid(requiredRoles, userRole, principal) {
+        when(mockUserService.getRole(anyInt())).thenReturn(userRole)
+        assertTrue(userInterceptor.validateRole(requiredRoles, principal))
     }
 }
