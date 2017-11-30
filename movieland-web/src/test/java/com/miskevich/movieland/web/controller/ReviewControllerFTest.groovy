@@ -1,11 +1,13 @@
 package com.miskevich.movieland.web.controller
 
+import com.miskevich.movieland.entity.Review
 import com.miskevich.movieland.service.IReviewService
-import com.miskevich.movieland.service.IUserService
 import com.miskevich.movieland.service.security.UserPrincipal
 import com.miskevich.movieland.web.controller.provider.ControllerDataProvider
 import com.miskevich.movieland.web.dto.ReviewDto
+import com.miskevich.movieland.web.exception.InvalidAccessException
 import com.miskevich.movieland.web.json.JsonConverter
+import com.miskevich.movieland.web.util.UserInterceptor
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -24,7 +26,7 @@ class ReviewControllerFTest {
 
     @Mock
     private IReviewService mockReviewService
-        @InjectMocks
+    @InjectMocks
     private ReviewController reviewController
     private MockMvc mockMvc
 
@@ -38,6 +40,8 @@ class ReviewControllerFTest {
             expectedExceptionsMessageRegExp = '.*Validation of user\'s role access type failed, required role: USER/ADMIN',
             expectedExceptions = NestedServletException.class)
     void testAddInvalidRole(ReviewDto reviewJson, String uuid, UserPrincipal principal) {
+        UserInterceptor userInterceptor = mock(UserInterceptor.class)
+        when(userInterceptor.preHandle(any(), any(), any())).thenThrow(InvalidAccessException.class)
         mockMvc.perform(post("/review")
                 .header('uuid', uuid)
                 .content(JsonConverter.toJson(reviewJson))

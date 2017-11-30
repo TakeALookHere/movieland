@@ -34,6 +34,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String uuid = request.getHeader("uuid");
         String nickname;
+        Optional<Role[]> requiredRoles = isRoleRequired(handler);
         if (uuid != null) {
             Optional<UserPrincipal> userPrincipalFromCache = userSecurityService.getFromCache(uuid);
             if (userPrincipalFromCache.isPresent()) {
@@ -44,18 +45,14 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
                 MDC.put("nickname", nickname);
                 MDC.put("requestId", uuid);
 
-                if (handler instanceof HandlerMethod) {
-                    HandlerMethod handlerMethod = (HandlerMethod) handler;
-                    Method method = handlerMethod.getMethod();
-                    RoleRequired annotation = method.getAnnotation(RoleRequired.class);
-                    if (annotation != null) {
-                        Role[] roles = annotation.value();
-                        Role role = userService.getRole(principal.getUser().getId());
-                        validateRole(roles, role);
-                    }
-                }
+                requiredRoles.ifPresent(roleRequired -> validateRole(roleRequired, principal));
             }
         } else {
+            if(requiredRoles.isPresent()){
+                String message = "Request header doesn't contain uuid";
+                LOG.warn(message);
+                throw new AuthRequiredException(message);
+            }
             nickname = GUEST_NICKNAME;
             LOG.debug("No \"uuid\" header in request");
             MDC.put("nickname", nickname);
@@ -63,15 +60,29 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
-    private boolean validateRole(Role[] roles, Role userRole) {
-        for (Role requiredRole : roles) {
-            if (userRole.equals(requiredRole)) {
-                return true;
+    private Optional<Role[]> isRoleRequired(Object handler) {
+        if (handler instanceof HandlerMethod) {
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            Method method = handlerMethod.getMethod();
+            RoleRequired annotation = method.getAnnotation(RoleRequired.class);
+            if (annotation != null) {
+                Role[] requiredRoles = annotation.value();
+                return Optional.of(requiredRoles);
             }
         }
-        String message = "Validation of user's role access type failed, required role: " + Arrays.toString(roles);
-        LOG.warn(message);
-        throw new InvalidAccessException(message);
+        return Optional.empty();
+    }
+
+    boolean validateRole(Role[] requiredRoles, UserPrincipal principal) {
+            Role userRole = userService.getRole(principal.getUser().getId());
+            for (Role requiredRole : requiredRoles) {
+                if (userRole.equals(requiredRole)) {
+                    return true;
+                }
+            }
+            String message = "Validation of user role access type failed, required role: " + Arrays.toString(requiredRoles);
+            LOG.warn(message);
+            throw new InvalidAccessException(message);
     }
 
     @Override

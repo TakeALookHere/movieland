@@ -34,11 +34,11 @@ public class ReviewController {
     @RequestMapping(value = "/review", method = RequestMethod.POST)
     @RoleRequired({Role.ADMIN, Role.USER})
     public String add(@RequestBody String review, UserPrincipal principal) {
-        if(principal == null){
-            String message = "Request header doesn't contain uuid";
-            LOG.warn(message);
-            throw new AuthRequiredException(message);
-        }
+//        if(principal == null){
+//            String message = "Request header doesn't contain uuid";
+//            LOG.warn(message);
+//            throw new AuthRequiredException(message);
+//        }
         ReviewDto reviewDto = JsonConverter.fromJson(review, ReviewDto.class);
         Review addedReview = saveReview(principal, reviewDto);
         return JsonConverter.toJson(addedReview);
