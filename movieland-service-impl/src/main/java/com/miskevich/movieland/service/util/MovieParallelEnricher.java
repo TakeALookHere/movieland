@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
 
 @Service
 public class MovieParallelEnricher {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
-    private ExecutorService executorService = Executors.newCachedThreadPool();
-    private ThreadPoolExecutor executor = (ThreadPoolExecutor) executorService;
+    private static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
     @Autowired
     private IGenreService genreService;
     @Autowired
@@ -42,30 +42,31 @@ public class MovieParallelEnricher {
 
     @PreDestroy
     private void destroy() {
-        executorService.shutdownNow();
+        executor.shutdown();
     }
 
     public void enrich(Movie movie, boolean isFullEnrichmentRequired) {
-        List<Callable<Integer>> tasks = new ArrayList<>();
+        List<Runnable> tasks = new ArrayList<>();
+
+        Runnable genreTask = () -> genreService.enrichWithGenre(movie);
+        Runnable countryTask = () -> countryService.enrichWithCountry(movie);
+        tasks.add(genreTask);
+        tasks.add(countryTask);
+
         if (isFullEnrichmentRequired) {
-            Callable<Integer> genreTask = () -> {genreService.enrichWithGenre(movie); return 1;};
-            Callable<Integer> countryTask = () -> {countryService.enrichWithCountry(movie); return 1;};
-            Callable<Integer> reviewTask = () -> {reviewService.enrichWithReview(movie); return 1;};
-
-            tasks.add(genreTask);
-            tasks.add(countryTask);
+            Runnable reviewTask = () -> reviewService.enrichWithReview(movie);
             tasks.add(reviewTask);
-        } else {
-            Callable<Integer> genreTask = () -> {genreService.enrichWithGenre(movie); return 1;};
-            Callable<Integer> countryTask = () -> {countryService.enrichWithCountry(movie); return 1;};
+        }
 
-            tasks.add(genreTask);
-            tasks.add(countryTask);
+        List<Callable<Object>> qqq = new ArrayList<>();
+        for (Runnable task : tasks){
+            Callable<Object> callable = Executors.callable(task);
+            qqq.add(callable);
         }
 
         try {
-            List<Future<Integer>> futures = executorService.invokeAll(tasks, enrichmentTaskTimeout, TimeUnit.MINUTES);
-            for (Future<Integer> future : futures) {
+            List<Future<Object>> futures = executor.invokeAll(qqq, enrichmentTaskTimeout, TimeUnit.MINUTES);
+            for (Future<Object> future : futures) {
                 if (future.isCancelled()) {
                     LOG.warn("Enrichment task was cancelled by timeout");
                 }
@@ -73,5 +74,26 @@ public class MovieParallelEnricher {
         } catch (InterruptedException e) {
             LOG.warn("Movie enrichment wasn't completed");
         }
+    }
+
+
+    static class MyTask implements Callable {
+
+        @Override
+        public Object call() throws Exception {
+            System.out.println("start");
+            Thread.sleep(1000);
+            System.out.println("111");
+            return null;
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        MyTask myTask = new MyTask();
+        MyTask myTask2 = new MyTask();
+        List<Callable<MyTask>> list = new ArrayList<>();
+        list.add(myTask);
+        list.add(myTask2);
+        executor.invokeAll(list, 500, TimeUnit.MILLISECONDS);
     }
 }

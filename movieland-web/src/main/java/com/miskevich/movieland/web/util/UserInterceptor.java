@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.IdGenerator;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -20,6 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
+
+import static java.lang.String.format;
 
 public class UserInterceptor extends HandlerInterceptorAdapter {
 
@@ -29,6 +33,8 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
     private UserSecurityService userSecurityService;
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IdGenerator idGenerator;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -44,7 +50,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
                 ((SecurityHttpRequestWrapper) request).setPrincipal(principal);
                 nickname = principal.getUser().getNickname();
                 MDC.put("nickname", nickname);
-                MDC.put("requestId", uuid);
+                MDC.put("requestId", idGenerator.generateId().toString());
 
                 requiredRoles.ifPresent(roleRequired -> validateRole(roleRequired, principal));
             }
@@ -57,6 +63,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
             nickname = GUEST_NICKNAME;
             LOG.debug("No \"uuid\" header in request");
             MDC.put("nickname", nickname);
+            MDC.put("requestId", idGenerator.generateId().toString());
         }
         return true;
     }
@@ -81,7 +88,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
                 return true;
             }
         }
-        String message = "Validation of user's role access type failed, required role: " + Arrays.toString(requiredRoles);
+        String message = format("Validation of user's role access type failed, required role: %s", Arrays.toString(requiredRoles));
         LOG.warn(message);
         throw new InvalidAccessException(message);
     }
