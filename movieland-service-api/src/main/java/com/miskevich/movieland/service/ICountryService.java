@@ -11,8 +11,6 @@ public interface ICountryService {
 
     List<Country> getAll();
 
-    void enrichWithCountry(Movie movie);
-
     void persist(Movie movie);
 
     void remove(Movie movie);

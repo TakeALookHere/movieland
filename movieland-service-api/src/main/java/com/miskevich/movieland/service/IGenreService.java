@@ -10,8 +10,6 @@ public interface IGenreService {
 
     List<Genre> getByMovieId(int movieId);
 
-    void enrichWithGenre(Movie movie);
-
     void persist(Movie movie);
 
     void remove(Movie movie);

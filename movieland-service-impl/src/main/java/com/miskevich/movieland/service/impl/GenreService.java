@@ -26,11 +26,6 @@ public class GenreService implements IGenreService {
     }
 
     @Override
-    public void enrichWithGenre(Movie movie) {
-        movie.setGenres(getByMovieId(movie.getId()));
-    }
-
-    @Override
     public void persist(Movie movie) {
         genreDao.persist(movie);
     }

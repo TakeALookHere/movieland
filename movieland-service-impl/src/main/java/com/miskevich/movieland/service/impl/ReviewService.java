@@ -21,11 +21,6 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public void enrichWithReview(Movie movie) {
-        movie.setReviews(getByMovieId(movie.getId()));
-    }
-
-    @Override
     public Review add(Review review) {
         return reviewDao.add(review);
     }
