@@ -9,6 +9,7 @@ import com.miskevich.movieland.service.IGenreService;
 import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.service.IReviewService;
 import com.miskevich.movieland.service.cache.MovieCache;
+import com.miskevich.movieland.service.model.EnrichmentType;
 import com.miskevich.movieland.service.util.MovieParallelEnricher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class MovieService implements IMovieService {
     public List<Movie> getThreeRandomMovies() {
         List<Movie> movies = movieDao.getThreeRandomMovies();
         for (Movie movie : movies) {
-            movieParallelEnricher.enrich(movie, false);
+            movieParallelEnricher.enrich(movie, EnrichmentType.PARTIAL);
         }
         return movies;
     }
@@ -58,7 +59,7 @@ public class MovieService implements IMovieService {
         Optional<Movie> optional = movieCache.get(id);
         if (!optional.isPresent()) {
             Movie movie = movieDao.getById(id);
-            movieParallelEnricher.enrich(movie, true);
+            movieParallelEnricher.enrich(movie, EnrichmentType.FULL);
             movieCache.put(movie);
             return movie;
         }
