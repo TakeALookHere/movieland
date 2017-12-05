@@ -48,42 +48,51 @@ public class MovieParallelEnricher {
         executor.shutdown();
     }
 
-    @SuppressWarnings("unchecked")
     public void enrich(Movie movie, EnrichmentType enrichmentType) {
         List<Callable<List<?>>> callables = new ArrayList<>();
 
-        Callable<List<?>> genres = () -> genreService.getByMovieId(movie.getId());
-        Callable<List<?>> countries = () -> countryService.getByMovieId(movie.getId());
-        callables.add(genres);
-        callables.add(countries);
+        Callable<List<?>> genreTask = () -> genreService.getByMovieId(movie.getId());
+        Callable<List<?>> countryTask = () -> countryService.getByMovieId(movie.getId());
+        callables.add(genreTask);
+        callables.add(countryTask);
 
         if (enrichmentType.equals(EnrichmentType.FULL)) {
-            Callable<List<?>> reviews = () -> reviewService.getByMovieId(movie.getId());
-            callables.add(reviews);
+            Callable<List<?>> reviewTask = () -> reviewService.getByMovieId(movie.getId());
+            callables.add(reviewTask);
         }
 
-        try {
-            List<Future<List<?>>> futures = executor.invokeAll(callables, enrichmentTaskTimeout, TimeUnit.MILLISECONDS);
-            for (Future<List<?>> future : futures) {
-                if (!future.isCancelled()) {
-                    List<?> objects = future.get();
+        enrichByTaskResults(movie, enrichmentType, callables);
+    }
 
-                    if(!objects.isEmpty()){
-                        Class<?> aClass = objects.get(0).getClass();
-                        if (aClass.getCanonicalName().equals(Genre.class.getCanonicalName())) {
-                            movie.setGenres((List<Genre>) objects);
-                        } else if (aClass.getCanonicalName().equals(Country.class.getCanonicalName())) {
-                            movie.setCountries((List<Country>) objects);
-                        } else {
-                            movie.setReviews((List<Review>) objects);
-                        }
-                    }
-                } else {
-                    LOG.warn("Enrichment task was cancelled by timeout");
+    @SuppressWarnings("unchecked")
+    private void enrichByTaskResults(Movie movie, EnrichmentType enrichmentType, List<Callable<List<?>>> callables) {
+        try {
+            List<Future<List<?>>> futures = executor.invokeAll(callables, enrichmentTaskTimeout, TimeUnit.MINUTES);
+
+            Future<List<?>> genreFuture = futures.get(0);
+            if(!genreFuture.isCancelled()){
+                movie.setGenres((List<Genre>) genreFuture);
+            }else {
+                LOG.warn("Enrichment task for genres was cancelled by timeout");
+            }
+
+            Future<List<?>> countryFuture = futures.get(1);
+            if(!countryFuture.isCancelled()){
+                movie.setCountries((List<Country>) countryFuture);
+            }else {
+                LOG.warn("Enrichment task for countries was cancelled by timeout");
+            }
+
+            if(enrichmentType.equals(EnrichmentType.FULL)){
+                Future<List<?>> reviewFuture = futures.get(2);
+                if(!reviewFuture.isCancelled()){
+                    movie.setReviews((List<Review>) reviewFuture);
+                }else {
+                    LOG.warn("Enrichment task for reviews was cancelled by timeout");
                 }
             }
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.warn("Movie enrichment wasn't completed");
+        } catch (InterruptedException e) {
+            LOG.warn("Movie enrichment wasn't fully completed");
         }
     }
 }
