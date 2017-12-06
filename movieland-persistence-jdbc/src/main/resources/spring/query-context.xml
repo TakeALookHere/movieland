@@ -105,4 +105,26 @@
         <constructor-arg
                 value="delete from movie_genre where movie_id = :movieId;"/>
     </bean>
+
+    <bean id="addMovieRatingSQL" class="java.lang.String">
+        <constructor-arg
+                value="insert into movie_user_rating (movie_id, user_id, rating)
+                    values (:movieId, :userId, :rating);"/>
+    </bean>
+
+    <bean id="getAllRatingsSQL" class="java.lang.String">
+        <constructor-arg
+                value="select id movie_id, rating, votes from movie;"/>
+    </bean>
+
+    <bean id="getTotalRatingForEachMovieSQL" class="java.lang.String"><!---->
+        <constructor-arg
+                value="select movie_id, sum(rating) rating, count(*) votes from movie_user_rating
+                    group by movie_id;"/>
+    </bean>
+
+    <bean id="persistRatingsAndVotesSQL" class="java.lang.String">
+        <constructor-arg
+                value="update movie set rating = :rating, votes = :votes where id = :movieId;"/>
+    </bean>
 </beans>

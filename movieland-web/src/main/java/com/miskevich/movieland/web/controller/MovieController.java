@@ -2,13 +2,12 @@ package com.miskevich.movieland.web.controller;
 
 import com.miskevich.movieland.dto.RateDto;
 import com.miskevich.movieland.entity.Movie;
-import com.miskevich.movieland.model.Currency;
-import com.miskevich.movieland.model.Role;
-import com.miskevich.movieland.model.SortingField;
-import com.miskevich.movieland.model.SortingType;
+import com.miskevich.movieland.entity.User;
+import com.miskevich.movieland.model.*;
 import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.service.IUserService;
 import com.miskevich.movieland.service.impl.RateService;
+import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.MovieDto;
 import com.miskevich.movieland.web.json.JsonConverter;
 import com.miskevich.movieland.web.json.MovieDtoConverter;
@@ -25,8 +24,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.miskevich.movieland.web.json.JsonConverter.toJson;
+
 @Controller
-@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class MovieController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -35,8 +36,6 @@ public class MovieController {
     private IMovieService movieService;
     @Autowired
     private RateService rateService;
-    @Autowired
-    private IUserService userService;
 
     @ResponseBody
     @RequestMapping(value = "/movie", method = RequestMethod.GET)
@@ -48,7 +47,7 @@ public class MovieController {
         List<Movie> movies = movieService.getAll(sortingFieldSortingTypeMap);
 
         List<MovieDto> movieDtos = MovieDtoConverter.mapList(movies);
-        String moviesJson = JsonConverter.toJson(movieDtos);
+        String moviesJson = toJson(movieDtos);
         LOG.info("Movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
     }
@@ -65,7 +64,7 @@ public class MovieController {
         Movie movieAfterSave = movieService.persist(movie);
 
         movieDto = MovieDtoConverter.mapObject(movieAfterSave);
-        String movieJson = JsonConverter.toJson(movieDto);
+        String movieJson = toJson(movieDto);
         LOG.info("Movie {} was added. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
         return movieJson;
     }
@@ -83,7 +82,7 @@ public class MovieController {
         Movie movieAfterUpdate = movieService.update(movie);
 
         movieDto = MovieDtoConverter.mapObject(movieAfterUpdate);
-        String movieJson = JsonConverter.toJson(movieDto);
+        String movieJson = toJson(movieDto);
         LOG.info("Movie after persist was received. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
         return movieJson;
     }
@@ -96,7 +95,7 @@ public class MovieController {
         List<Movie> movies = movieService.getThreeRandomMovies();
 
         List<MovieDto> movieDtos = MovieDtoConverter.mapList(movies);
-        String moviesJson = JsonConverter.toJson(movieDtos);
+        String moviesJson = toJson(movieDtos);
 
         LOG.info("Random movies were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
@@ -112,7 +111,7 @@ public class MovieController {
         List<Movie> movies = movieService.getByGenre(genreId, sortingFieldSortingTypeMap);
 
         List<MovieDto> movieDtos = MovieDtoConverter.mapList(movies);
-        String moviesJson = JsonConverter.toJson(movieDtos);
+        String moviesJson = toJson(movieDtos);
 
         LOG.info("Movies by genre were received. JSON movies: {}. It took {} ms", moviesJson, System.currentTimeMillis() - startTime);
         return moviesJson;
@@ -134,9 +133,29 @@ public class MovieController {
             RateConverter.enrichMovieWithPriceForRate(movieDto, rateValue);
         }
 
-        String movieJson = JsonConverter.toJson(movieDto);
+        String movieJson = toJson(movieDto);
 
         LOG.info("Movie by id was received. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
+        return movieJson;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/movie/{movieId}/rate", method = RequestMethod.POST)
+    @RoleRequired({Role.ADMIN, Role.USER})
+    public String rate(@PathVariable int movieId, @RequestBody Map<String, Double> requestRating, UserPrincipal principal){
+        LOG.info("Sending request to rate movie by id");
+        long startTime = System.currentTimeMillis();
+
+        MovieRating movieRating = new MovieRating();
+        Movie movie = new Movie();
+        movie.setId(movieId);
+        movieRating.setMovie(movie);
+        movieRating.setUser(new User(principal.getUser().getId()));
+        movieRating.setRating(requestRating.get("rating"));
+
+        Movie movieWithNewRating = movieService.rate(movieRating);
+        String movieJson = toJson(movieWithNewRating);
+        LOG.info("New rating for movie was set. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
         return movieJson;
     }
 

@@ -1,8 +1,11 @@
 package com.miskevich.movieland.dao.jdbc;
 
 import com.miskevich.movieland.dao.IMovieDao;
+import com.miskevich.movieland.dao.jdbc.mapper.MovieRatingRowMapper;
 import com.miskevich.movieland.dao.jdbc.mapper.MovieRowMapper;
+import com.miskevich.movieland.dao.jdbc.util.RateCalculator;
 import com.miskevich.movieland.entity.Movie;
+import com.miskevich.movieland.model.MovieRating;
 import com.miskevich.movieland.model.SortingField;
 import com.miskevich.movieland.model.SortingType;
 import org.slf4j.Logger;
@@ -15,6 +18,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.*;
 
@@ -23,6 +28,7 @@ public class JdbcMovieDao implements IMovieDao {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
+    private static final MovieRatingRowMapper MOVIE_RATING_ROW_MAPPER = new MovieRatingRowMapper();
     private static final Random RANDOM = new Random();
 
     @Autowired
@@ -41,6 +47,14 @@ public class JdbcMovieDao implements IMovieDao {
     private String addMovieSQL;
     @Autowired
     private String updateMovieSQL;
+    @Autowired
+    private String addMovieRatingSQL;
+    @Autowired
+    private String getAllRatingsSQL;
+    @Autowired
+    private String getTotalRatingForEachMovieSQL;
+    @Autowired
+    private String persistRatingsAndVotesSQL;
 
     @Override
     public List<Movie> getAll(Map<SortingField, SortingType> params) {
@@ -133,6 +147,55 @@ public class JdbcMovieDao implements IMovieDao {
         namedParameterJdbcTemplate.update(updateMovieSQL, parameters);
         LOG.info("Finish query to persist movie into DB. It took {} ms", System.currentTimeMillis() - startTime);
         return movie;
+    }
+
+    @Override
+    public void rate(MovieRating movieRating) {
+        int movieId = movieRating.getMovie().getId();
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("movieId", movieId);
+        parameters.addValue("userId", movieRating.getUser().getId());
+        parameters.addValue("rating", movieRating.getRating());
+
+        LOG.info("Start query to add movie rating for movieId {}", movieId);
+        long startTime = System.currentTimeMillis();
+        namedParameterJdbcTemplate.update(addMovieRatingSQL, parameters);
+        LOG.info("Finish query to add movie rating for movieId {} into DB. It took {} ms", movieId, System.currentTimeMillis() - startTime);
+    }
+
+    @Override
+    public List<MovieRating> getAllMoviesWithRatings() {
+        LOG.info("Start query to get all ratings");
+        long startTime = System.currentTimeMillis();
+        List<MovieRating> movieRatings = namedParameterJdbcTemplate.query(getAllRatingsSQL, MOVIE_RATING_ROW_MAPPER);
+        LOG.info("Finish query to get all ratings. It took {} ms", System.currentTimeMillis() - startTime);
+        return movieRatings;
+    }
+
+    @Override
+    public List<MovieRating> calculateRatings() {
+        LOG.info("Start query to get calculated ratings for each movie");
+        long startTime = System.currentTimeMillis();
+        List<MovieRating> movieRatings = namedParameterJdbcTemplate.query(getTotalRatingForEachMovieSQL, MOVIE_RATING_ROW_MAPPER);
+        LOG.info("Finish query to get calculated ratings for each movie. It took {} ms", System.currentTimeMillis() - startTime);
+        return movieRatings;
+    }
+
+    @Override
+    public void persistRatingsAndVotes(List<MovieRating> movieRatings) {
+        LOG.info("Start query to update ratings and votes for each movie");
+        long startTime = System.currentTimeMillis();
+
+        for (MovieRating movieRating : movieRatings){
+            double rating = RateCalculator.calculate(movieRating);
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("movieId", movieRating.getMovie().getId());
+            parameters.addValue("rating", rating);
+            parameters.addValue("votes", movieRating.getVotes());
+
+            namedParameterJdbcTemplate.update(persistRatingsAndVotesSQL, parameters);
+        }
+        LOG.info("Finish query to update ratings and votes for each movie. It took {} ms", System.currentTimeMillis() - startTime);
     }
 
     private Set<Integer> prepareRandomMovieIds() {

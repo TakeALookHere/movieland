@@ -1,10 +1,15 @@
 package com.miskevich.movieland.dao.jdbc
 
+import com.miskevich.movieland.dao.jdbc.mapper.MovieRatingRowMapper
 import com.miskevich.movieland.dao.jdbc.provider.SQLDataProvider
 import com.miskevich.movieland.entity.Movie
+import com.miskevich.movieland.model.MovieRating
 import com.miskevich.movieland.model.SortingField
 import com.miskevich.movieland.model.SortingType
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
 import org.testng.annotations.Test
@@ -17,6 +22,9 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private JdbcMovieDao jdbcMovieDao
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate
+    private static final MovieRatingRowMapper MOVIE_RATING_ROW_MAPPER = new MovieRatingRowMapper()
 
     @Test
     void testGetAll() {
@@ -143,5 +151,30 @@ class JdbcMovieDaoITest extends AbstractTestNGSpringContextTests {
         assertEquals(movie.reviews[1].text, movieExpected.reviews[1].text)
         assertEquals(movie.reviews[1].movie.id, movieExpected.reviews[1].movie.id)
         assertEquals(movie.reviews[1].user.id, movieExpected.reviews[1].user.id)
+    }
+
+    @Test(dataProvider = 'movieRating', dataProviderClass = SQLDataProvider.class)
+    void testRate(movieRating, String removeMovieRatingSQL, MapSqlParameterSource parameters, String getMovieRatingSQL){
+        namedParameterJdbcTemplate.update(removeMovieRatingSQL, parameters)
+        jdbcMovieDao.rate(movieRating)
+        def actualRating = namedParameterJdbcTemplate.queryForObject(getMovieRatingSQL, parameters, Double.class)
+        assertEquals(actualRating, movieRating.rating)
+    }
+
+    @Test
+    void testGetAllMovieWithRatings(){
+        jdbcMovieDao.getAllMoviesWithRatings()
+    }
+
+    @Test(dataProvider = 'movieRatingUpdate', dataProviderClass = SQLDataProvider.class)
+    void testPersistRatingsAndVotes(movieRatingExpected, String getMovieRatingSQLFirst, String getMovieRatingSQLSecond){
+        jdbcMovieDao.persistRatingsAndVotes(movieRatingExpected)
+        def movieRatingFirst = namedParameterJdbcTemplate.queryForObject(getMovieRatingSQLFirst, EmptySqlParameterSource.INSTANCE, MOVIE_RATING_ROW_MAPPER)
+        assertEquals(movieRatingFirst.rating, movieRatingExpected.get(0).rating / movieRatingExpected.get(0).getVotes())
+        assertEquals(movieRatingFirst.votes, movieRatingExpected.get(0).votes)
+
+        def movieRatingSecond = namedParameterJdbcTemplate.queryForObject(getMovieRatingSQLSecond, EmptySqlParameterSource.INSTANCE, MOVIE_RATING_ROW_MAPPER)
+        assertEquals(movieRatingSecond.rating, movieRatingExpected.get(1).rating / movieRatingExpected.get(1).getVotes())
+        assertEquals(movieRatingSecond.votes, movieRatingExpected.get(1).votes)
     }
 }

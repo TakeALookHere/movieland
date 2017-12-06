@@ -3,6 +3,7 @@ package com.miskevich.movieland.web.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.miskevich.movieland.dto.RateDto
 import com.miskevich.movieland.entity.Movie
+import com.miskevich.movieland.model.MovieRating
 import com.miskevich.movieland.model.SortingField
 import com.miskevich.movieland.model.SortingType
 import com.miskevich.movieland.service.IMovieService
@@ -53,6 +54,7 @@ class MovieControllerFTest {
         def emptyParametersMap = new LinkedHashMap<SortingField, SortingType>()
         when(mockMovieService.getAll(emptyParametersMap)).thenReturn(expectedMovies)
         mockMvc.perform(get("/movie")
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$', hasSize(2)))
@@ -84,6 +86,7 @@ class MovieControllerFTest {
     void testGetAllMoviesBadRequest() {
         mockMvc.perform(get("/movie")
                 .param('aaa', 'aaa')
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
     }
@@ -133,7 +136,9 @@ class MovieControllerFTest {
     void testGetThreeRandomMovies(List<Movie> expectedMovies) {
 
         when(mockMovieService.getThreeRandomMovies()).thenReturn(expectedMovies)
-        mockMvc.perform(get("/movie/random").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/movie/random")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$', hasSize(2)))
 
@@ -176,7 +181,9 @@ class MovieControllerFTest {
         def emptyParametersMap = new LinkedHashMap<SortingField, SortingType>()
 
         when(mockMovieService.getByGenre(3, emptyParametersMap)).thenReturn(expectedMovies)
-        mockMvc.perform(get("/movie/genre/{genreId}", 3).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/movie/genre/{genreId}", 3)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$', hasSize(2)))
 
@@ -240,7 +247,9 @@ class MovieControllerFTest {
     void testGetById(Movie expectedMovie) {
 
         when(mockMovieService.getById(1)).thenReturn(expectedMovie)
-        mockMvc.perform(get("/movie/{movieId}", 1).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/movie/{movieId}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath('$.id', is(expectedMovie.id)))
@@ -280,6 +289,7 @@ class MovieControllerFTest {
         when(mockMovieService.getById(1)).thenReturn(expectedMovie)
         mockMvc.perform(get("/movie/{movieId}", 1)
                 .param('currency', 'USD')
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
 
@@ -364,5 +374,23 @@ class MovieControllerFTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
+    }
+
+    @Test(dataProvider = 'movieWithRating', dataProviderClass = ControllerDataProvider.class)
+    void testRate(Movie expectedMovie, uuid, principal, String ratingJson) {
+        when(mockMovieService.rate(any(MovieRating.class))).thenReturn(expectedMovie)
+        mockMvc.perform(post('/movie/{movieId}/rate', 1)
+                .header('uuid', uuid)
+                .principal(principal)
+                .content(ratingJson)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+
+                .andExpect(jsonPath('$.id', is(expectedMovie.id)))
+                .andExpect(jsonPath('$.rating', is(expectedMovie.rating)))
+
+        verify(mockMovieService, times(1)).rate(any(MovieRating.class))
+        verifyNoMoreInteractions(mockMovieService)
     }
 }

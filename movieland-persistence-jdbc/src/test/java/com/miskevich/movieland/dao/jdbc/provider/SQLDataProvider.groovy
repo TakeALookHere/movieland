@@ -5,8 +5,10 @@ import com.miskevich.movieland.entity.Genre
 import com.miskevich.movieland.entity.Movie
 import com.miskevich.movieland.entity.Review
 import com.miskevich.movieland.entity.User
+import com.miskevich.movieland.model.MovieRating
 import com.miskevich.movieland.model.SortingField
 import com.miskevich.movieland.model.SortingType
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.testng.annotations.DataProvider
 
 import java.time.LocalDate
@@ -107,6 +109,36 @@ class SQLDataProvider {
 
         def array = new Object[1][]
         array[0] = [movieExpected]
+        return array
+    }
+
+    @DataProvider(name = "movieRating")
+    static Object[][] movieRating() {
+
+        def movieRatingExpected = new MovieRating(movie: new Movie(id: 1), user: new User(id: 1), rating: 5.6)
+        def removeMovieRatingSQL = 'delete from movie_user_rating where movie_id = :movieId and user_id = :userId'
+        def parameters = new MapSqlParameterSource()
+        parameters.addValue('movieId', movieRatingExpected.movie.id)
+        parameters.addValue('userId', movieRatingExpected.user.id)
+
+        def getMovieRatingSQL = 'select rating from movie_user_rating where movie_id = :movieId and user_id = :userId'
+
+        def array = new Object[1][]
+        array[0] = [movieRatingExpected, removeMovieRatingSQL, parameters, getMovieRatingSQL]
+        return array
+    }
+
+    @DataProvider(name = "movieRatingUpdate")
+    static Object[][] movieRatingUpdate() {
+
+        def movieRatingExpected = [new MovieRating(movie: new Movie(id: 1), rating: 5.6, votes: 2),
+                                    new MovieRating(movie: new Movie(id: 2), rating: 2.5, votes: 5)]
+
+        def getMovieRatingSQLFirst = 'select id movie_id, rating, votes from movie where id = 1;'
+        def getMovieRatingSQLSecond = 'select id movie_id, rating, votes from movie where id = 2;'
+
+        def array = new Object[1][]
+        array[0] = [movieRatingExpected, getMovieRatingSQLFirst, getMovieRatingSQLSecond]
         return array
     }
 }

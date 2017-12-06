@@ -1,6 +1,7 @@
 package com.miskevich.movieland.service;
 
 import com.miskevich.movieland.entity.Movie;
+import com.miskevich.movieland.model.MovieRating;
 import com.miskevich.movieland.model.SortingField;
 import com.miskevich.movieland.model.SortingType;
 
@@ -20,4 +21,6 @@ public interface IMovieService {
     Movie persist(Movie movie);
 
     Movie update(Movie movie);
+
+    Movie rate(MovieRating movieRating);
 }

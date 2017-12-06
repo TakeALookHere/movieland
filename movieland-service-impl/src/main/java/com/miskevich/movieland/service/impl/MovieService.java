@@ -2,6 +2,7 @@ package com.miskevich.movieland.service.impl;
 
 import com.miskevich.movieland.dao.IMovieDao;
 import com.miskevich.movieland.entity.Movie;
+import com.miskevich.movieland.model.MovieRating;
 import com.miskevich.movieland.model.SortingField;
 import com.miskevich.movieland.model.SortingType;
 import com.miskevich.movieland.service.ICountryService;
@@ -11,6 +12,8 @@ import com.miskevich.movieland.service.IReviewService;
 import com.miskevich.movieland.service.cache.MovieCache;
 import com.miskevich.movieland.service.model.EnrichmentType;
 import com.miskevich.movieland.service.util.MovieParallelEnricher;
+import com.miskevich.movieland.service.util.MovieRatingBuffer;
+import com.miskevich.movieland.service.util.MovieRatingCurrent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,10 @@ public class MovieService implements IMovieService {
     private MovieCache movieCache;
     @Autowired
     private MovieParallelEnricher movieParallelEnricher;
+    @Autowired
+    private MovieRatingBuffer movieRatingBuffer;
+    @Autowired
+    private MovieRatingCurrent movieRatingCurrent;
 
     @Override
     public List<Movie> getAll(Map<SortingField, SortingType> params) {
@@ -60,7 +67,7 @@ public class MovieService implements IMovieService {
         if (!optional.isPresent()) {
             Movie movie = movieDao.getById(id);
             movieParallelEnricher.enrich(movie, EnrichmentType.FULL);
-            movieCache.put(movie);
+            movieCache.add(movie);
             return movie;
         }
         return optional.get();
@@ -73,7 +80,7 @@ public class MovieService implements IMovieService {
         genreService.persist(movie);
         countryService.persist(movie);
         reviewService.persist(movie);
-        movieCache.put(movie);
+        movieCache.add(movie);
         return movie;
     }
 
@@ -86,7 +93,13 @@ public class MovieService implements IMovieService {
         countryService.remove(movie);
         countryService.persist(movie);
         reviewService.update(movie);
-        movieCache.put(movie);
+        movieCache.add(movie);
         return movie;
+    }
+
+    @Override
+    public Movie rate(MovieRating movieRating) {
+        movieRatingBuffer.add(movieRating);
+        return movieRatingCurrent.refreshRating(movieRating);
     }
 }

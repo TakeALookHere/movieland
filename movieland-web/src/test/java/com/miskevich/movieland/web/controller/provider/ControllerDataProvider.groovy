@@ -354,4 +354,17 @@ class ControllerDataProvider {
         array[0] = [reviewJson]
         return array
     }
+
+    @DataProvider(name = "movieWithRating")
+    static Object[][] movieWithRating() {
+
+        def expectedMovie = new Movie(id: 1, rating: 6.8)
+        String uuid = UUID.randomUUID()
+        def ratingJson = '{"rating" : "7.6"}'
+        def principal = new UserPrincipal(new User(id: 1, nickname: 'Gamlet', email: 'gamlet@yahoo.com'), LocalDateTime.now())
+
+        def array = new Object[1][]
+        array[0] = [expectedMovie, uuid, principal, ratingJson]
+        return array
+    }
 }

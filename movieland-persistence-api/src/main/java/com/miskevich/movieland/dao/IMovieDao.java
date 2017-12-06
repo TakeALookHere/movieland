@@ -1,6 +1,7 @@
 package com.miskevich.movieland.dao;
 
 import com.miskevich.movieland.entity.Movie;
+import com.miskevich.movieland.model.MovieRating;
 import com.miskevich.movieland.model.SortingField;
 import com.miskevich.movieland.model.SortingType;
 
@@ -20,4 +21,12 @@ public interface IMovieDao {
     Movie persist(Movie movie);
 
     Movie update(Movie movie);
+
+    void rate(MovieRating movieRating);
+
+    List<MovieRating> getAllMoviesWithRatings();
+
+    List<MovieRating> calculateRatings();
+
+    void persistRatingsAndVotes(List<MovieRating> movieRatings);
 }

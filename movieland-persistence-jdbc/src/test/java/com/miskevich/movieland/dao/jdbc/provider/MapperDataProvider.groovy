@@ -1,6 +1,7 @@
 package com.miskevich.movieland.dao.jdbc.provider
 
 import com.miskevich.movieland.entity.*
+import com.miskevich.movieland.model.MovieRating
 import org.testng.annotations.DataProvider
 
 import java.time.LocalDate
@@ -64,6 +65,16 @@ class MapperDataProvider {
 
         def array = new Object[1][]
         array[0] = expectedUser
+        return array
+    }
+
+    @DataProvider(name = "movieRatingVotes")
+    static Object[][] movieRatingVotes() {
+
+        def movieRatingVotes = new MovieRating(movie: new Movie(id: 1), rating: 5.6, votes: 10)
+
+        def array = new Object[1][]
+        array[0] = movieRatingVotes
         return array
     }
 }

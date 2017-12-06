@@ -71,14 +71,14 @@ public class MovieParallelEnricher {
 
             Future<List<?>> genreFuture = futures.get(0);
             if(!genreFuture.isCancelled()){
-                movie.setGenres((List<Genre>) genreFuture);
+                movie.setGenres((List<Genre>) genreFuture.get());
             }else {
                 LOG.warn("Enrichment task for genres was cancelled by timeout");
             }
 
             Future<List<?>> countryFuture = futures.get(1);
             if(!countryFuture.isCancelled()){
-                movie.setCountries((List<Country>) countryFuture);
+                movie.setCountries((List<Country>) countryFuture.get());
             }else {
                 LOG.warn("Enrichment task for countries was cancelled by timeout");
             }
@@ -86,12 +86,12 @@ public class MovieParallelEnricher {
             if(enrichmentType.equals(EnrichmentType.FULL)){
                 Future<List<?>> reviewFuture = futures.get(2);
                 if(!reviewFuture.isCancelled()){
-                    movie.setReviews((List<Review>) reviewFuture);
+                    movie.setReviews((List<Review>) reviewFuture.get());
                 }else {
                     LOG.warn("Enrichment task for reviews was cancelled by timeout");
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | ExecutionException e) {
             LOG.warn("Movie enrichment wasn't fully completed");
         }
     }
