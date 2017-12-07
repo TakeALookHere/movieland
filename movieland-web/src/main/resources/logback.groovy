@@ -7,6 +7,7 @@ import static ch.qos.logback.classic.Level.INFO
 
 def LOG_PATH = "movieland/log"
 def LOG_ARCHIVE = "${LOG_PATH}/archive"
+def APP_NAME = 'MovieLand'
 
 appender("STDOUT", ConsoleAppender) {
     layout(PatternLayout) {
@@ -31,5 +32,25 @@ appender("RollingFile-Appender", RollingFileAppender) {
         pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %X{nickname} %logger{36} - %msg%n"
     }
 }
-logger("com.miskevich.movieland", DEBUG)
-root(DEBUG, ["STDOUT", "RollingFile-Appender"])
+
+appender('EMAIL', SMTPAppender) {
+    smtpHost = 'smtp.gmail.com'
+    smtpPort = 587
+    STARTTLS = true
+    username = 'userName@gmail.com'
+    password = '***'
+
+    from = 'userName@gmail.com'
+    to = 'userName@yahoo.com'
+    to = 'anotherUserName@gmail.com'
+    subject = "${APP_NAME} ERROR: %logger{20} - %m"
+
+    asynchronousSending = false
+
+    layout(PatternLayout) {
+        pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %X{requestId} %X{nickname} %logger{36} - %msg%n"
+    }
+}
+
+logger('com.miskevich.movieland', DEBUG)
+root(DEBUG, ['STDOUT', 'RollingFile-Appender', 'EMAIL'])

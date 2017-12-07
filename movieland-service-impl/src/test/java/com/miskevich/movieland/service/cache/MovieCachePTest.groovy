@@ -21,7 +21,7 @@ class MovieCachePTest extends AbstractTestNGSpringContextTests {
         for (int i = 1; i < 1_500; i++) {
             def movie = new Movie()
             movie.setId(i)
-            movieCache.add(i, movie)
+            movieCache.add(movie)
         }
         loadMemory()
 
