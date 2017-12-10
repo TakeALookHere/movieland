@@ -5,7 +5,6 @@ import com.miskevich.movieland.entity.Movie;
 import com.miskevich.movieland.entity.User;
 import com.miskevich.movieland.model.*;
 import com.miskevich.movieland.service.IMovieService;
-import com.miskevich.movieland.service.IUserService;
 import com.miskevich.movieland.service.impl.RateService;
 import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.MovieDto;
@@ -27,7 +26,7 @@ import java.util.Map;
 import static com.miskevich.movieland.web.json.JsonConverter.toJson;
 
 @Controller
-@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class MovieController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -142,7 +141,7 @@ public class MovieController {
     @ResponseBody
     @RequestMapping(value = "/movie/{movieId}/rate", method = RequestMethod.POST)
     @RoleRequired({Role.ADMIN, Role.USER})
-    public String rate(@PathVariable int movieId, @RequestBody Map<String, Double> requestRating, UserPrincipal principal){
+    public String rate(@PathVariable int movieId, @RequestBody Map<String, Double> requestRating, UserPrincipal principal) {
         LOG.info("Sending request to rate movie by id");
         long startTime = System.currentTimeMillis();
 

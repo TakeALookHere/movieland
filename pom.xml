@@ -24,6 +24,7 @@
         <surefire.version>2.20</surefire.version>
         <gmaven.version>1.5</gmaven.version>
         <logback.version>1.2.3</logback.version>
+        <slf4j.version>1.7.7</slf4j.version>
         <jackson.version>2.9.2</jackson.version>
         <groovy.version>2.4.10</groovy.version>
         <spring.version>5.0.0.RELEASE</spring.version>
@@ -99,6 +100,11 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>

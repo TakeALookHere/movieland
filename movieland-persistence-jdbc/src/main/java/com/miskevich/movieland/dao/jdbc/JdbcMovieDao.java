@@ -19,8 +19,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-//import com.miskevich.movieland.dao.jdbc.util.RateCalculator;
-
 @Repository
 public class JdbcMovieDao implements IMovieDao {
 

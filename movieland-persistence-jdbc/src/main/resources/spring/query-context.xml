@@ -86,8 +86,7 @@
 
     <bean id="addMovieCountriesSQL" class="java.lang.String">
         <constructor-arg
-                value="insert into movie_country (movie_id, country_id)
-                        values (:movieId, :countryId)"/>
+                value="insert into movie_country (movie_id, country_id) values (:movieId, :countryId)"/>
     </bean>
 
     <bean id="removeCountriesSQL" class="java.lang.String">
@@ -108,8 +107,7 @@
 
     <bean id="addMovieRatingSQL" class="java.lang.String">
         <constructor-arg
-                value="insert into movie_user_rating (movie_id, user_id, rating)
-                    values (:movieId, :userId, :rating);"/>
+                value="insert into movie_user_rating (movie_id, user_id, rating) values (:movieId, :userId, :rating);"/>
     </bean>
 
     <bean id="getAllRatingsSQL" class="java.lang.String">
@@ -124,6 +122,6 @@
 
     <bean id="persistRatingsAndVotesSQL" class="java.lang.String">
         <constructor-arg
-                value="update movie set rating = :rating, votes = :votes where id = :movieId;"/>
+                value="update movie1 set rating = :rating, votes = :votes where id = :movieId;"/>
     </bean>
 </beans>
