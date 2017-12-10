@@ -53,4 +53,5 @@ appender('EMAIL', SMTPAppender) {
 }
 
 logger('com.miskevich.movieland', DEBUG)
+logger('org.springframework', TRACE)
 root(DEBUG, ['STDOUT', 'RollingFile-Appender', 'EMAIL'])

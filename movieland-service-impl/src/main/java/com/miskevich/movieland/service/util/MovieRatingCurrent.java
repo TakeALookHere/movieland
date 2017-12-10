@@ -80,6 +80,7 @@ public class MovieRatingCurrent {
     }
 
     void invalidate(List<MovieRating> movieRatings) {
+        LOG.info("invalidate current rate");
         Map<Integer, MovieRating> newActualMovieRating = new HashMap<>();
         for (MovieRating movieRating : movieRatings) {
             newActualMovieRating.put(movieRating.getMovie().getId(), movieRating);
