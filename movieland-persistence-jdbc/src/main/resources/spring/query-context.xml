@@ -117,13 +117,13 @@
                 value="select id movie_id, rating, votes from movie;"/>
     </bean>
 
-    <bean id="getTotalRatingForEachMovieSQL" class="java.lang.String"><!---->
+    <bean id="getTotalRatingForEachMovieSQL" class="java.lang.String">
         <constructor-arg
                 value="select a.movie_id, round(a.total_rating /votes_count, 1) rating, a.votes_count votes from((select movie_id, sum(rating) total_rating, count(*) votes_count from movie_user_rating group by movie_id) a);"/>
     </bean>
 
     <bean id="persistRatingsAndVotesSQL" class="java.lang.String">
         <constructor-arg
-                value="update movie1 set rating = :rating, votes = :votes where id = :movieId;"/>
+                value="update movie set rating = :rating, votes = :votes where id = :movieId;"/>
     </bean>
 </beans>
