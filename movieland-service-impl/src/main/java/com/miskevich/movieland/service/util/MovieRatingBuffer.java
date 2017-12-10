@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -30,11 +31,13 @@ public class MovieRatingBuffer {
     }
 
     @Scheduled(initialDelayString = "${init.delay.movie.rating.buffer}", fixedRateString = "${fixed.rate.movie.rating.buffer}")
-    @Transactional(rollbackFor = UncategorizedSQLException.class)
+    @Transactional(rollbackFor = Exception.class)
     void invalidate(){
+        List<MovieRating> movieRatingsForBatchUpdate = new ArrayList<>();
         while (!MOVIE_RATING_BUFFER.isEmpty()){
-            jdbcMovieDao.rate(MOVIE_RATING_BUFFER.poll());
+            movieRatingsForBatchUpdate.add(MOVIE_RATING_BUFFER.poll());
         }
+        jdbcMovieDao.rate(movieRatingsForBatchUpdate);
         List<MovieRating> movieRatings = jdbcMovieDao.calculateRatings();
         jdbcMovieDao.persistRatingsAndVotes(movieRatings);
         movieRatingCurrent.invalidate(movieRatings);

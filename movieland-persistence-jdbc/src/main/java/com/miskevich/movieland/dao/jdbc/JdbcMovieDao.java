@@ -3,7 +3,6 @@ package com.miskevich.movieland.dao.jdbc;
 import com.miskevich.movieland.dao.IMovieDao;
 import com.miskevich.movieland.dao.jdbc.mapper.MovieRatingRowMapper;
 import com.miskevich.movieland.dao.jdbc.mapper.MovieRowMapper;
-import com.miskevich.movieland.dao.jdbc.util.RateCalculator;
 import com.miskevich.movieland.entity.Movie;
 import com.miskevich.movieland.model.MovieRating;
 import com.miskevich.movieland.model.SortingField;
@@ -18,10 +17,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Date;
 import java.util.*;
+
+//import com.miskevich.movieland.dao.jdbc.util.RateCalculator;
 
 @Repository
 public class JdbcMovieDao implements IMovieDao {
@@ -150,17 +148,23 @@ public class JdbcMovieDao implements IMovieDao {
     }
 
     @Override
-    public void rate(MovieRating movieRating) {
-        int movieId = movieRating.getMovie().getId();
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("movieId", movieId);
-        parameters.addValue("userId", movieRating.getUser().getId());
-        parameters.addValue("rating", movieRating.getRating());
+    public void rate(List<MovieRating> movieRatings) {
+        if (movieRatings != null) {
+            List<Map<String, Object>> batchValues = new ArrayList<>(movieRatings.size());
+            for (MovieRating movieRating : movieRatings) {
+                batchValues.add(
+                        new MapSqlParameterSource("movieId", movieRating.getMovie().getId())
+                                .addValue("userId", movieRating.getUser().getId())
+                                .addValue("rating", movieRating.getRating())
+                                .getValues());
+            }
 
-        LOG.info("Start query to add movie rating for movieId {}", movieId);
-        long startTime = System.currentTimeMillis();
-        namedParameterJdbcTemplate.update(addMovieRatingSQL, parameters);
-        LOG.info("Finish query to add movie rating for movieId {} into DB. It took {} ms", movieId, System.currentTimeMillis() - startTime);
+            LOG.info("Start query with batch insert ratings for each movie from buffer");
+            long startTime = System.currentTimeMillis();
+            //How to deal with this unchecked assignment?
+            namedParameterJdbcTemplate.batchUpdate(addMovieRatingSQL, batchValues.toArray(new Map[movieRatings.size()]));
+            LOG.info("Finish query with batch insert ratings for each movie from buffer. It took {} ms", System.currentTimeMillis() - startTime);
+        }
     }
 
     @Override
@@ -183,19 +187,22 @@ public class JdbcMovieDao implements IMovieDao {
 
     @Override
     public void persistRatingsAndVotes(List<MovieRating> movieRatings) {
-        LOG.info("Start query to update ratings and votes for each movie");
-        long startTime = System.currentTimeMillis();
+        if (movieRatings != null) {
+            List<Map<String, Object>> batchValues = new ArrayList<>(movieRatings.size());
+            for (MovieRating movieRating : movieRatings) {
+                batchValues.add(
+                        new MapSqlParameterSource("movieId", movieRating.getMovie().getId())
+                                .addValue("rating", movieRating.getRating())
+                                .addValue("votes", movieRating.getVotes())
+                                .getValues());
+            }
 
-        for (MovieRating movieRating : movieRatings){
-            double rating = RateCalculator.calculate(movieRating);
-            MapSqlParameterSource parameters = new MapSqlParameterSource();
-            parameters.addValue("movieId", movieRating.getMovie().getId());
-            parameters.addValue("rating", rating);
-            parameters.addValue("votes", movieRating.getVotes());
-
-            namedParameterJdbcTemplate.update(persistRatingsAndVotesSQL, parameters);
+            LOG.info("Start query with batch update ratings and votes for each movie");
+            long startTime = System.currentTimeMillis();
+            //How to deal with this unchecked assignment?
+            namedParameterJdbcTemplate.batchUpdate(persistRatingsAndVotesSQL, batchValues.toArray(new Map[movieRatings.size()]));
+            LOG.info("Finish query with batch update ratings and votes for each movie. It took {} ms", System.currentTimeMillis() - startTime);
         }
-        LOG.info("Finish query to update ratings and votes for each movie. It took {} ms", System.currentTimeMillis() - startTime);
     }
 
     private Set<Integer> prepareRandomMovieIds() {

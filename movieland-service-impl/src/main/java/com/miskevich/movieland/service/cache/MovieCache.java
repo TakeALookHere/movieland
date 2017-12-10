@@ -22,10 +22,16 @@ public class MovieCache {
         if (softReference == null) {
             return Optional.empty();
         }
+
         Movie movie = softReference.get();
-        LOG.info("Movie was received from cache {}", movie);
-        LOG.info("It took {} ms", System.currentTimeMillis() - startTime);
-        return Optional.ofNullable(movie);
+        if(movie != null){
+            Movie movieCopy = new Movie(movie);
+            LOG.info("Movie was received from cache {}", movie);
+            LOG.info("It took {} ms", System.currentTimeMillis() - startTime);
+            return Optional.of(movieCopy);
+        }
+
+        return Optional.empty();
     }
 
     public void add(Movie movie) {

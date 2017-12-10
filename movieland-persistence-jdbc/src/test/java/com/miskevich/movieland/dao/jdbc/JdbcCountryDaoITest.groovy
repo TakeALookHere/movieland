@@ -2,6 +2,7 @@ package com.miskevich.movieland.dao.jdbc
 
 import com.miskevich.movieland.dao.jdbc.provider.SQLDataProvider
 import com.miskevich.movieland.entity.Country
+import com.miskevich.movieland.entity.Movie
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.test.context.ContextConfiguration
@@ -35,7 +36,7 @@ class JdbcCountryDaoITest extends AbstractTestNGSpringContextTests {
         }
     }
 
-    @Test(dataProvider = 'provideMovieForEnrichmentSave', dataProviderClass = SQLDataProvider.class,
+    @Test(dataProvider = 'provideMovieForEnrichmentSaveUniqueConstraint', dataProviderClass = SQLDataProvider.class,
             expectedExceptionsMessageRegExp = '.*Duplicate entry \'1-1\' for key \'unique_index\'', expectedExceptions = DuplicateKeyException.class)
     void testSaveMovieGenresDuplicateKey(movie) {
         jdbcCountryDao.persist(movie)
@@ -46,5 +47,14 @@ class JdbcCountryDaoITest extends AbstractTestNGSpringContextTests {
         def movie = jdbcMovieDao.persist(expectedMovie)
         jdbcCountryDao.remove(movie)
         assertEquals(jdbcCountryDao.getByMovieId(movie.id).size(), 0)
+    }
+
+    @Test(dataProvider = 'provideMoviePersist', dataProviderClass = SQLDataProvider.class)
+    void testPersist(Movie expectedMovie){
+        jdbcCountryDao.remove(expectedMovie)
+        jdbcCountryDao.persist(expectedMovie)
+        def actualCountries = jdbcCountryDao.getByMovieId(expectedMovie.id)
+        assertEquals(actualCountries[0].id, expectedMovie.countries[0].id)
+        assertEquals(actualCountries[1].id, expectedMovie.countries[1].id)
     }
 }

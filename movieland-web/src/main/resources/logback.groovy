@@ -2,7 +2,6 @@ import ch.qos.logback.classic.PatternLayout
 import ch.qos.logback.classic.filter.ThresholdFilter
 import ch.qos.logback.core.util.FileSize
 
-import static ch.qos.logback.classic.Level.DEBUG
 import static ch.qos.logback.classic.Level.INFO
 
 def LOG_PATH = "movieland/log"
@@ -31,5 +30,5 @@ appender("RollingFile-Appender", RollingFileAppender) {
         pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %X{nickname} %logger{36} - %msg%n"
     }
 }
-logger("com.miskevich.movieland", DEBUG)
-root(DEBUG, ["STDOUT", "RollingFile-Appender"])
+logger("com.miskevich.movieland", TRACE)
+root(TRACE, ["STDOUT", "RollingFile-Appender"])

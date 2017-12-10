@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,5 +90,10 @@ public class MovieRatingCurrent {
         } finally {
             writeLock.unlock();
         }
+    }
+
+    public double getRatingByMovieId(int id) {
+        MovieRating movieRating = actualMovieRating.get(id);
+        return movieRating.getRating();
     }
 }

@@ -17,6 +17,23 @@ public class Movie {
     private List<Genre> genres;
     private List<Review> reviews;
 
+    public Movie(Movie movie) {
+        id = movie.id;
+        nameRussian = movie.nameRussian;
+        nameNative = movie.nameNative;
+        yearOfRelease = movie.yearOfRelease;
+        countries = movie.countries;
+        description = movie.description;
+        rating = movie.rating;
+        price = movie.price;
+        picturePath = movie.picturePath;
+        genres = movie.genres;
+        reviews = movie.reviews;
+    }
+
+    public Movie() {
+    }
+
     public int getId() {
         return id;
     }

@@ -13,7 +13,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class JdbcReviewDao implements IReviewDao {
@@ -63,10 +65,24 @@ public class JdbcReviewDao implements IReviewDao {
 
     @Override
     public void persist(Movie movie) {
-        if (movie.getReviews() != null) {
-            for (int i = 0; i < movie.getReviews().size(); i++) {
-                add(movie.getReviews().get(i));
+        List<Review> reviews = movie.getReviews();
+        if (reviews != null) {
+            int movieId = movie.getId();
+
+            List<Map<String, Object>> batchValues = new ArrayList<>(reviews.size());
+            for (Review review : reviews) {
+                batchValues.add(
+                        new MapSqlParameterSource("movieId", movieId)
+                                .addValue("userId", review.getUser().getId())
+                                .addValue("description", review.getText())
+                                .getValues());
             }
+
+            LOG.info("Start query to insert reviews for movieId {}", movieId);
+            long startTime = System.currentTimeMillis();
+            //How to deal with this unchecked assignment?
+            namedParameterJdbcTemplate.batchUpdate(addReviewSQL, batchValues.toArray(new Map[reviews.size()]));
+            LOG.info("Finish query to insert reviews for movieId {}. It took {} ms", movieId, System.currentTimeMillis() - startTime);
         }
     }
 

@@ -11,7 +11,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class JdbcGenreDao implements IGenreDao {
@@ -52,18 +54,23 @@ public class JdbcGenreDao implements IGenreDao {
 
     @Override
     public void persist(Movie movie) {
-        if (movie.getGenres() != null) {
+        List<Genre> genres = movie.getGenres();
+        if (genres != null) {
             int movieId = movie.getId();
 
-            for (int i = 0; i < movie.getGenres().size(); i++) {
-                int genreId = movie.getGenres().get(i).getId();
-                MapSqlParameterSource parameters = populateSQLParameters(movieId, genreId);
-
-                LOG.info("Start query to insert genreId {} for movieId {}", genreId, movieId);
-                long startTime = System.currentTimeMillis();
-                namedParameterJdbcTemplate.update(addMovieGenresSQL, parameters);
-                LOG.info("Finish query to insert genreId {} for movieId {}. It took {} ms", genreId, movieId, System.currentTimeMillis() - startTime);
+            List<Map<String, Object>> batchValues = new ArrayList<>(genres.size());
+            for (Genre genre : genres) {
+                batchValues.add(
+                        new MapSqlParameterSource("movieId", movieId)
+                                .addValue("genreId", genre.getId())
+                                .getValues());
             }
+
+            LOG.info("Start query to insert genres for movieId {}", movieId);
+            long startTime = System.currentTimeMillis();
+            //How to deal with this unchecked assignment?
+            namedParameterJdbcTemplate.batchUpdate(addMovieGenresSQL, batchValues.toArray(new Map[genres.size()]));
+            LOG.info("Finish query to insert genres for movieId {}. It took {} ms", movieId, System.currentTimeMillis() - startTime);
         }
     }
 
@@ -77,12 +84,5 @@ public class JdbcGenreDao implements IGenreDao {
             namedParameterJdbcTemplate.update(removeGenresSQL, parameters);
             LOG.info("Finish query to remove genres for movieId {}. It took {} ms", movieId, System.currentTimeMillis() - startTime);
         }
-    }
-
-    private MapSqlParameterSource populateSQLParameters(int movieId, int genreId) {
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("movieId", movieId);
-        parameters.addValue("genreId", genreId);
-        return parameters;
     }
 }

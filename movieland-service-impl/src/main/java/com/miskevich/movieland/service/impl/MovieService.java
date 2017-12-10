@@ -63,14 +63,18 @@ public class MovieService implements IMovieService {
 
     @Override
     public Movie getById(int id) {
+        double currentRating = movieRatingCurrent.getRatingByMovieId(id);
         Optional<Movie> optional = movieCache.get(id);
         if (!optional.isPresent()) {
             Movie movie = movieDao.getById(id);
+            movie.setRating(currentRating);
             movieParallelEnricher.enrich(movie, EnrichmentType.FULL);
             movieCache.add(movie);
             return movie;
         }
-        return optional.get();
+        Movie movieCopy = optional.get();
+        movieCopy.setRating(currentRating);
+        return movieCopy;
     }
 
     @Override

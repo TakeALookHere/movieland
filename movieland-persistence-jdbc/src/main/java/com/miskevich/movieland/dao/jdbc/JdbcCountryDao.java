@@ -11,7 +11,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class JdbcCountryDao implements ICountryDao {
@@ -53,25 +55,24 @@ public class JdbcCountryDao implements ICountryDao {
 
     @Override
     public void persist(Movie movie) {
-        if (movie.getCountries() != null) {
-            for (int i = 0; i < movie.getCountries().size(); i++) {
-                int movieId = movie.getId();
-                int countryId = movie.getCountries().get(i).getId();
-                MapSqlParameterSource parameters = populateSQLParameters(movieId, countryId);
+        List<Country> countries = movie.getCountries();
+        if (countries != null) {
+            int movieId = movie.getId();
 
-                LOG.info("Start query to insert countryId {} for movieId {}", countryId, movieId);
-                long startTime = System.currentTimeMillis();
-                namedParameterJdbcTemplate.update(addMovieCountriesSQL, parameters);
-                LOG.info("Finish query to insert countryId {} for movieId {}. It took {} ms", countryId, movieId, System.currentTimeMillis() - startTime);
+            List<Map<String, Object>> batchValues = new ArrayList<>(countries.size());
+            for (Country country : countries) {
+                batchValues.add(
+                        new MapSqlParameterSource("movieId", movieId)
+                                .addValue("countryId", country.getId())
+                                .getValues());
             }
-        }
-    }
 
-    private MapSqlParameterSource populateSQLParameters(int movieId, int countryId) {
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("movieId", movieId);
-        parameters.addValue("countryId", countryId);
-        return parameters;
+            LOG.info("Start query to insert countries for movieId {}", movieId);
+            long startTime = System.currentTimeMillis();
+            //How to deal with this unchecked assignment?
+            namedParameterJdbcTemplate.batchUpdate(addMovieCountriesSQL, batchValues.toArray(new Map[countries.size()]));
+            LOG.info("Finish query to insert countries for movieId {}. It took {} ms", movieId, System.currentTimeMillis() - startTime);
+        }
     }
 
     @Override

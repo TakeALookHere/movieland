@@ -22,7 +22,7 @@ public interface IMovieDao {
 
     Movie update(Movie movie);
 
-    void rate(MovieRating movieRating);
+    void rate(List<MovieRating> movieRatings);
 
     List<MovieRating> getAllMoviesWithRatings();
 
