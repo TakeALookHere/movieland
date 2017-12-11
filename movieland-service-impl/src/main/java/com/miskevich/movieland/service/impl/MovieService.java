@@ -12,7 +12,7 @@ import com.miskevich.movieland.service.IReviewService;
 import com.miskevich.movieland.service.cache.MovieCache;
 import com.miskevich.movieland.service.model.EnrichmentType;
 import com.miskevich.movieland.service.util.MovieParallelEnricher;
-import com.miskevich.movieland.service.util.MovieRatingBuffer;
+import com.miskevich.movieland.service.util.MovieRatingService;
 import com.miskevich.movieland.service.util.MovieRatingCurrent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class MovieService implements IMovieService {
     @Autowired
     private MovieParallelEnricher movieParallelEnricher;
     @Autowired
-    private MovieRatingBuffer movieRatingBuffer;
+    private MovieRatingService movieRatingService;
     @Autowired
     private MovieRatingCurrent movieRatingCurrent;
 
@@ -103,7 +103,7 @@ public class MovieService implements IMovieService {
 
     @Override
     public Movie rate(MovieRating movieRating) {
-        movieRatingBuffer.add(movieRating);
+        movieRatingService.add(movieRating);
         return movieRatingCurrent.refreshRating(movieRating);
     }
 }

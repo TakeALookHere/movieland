@@ -3,3 +3,4 @@
 *.iml
 *.log.*
 *.log
+/movieland-web/src/main/java/com/miskevich/movieland/web/controller/patterns/*

@@ -1,5 +1,6 @@
 package com.miskevich.movieland.service.util;
 
+import com.miskevich.movieland.dao.IMovieDao;
 import com.miskevich.movieland.dao.jdbc.JdbcMovieDao;
 import com.miskevich.movieland.model.MovieRating;
 import org.slf4j.Logger;
@@ -15,11 +16,11 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
-public class MovieRatingBuffer {
+public class MovieRatingService {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final Queue<MovieRating> MOVIE_RATING_BUFFER = new ConcurrentLinkedQueue<>();
     @Autowired
-    private JdbcMovieDao jdbcMovieDao;
+    private IMovieDao iMovieDao;
     @Autowired
     private MovieRatingCurrent movieRatingCurrent;
 
@@ -29,16 +30,16 @@ public class MovieRatingBuffer {
     }
 
     @Scheduled(initialDelayString = "${init.delay.movie.rating.buffer}", fixedRateString = "${fixed.rate.movie.rating.buffer}")
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void invalidate() {
         List<MovieRating> movieRatingsForBatchUpdate = new ArrayList<>();
         while (!MOVIE_RATING_BUFFER.isEmpty()) {
             movieRatingsForBatchUpdate.add(MOVIE_RATING_BUFFER.poll());
         }
 
-        jdbcMovieDao.rate(movieRatingsForBatchUpdate);
-        List<MovieRating> movieRatings = jdbcMovieDao.calculateRatings();
-        jdbcMovieDao.persistRatingsAndVotes(movieRatings);
+        iMovieDao.rate(movieRatingsForBatchUpdate);
+        List<MovieRating> movieRatings = iMovieDao.calculateRatings();
+        iMovieDao.persistRatingsAndVotes(movieRatings);
         movieRatingCurrent.invalidate(movieRatings);
     }
 }

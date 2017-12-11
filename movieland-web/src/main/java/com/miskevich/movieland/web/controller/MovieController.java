@@ -2,14 +2,15 @@ package com.miskevich.movieland.web.controller;
 
 import com.miskevich.movieland.dto.RateDto;
 import com.miskevich.movieland.entity.Movie;
-import com.miskevich.movieland.entity.User;
 import com.miskevich.movieland.model.*;
 import com.miskevich.movieland.service.IMovieService;
 import com.miskevich.movieland.service.impl.RateService;
 import com.miskevich.movieland.service.security.UserPrincipal;
 import com.miskevich.movieland.web.dto.MovieDto;
+import com.miskevich.movieland.web.dto.MovieRatingDto;
 import com.miskevich.movieland.web.json.JsonConverter;
 import com.miskevich.movieland.web.json.MovieDtoConverter;
+import com.miskevich.movieland.web.json.MovieRatingDtoConverter;
 import com.miskevich.movieland.web.security.RoleRequired;
 import com.miskevich.movieland.web.util.RateConverter;
 import org.slf4j.Logger;
@@ -145,17 +146,23 @@ public class MovieController {
         LOG.info("Sending request to rate movie by id");
         long startTime = System.currentTimeMillis();
 
-        MovieRating movieRating = new MovieRating();
-        Movie movie = new Movie();
-        movie.setId(movieId);
-        movieRating.setMovie(movie);
-        movieRating.setUser(new User(principal.getUser().getId()));
-        movieRating.setRating(requestRating.get("rating"));
+        MovieRatingDto movieRatingDto = getMovieRatingDto(movieId, requestRating, principal);
+        MovieRating movieRating = MovieRatingDtoConverter.mapDtoIntoObject(movieRatingDto);
 
         Movie movieWithNewRating = movieService.rate(movieRating);
         String movieJson = toJson(movieWithNewRating);
         LOG.info("New rating for movie was set. JSON movie: {}. It took {} ms", movieJson, System.currentTimeMillis() - startTime);
         return movieJson;
+    }
+
+    private MovieRatingDto getMovieRatingDto(@PathVariable int movieId, @RequestBody Map<String, Double> requestRating, UserPrincipal principal) {
+        MovieRatingDto movieRatingDto = new MovieRatingDto();
+        Movie movie = new Movie();
+        movie.setId(movieId);
+        movieRatingDto.setMovie(movie);
+        movieRatingDto.setUser(principal.getUser());
+        movieRatingDto.setRating(requestRating.get("rating"));
+        return movieRatingDto;
     }
 
     private Double getRateValue(List<RateDto> rates, String currency) {
